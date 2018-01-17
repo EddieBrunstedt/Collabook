@@ -57,10 +57,10 @@ exports.logOut = (req, res) => {
 
 exports.registerValidation = [
   //TODO: Work out proper rules before production
-  check('emailInput ').exists().isEmail().trim().normalizeEmail(),
+  check('emailInput').exists().isEmail().trim().normalizeEmail(),
   check('nameInput').exists().isLength({min: 3}).withMessage('Name needs to be at least 3 characters long'),
   check('passwordInput').exists().isLength({min: 3}).withMessage('Password needs to be at least 3 characters long'),
-  check('passwordConfInput', 'passwordConfInput field must have the same value as the password field')
+  check('passwordConfInput', 'Your passwords don\'t match')
     .exists()
     .custom((value, {req}) => value === req.body.passwordInput)
 ];

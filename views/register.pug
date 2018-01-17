@@ -5,13 +5,13 @@ block content
     .row
       .five.columns
         label(for='nameInput') Name or Pseudonym
-        input#nameInput.u-full-width(placeholder='', type='text', name='nameInput', required=true)
+        input#nameInput.u-full-width(type='text', placeholder='', required=true, name='nameInput')
         label(for='emailInput') Email address
-        input#emailInput.u-full-width(placeholder='rambo@mailbox.com', type='email' , name='emailInput', required=true)
+        input#emailInput.u-full-width(type='email', placeholder='rambo@mailbox.com', required=true, name='emailInput')
         p
           em An email will be sent to this address for confirmation.
         label(for='passwordInput') Password
-          input#passwordInput.u-full-width(type='password', name='passwordInput', required=true)
+          input#passwordInput.u-full-width(type='password', required=true, name='passwordInput')
         label(for='passwordConfInput') Re-enter your password
-          input#passwordConfInput.u-full-width(type='password', name='passwordConfInput', required=true)
+          input#passwordConfInput.u-full-width(type='password', required=true, name='passwordConfInput')
         button.button-primary(type='submit') Register
