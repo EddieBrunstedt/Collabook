@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    title= title
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    link(rel='stylesheet', href='/stylesheets/normalize.css')
+    link(rel='stylesheet', href='/stylesheets/skeleton.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    .container
+      h1=h.title
+      .row
+        include sidebar
+        .nine.columns
+          block content
+    script(src='/javascripts/jquery-3.2.1.min.js')
