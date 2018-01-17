@@ -22,6 +22,10 @@ const UserSchema = mongoose.Schema({
   bio: {
     type: String,
     default: ''
+  },
+  active: {
+    type: Boolean,
+    default: true
   }
 }, {runSettersOnQuery: true});
 

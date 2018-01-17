@@ -1,11 +1,60 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 
 //Import controllers
 const rootControllers = require('../controllers/rootControllers');
 
-/* GET home page. */
-router.get('/', rootControllers.homePage);
+const User = require('../models/user');
 
+//---------------------------------------------------------//
+
+passport.use(new LocalStrategy(
+  {usernameField: 'email'},
+  (email, password, done) => {
+    User.getUserByEmail(email)
+      .then((user) => {
+        if (!user) {
+          return done(null, false, {message: 'Unknown User'});
+        }
+        User.comparePassword(password, user.password)
+          .then((isMatch) => {
+            if (!isMatch) {
+              return done(null, false, {message: 'Invalid password'});
+            }
+            return done(null, user);
+          })
+          .catch((err) => {
+            throw err;
+          });
+      })
+      .catch(err => {
+        throw err;
+      })
+  }
+));
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.getUserById(id)
+    .then(user => {
+      done(null, user);
+    })
+    .catch(err => {
+      throw err;
+    })
+});
+
+router.get('/', rootControllers.getHomePage);
+
+router.get('/register', rootControllers.getRegisterForm);
+router.post('/register', rootControllers.registerValidation, rootControllers.postRegisterForm);
+
+router.get('/login', rootControllers.getLoginForm);
+
+router.get('/logout', rootControllers.logOut);
 
 module.exports = router;

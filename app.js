@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
@@ -6,17 +8,26 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const lessMiddleware = require('less-middleware');
 const logger = require('./logger');
+const expressValidator = require('express-validator');
+const flash = require('connect-flash');
+const session = require('express-session');
+const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
+const mongoose = require('mongoose');
+//const mongodb = require('mongodb');
+
 const helpers = require('./helpers');
 
 const errorHandlers = require('./handlers/errorHandlers');
 
 const index = require('./routes/index');
-const users = require('./routes/users');
 
 const app = express();
 
 // Get real remote IP's from clients instead of NGINX proxy ip.
 app.set('trust proxy', true);
+
+mongoose.connect(process.env.DB_HOST, {useMongoClient: true});
+mongoose.Promise = global.Promise;
 
 //---------------------- LOGGING --------------------------//
 
@@ -52,13 +63,30 @@ app.use(cookieParser());
 app.use(lessMiddleware(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+  secret: 'The Beaver and the Tiger sat on a roof.',
+  resave: false,
+  saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
 app.use((req, res, next) => {
+  //Helper functions for templates
   res.locals.h = helpers;
+  //Store the User in locals for retrievability in templates
+  res.locals.user = req.user || null;
+  //Flash messages
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  res.locals.error = req.flash('error');
+  res.locals.success = req.flash('success');
   next();
 });
 
 app.use('/', index);
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(errorHandlers.catch404);

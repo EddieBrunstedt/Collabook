@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  form(action='/register', method='post')
+    .row
+      .five.columns
+        label(for='nameInput') Name or Pseudonym
+        input#nameInput.u-full-width(placeholder='', type='text', name='nameInput', required=true)
+        label(for='emailInput') Email address
+        input#emailInput.u-full-width(placeholder='rambo@mailbox.com', type='email' , name='emailInput', required=true)
+        p
+          em An email will be sent to this address for confirmation.
+        label(for='passwordInput') Password
+          input#passwordInput.u-full-width(type='password', name='passwordInput', required=true)
+        label(for='passwordConfInput') Re-enter your password
+          input#passwordConfInput.u-full-width(type='password', name='passwordConfInput', required=true)
+        button.button-primary(type='submit') Register
