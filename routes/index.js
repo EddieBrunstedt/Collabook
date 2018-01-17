@@ -9,8 +9,10 @@ const User = require('../models/user');
 
 //---------------------------------------------------------//
 
-passport.use(new LocalStrategy(
-  {usernameField: 'email'},
+passport.use(new LocalStrategy({
+    usernameField: 'emailInput',
+    passwordField: 'passwordInput'
+  },
   (email, password, done) => {
     User.getUserByEmail(email)
       .then((user) => {
@@ -51,9 +53,12 @@ passport.deserializeUser((id, done) => {
 router.get('/', rootControllers.getHomePage);
 
 router.get('/register', rootControllers.getRegisterForm);
+
 router.post('/register', rootControllers.registerValidation, rootControllers.postRegisterForm);
 
 router.get('/login', rootControllers.getLoginForm);
+
+router.post('/login', rootControllers.passportAuthenticate, rootControllers.postLoginForm);
 
 router.get('/logout', rootControllers.logOut);
 

@@ -1,4 +1,11 @@
 extends layout
 
 block content
-  h1 Login
+  form(action='/login', method='post')
+    .row
+      .five.columns
+        label(for='emailInput') Email address
+        input#emailInput.u-full-width(type='email', required=true, name='emailInput', value='eddie.brunstedt@gmail.com')
+        label(for='passwordInput') Password
+          input#passwordInput.u-full-width(type='password', required=true, name='passwordInput', value='hej')
+        button.button-primary(type='submit') Login

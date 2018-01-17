@@ -8,9 +8,12 @@ exports.getHomePage = (req, res) => {
   res.render('index');
 };
 
-
 exports.getLoginForm = (req, res) => {
   res.render('login');
+};
+
+exports.postLoginForm = (req, res) => {
+  res.redirect('/')
 };
 
 exports.getRegisterForm = (req, res) => {
@@ -27,7 +30,6 @@ exports.postRegisterForm = (req, res) => {
     });
     return res.redirect('/register');
   }
-console.log('hiya')
   User.getUserByEmail(req.body.emailInput)
     .then(user => {
       if (user) {
@@ -54,6 +56,13 @@ exports.logOut = (req, res) => {
   req.flash('success_msg', 'You are logged out');
   res.redirect('/');
 };
+
+exports.passportAuthenticate = passport.authenticate('local', {
+  successRedirect: '/',
+  successFlash: 'You are now logged in',
+  failureFlash: true,
+  failureRedirect: '/login',
+});
 
 exports.registerValidation = [
   //TODO: Work out proper rules before production

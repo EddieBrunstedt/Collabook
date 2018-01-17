@@ -13,6 +13,7 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
+//todo: Is mongodb needed? if not; remove.
 //const mongodb = require('mongodb');
 
 const helpers = require('./helpers');
@@ -83,6 +84,11 @@ app.use((req, res, next) => {
   res.locals.error_msg = req.flash('error_msg');
   res.locals.error = req.flash('error');
   res.locals.success = req.flash('success');
+  next();
+});
+
+app.use((req, res, next) => {
+  console.log(req.body);
   next();
 });
 
