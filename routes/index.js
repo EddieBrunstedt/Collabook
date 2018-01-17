@@ -50,6 +50,8 @@ passport.deserializeUser((id, done) => {
     })
 });
 
+
+
 router.get('/', rootControllers.getHomePage);
 
 router.get('/register', rootControllers.getRegisterForm);
@@ -61,5 +63,9 @@ router.get('/login', rootControllers.getLoginForm);
 router.post('/login', rootControllers.passportAuthenticate, rootControllers.postLoginForm);
 
 router.get('/logout', rootControllers.logOut);
+
+router.get('/create-book', rootControllers.getCreateBookForm);
+
+router.post('/create-book',rootControllers.createBookValidation, rootControllers.postCreateBookForm);
 
 module.exports = router;

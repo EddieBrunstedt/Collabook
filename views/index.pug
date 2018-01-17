@@ -1,5 +1,24 @@
 extends layout
 
 block content
-  h5 Content
-  p hej
+  table.u-full-width
+    thead
+      tr
+        th Book title
+        th Owner
+        th Collaborator
+        th Created
+        th Public/Private
+        th Completed
+    tbody
+      each book in books
+        tr
+          td= book.title
+          td= book.owner.name
+          td= book.collaborator.name
+          td= h.moment(book.createdDate).calendar()
+          if book.public
+            td Public
+          else
+            td Private
+          td= book.completed

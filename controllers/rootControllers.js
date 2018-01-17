@@ -2,10 +2,19 @@ const {check, validationResult} = require('express-validator/check');
 const {matchedData, sanitize} = require('express-validator/filter');
 const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 
-const User = require('../models/user');
+const logger = require('../logger');
 
-exports.getHomePage = (req, res) => {
-  res.render('index');
+const User = require('../models/user');
+const Book = require('../models/book');
+
+exports.getHomePage = (req, res, next) => {
+  Book.findAllPublicBooks()
+    .then((books) => {
+      res.render('index', {books});
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getLoginForm = (req, res) => {
@@ -25,7 +34,6 @@ exports.postRegisterForm = (req, res) => {
 
   if (!errors.isEmpty()) {
     errors.array().map(error => {
-      console.log(error);
       req.flash('error_msg', error.msg);
     });
     return res.redirect('/register');
@@ -48,13 +56,56 @@ exports.postRegisterForm = (req, res) => {
     .catch(err => {
       throw err;
     });
-
 };
 
 exports.logOut = (req, res) => {
   req.logout();
   req.flash('success_msg', 'You are logged out');
   res.redirect('/');
+};
+
+exports.getCreateBookForm = (req, res) => {
+  res.render('createBook');
+};
+
+exports.postCreateBookForm = (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    errors.array().map(error => {
+      req.flash('error_msg', error.msg);
+    });
+    return res.redirect('/create-book');
+  }
+
+  User.getUserByEmail(req.body.collaboratorInput)
+    .then((user) => {
+      if (!user) {
+        req.flash('error_msg', 'There is no user associated with the Email address ' + req.body.collaboratorInput)
+        res.redirect('/create-book');
+      }
+
+      const newBook = new Book({
+        title: req.body.titleInput,
+        introduction: req.body.introductionInput,
+        collaborator: user.id,
+        owner: req.user.id,
+      });
+
+      newBook.save()
+        .then((returnedValue) => {
+          logger.info(`BOOK CREATED: owner: ${req.user.id}/${req.user.name} collaborator: ${user.id}/${user.name}`);
+          req.flash('success_msg', 'Your book was created successfully');
+          res.redirect('/');
+        })
+        .catch((err) => {
+          next(err);
+        })
+    })
+    .catch((err) => {
+        next(err);
+      }
+    );
 };
 
 exports.passportAuthenticate = passport.authenticate('local', {
@@ -72,4 +123,11 @@ exports.registerValidation = [
   check('passwordConfInput', 'Your passwords don\'t match')
     .exists()
     .custom((value, {req}) => value === req.body.passwordInput)
+];
+
+exports.createBookValidation = [
+  check('titleInput').exists().trim().isLength({
+    min: 2,
+    max: 20
+  }).withMessage('Your book title must be between 2 and 20 characters long')
 ];

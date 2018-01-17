@@ -1,9 +1,15 @@
 #sidebar.three.columns
-  h5 Sidebar
   ul
-    li
-      a(href='/login') Login
-    li
-      a(href='/register') Register
-    li
-      a(href='/logout') Logout
+    if user
+      li
+        a(href='/logout') Logout
+    else
+      li
+        a(href='/login') Login
+      li
+        a(href='/register') Register
+  hr
+  ul
+    if user
+      li
+        a(href='/create-book') Create book

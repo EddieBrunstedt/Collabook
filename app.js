@@ -87,8 +87,8 @@ app.use((req, res, next) => {
   next();
 });
 
+//Todo: for testing. Delete before production
 app.use((req, res, next) => {
-  console.log(req.body);
   next();
 });
 
