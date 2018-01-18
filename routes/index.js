@@ -37,7 +37,7 @@ passport.use(new LocalStrategy({
 ));
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser((id, done) => {
@@ -49,8 +49,6 @@ passport.deserializeUser((id, done) => {
       throw err;
     })
 });
-
-
 
 router.get('/', rootControllers.getHomePage);
 

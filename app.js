@@ -21,6 +21,8 @@ const helpers = require('./helpers');
 const errorHandlers = require('./handlers/errorHandlers');
 
 const index = require('./routes/index');
+const user = require('./routes/user');
+const book = require('./routes/book');
 
 const app = express();
 
@@ -93,6 +95,9 @@ app.use((req, res, next) => {
 });
 
 app.use('/', index);
+app.use('/user', user);
+app.use('/book', book);
+
 
 // catch 404 and forward to error handler
 app.use(errorHandlers.catch404);

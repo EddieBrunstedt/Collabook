@@ -8,17 +8,20 @@ block content
         th Owner
         th Collaborator
         th Created
-        th Public/Private
+        th Published/Private
         th Completed
     tbody
       each book in books
         tr
-          td= book.title
-          td= book.owner.name
-          td= book.collaborator.name
+          td
+            a(href='/book/' + book.id)= book.title
+          td
+            a(href='/user/' + book.owner.id)= book.owner.name
+          td
+            a(href='/user/' + book.collaborator.id)= book.collaborator.name
           td= h.moment(book.createdDate).calendar()
           if book.public
-            td Public
+            td Published
           else
             td Private
           td= book.completed

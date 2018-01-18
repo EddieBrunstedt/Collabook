@@ -53,15 +53,14 @@ module.exports.findAllPublicBooks = () => {
     .exec()
 };
 
-/*
-module.exports.findBookById = (id, callback) => {
-  Book.findById(id)
+
+module.exports.findBookById = (id) => {
+  return Book.findById(id)
     .populate('owner collaborator activeWriter')
-    .exec(callback);
+    .exec()
 };
 
-
-
+/*
 module.exports.findBooksWithUser = (userId, callback) => {
   Book
     .find({$or: [{owner: userId}, {collaborator: userId}]})
