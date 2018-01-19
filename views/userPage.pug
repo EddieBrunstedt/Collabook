@@ -13,7 +13,7 @@ block content
         td= user.email
         td= user.active
   p= user.password
-  p= user.bio
+  p Bio: #{user.bio}
   hr
   form(action='/user/' + user.id , method='post')
     label(for='bioInput') Biography

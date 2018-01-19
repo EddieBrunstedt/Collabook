@@ -53,12 +53,13 @@ module.exports.findAllPublicBooks = () => {
     .exec()
 };
 
-
 module.exports.findBookById = (id) => {
   return Book.findById(id)
     .populate('owner collaborator activeWriter')
     .exec()
 };
+
+
 
 /*
 module.exports.findBooksWithUser = (userId, callback) => {

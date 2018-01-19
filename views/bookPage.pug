@@ -23,8 +23,11 @@ block content
   hr
   h4 Introduction
   p= book.introduction
-  //form(action='/user/' + user.id , method='post')
-  //  label(for='bioInput') Biography
-  //  em Please tell us something about you
-  //  textarea#bioInput.u-full-width(name='bioInput')= user.bio
-  //  button.button-primary(type='submit') Update Profile
+  hr
+  form(action='/book/' + book.id, method='post')
+    label(for='bodyInput') Write a passage
+    textarea#bodyInput.u-full-width(name='bodyInput')
+    button.button-primary(type='submit') Add passage
+  each passage in passages
+    p= passage.body
+    hr
