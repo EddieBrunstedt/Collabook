@@ -7,9 +7,13 @@ block content
     li Owner:&nbsp;
       a(href='/user/' + book.owner.id)
         strong #{book.owner.name}
+      | &nbsp;#{book.owner.id === book.activeWriter.id ? '<-- Active Writer' : null}
     li Collaborator:&nbsp;
       a(href='/user/' + book.collaborator.id)
         strong #{book.collaborator.name}
+        | #{book.collaborator.id === book.activeWriter.id ? '<-- Active Writer' : null}
+    //TODO: You are here
+    button.button(type='submit') Switch writer
     li Completed:
       if book.completed
         strong &nbsp;Yes
@@ -19,7 +23,10 @@ block content
       if book.public
         strong &nbsp;Yes
       else
-        td &nbsp;No
+        strong &nbsp;No
+    li Next writer:&nbsp;
+      a(href='/user/' + book.activeWriter.id)
+        strong #{book.activeWriter.name}
   hr
   h4 Introduction
   p= book.introduction

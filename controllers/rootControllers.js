@@ -90,10 +90,12 @@ exports.postCreateBookForm = (req, res, next) => {
         introduction: req.body.introductionInput,
         collaborator: user.id,
         owner: req.user.id,
+        activeWriter: req.user.id,
       });
 
       newBook.save()
         .then((returnedValue) => {
+          //TODO: Add Book ID in log
           logger.info(`BOOK CREATED: owner: ${req.user.id}/${req.user.name} collaborator: ${user.id}/${user.name}`);
           req.flash('success_msg', 'Your book was created successfully');
           res.redirect('/');
@@ -128,6 +130,6 @@ exports.registerValidation = [
 exports.createBookValidation = [
   check('titleInput').exists().trim().isLength({
     min: 2,
-    max: 20
-  }).withMessage('Your book title must be between 2 and 20 characters long')
+    max: 100
+  }).withMessage('Your book title must be between 2 and 100 characters long')
 ];
