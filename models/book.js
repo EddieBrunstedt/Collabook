@@ -56,9 +56,13 @@ module.exports.findAllPublicBooks = () => {
 module.exports.findBookById = (id) => {
   return Book.findById(id)
     .populate('owner collaborator activeWriter')
-    .exec()
+    .exec();
 };
 
+module.exports.switchActiveWriter = (bookId, activeWriter) => {
+  return Book.findByIdAndUpdate(bookId, {activeWriter: activeWriter})
+    .exec();
+};
 
 /*
 module.exports.findBooksWithUser = (userId, callback) => {
@@ -66,11 +70,6 @@ module.exports.findBooksWithUser = (userId, callback) => {
     .find({$or: [{owner: userId}, {collaborator: userId}]})
     .populate('owner collaborator')
     .sort({createdDate: -1})
-    .exec(callback);
-};
-
-module.exports.changeTurn = (bookId, nextUser, callback) => {
-  Book.findByIdAndUpdate(bookId, {activeWriter: nextUser})
     .exec(callback);
 };
 */

@@ -7,13 +7,19 @@ block content
     li Owner:&nbsp;
       a(href='/user/' + book.owner.id)
         strong #{book.owner.name}
-      | &nbsp;#{book.owner.id === book.activeWriter.id ? '<-- Active Writer' : null}
+      | &nbsp;
+      if book.owner.id === book.activeWriter.id
+        i.fas.fa-long-arrow-alt-left
+        | &nbsp;Active Writer
     li Collaborator:&nbsp;
       a(href='/user/' + book.collaborator.id)
         strong #{book.collaborator.name}
-        | #{book.collaborator.id === book.activeWriter.id ? '<-- Active Writer' : null}
+      | &nbsp;
+      if book.collaborator.id === book.activeWriter.id
+        i.fas.fa-long-arrow-alt-left
+        | &nbsp;Active Writer
     //TODO: You are here
-    button.button(type='submit') Switch writer
+    button(onclick=`window.location="${book.id}/switch-writer";`) Switch writer
     li Completed:
       if book.completed
         strong &nbsp;Yes
