@@ -1,14 +1,14 @@
 if success_msg.length > 0
   each val in success_msg
-    .alert-success
+    .alert.alert-success(role='alert')
       | #{val}
 if error_msg.length > 0
   each val in error_msg
-    .alert-danger
+    .alert.alert-danger(role='alert')
       | #{val}
 if error.length > 0
-  .alert-danger
+  .alert.alert-danger(role='alert')
     | #{error}
 if success.length > 0
-  .alert-success
+  .alert.alert-success(role='alert')
     | #{success}

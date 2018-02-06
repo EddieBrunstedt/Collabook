@@ -18,7 +18,7 @@ block content
       if book.collaborator.id === book.activeWriter.id
         i.fas.fa-long-arrow-alt-left
         | &nbsp;Active Writer
-    //ToDo: You are here
+    //Todo: You are here
     button(onclick=`window.location="${book.id}/switch-writer";`) Switch writer
     li Completed:
       if book.completed
@@ -37,10 +37,12 @@ block content
   h4 Introduction
   p= book.introduction
   hr
-  form(action='/book/' + book.id, method='post')
-    label(for='bodyInput') Write a passage
-    textarea#bodyInput.u-full-width(name='bodyInput')
-    button.button-primary(type='submit') Add passage
+  //Todo: Is this correct way of checking for if user is logged in?
+  if user && user.id === book.activeWriter.id
+    form(action='/book/' + book.id, method='post')
+      label(for='bodyInput') Write a passage
+      textarea#bodyInput.u-full-width(name='bodyInput')
+      button.button-primary(type='submit') Add passage
   each passage in passages
     p= passage.body
     hr

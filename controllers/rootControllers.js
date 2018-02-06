@@ -95,7 +95,7 @@ exports.postCreateBookForm = (req, res, next) => {
 
       newBook.save()
         .then((returnedValue) => {
-          //TODO: Add Book ID in log
+          //Todo: Add Book ID in log
           logger.info(`BOOK CREATED: owner: ${req.user.id}/${req.user.name} collaborator: ${user.id}/${user.name}`);
           req.flash('success_msg', 'Your book was created successfully');
           res.redirect('/');
@@ -118,7 +118,7 @@ exports.passportAuthenticate = passport.authenticate('local', {
 });
 
 exports.registerValidation = [
-  //TODO: Work out proper rules before production
+  //Todo: Work out proper rules before production
   check('emailInput').exists().isEmail().trim().normalizeEmail(),
   check('nameInput').exists().isLength({min: 3}).withMessage('Name needs to be at least 3 characters long'),
   check('passwordInput').exists().isLength({min: 3}).withMessage('Password needs to be at least 3 characters long'),

@@ -1,0 +1,3 @@
+- Add feature for assigning new ownership
+- Add authcontroller for everything (logged in user AND correct logged in specific user?)
+-

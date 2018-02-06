@@ -1,19 +1,19 @@
 extends layout
 
 block content
-  table.u-full-width
+  table.table
     thead
       tr
-        th Book title
-        th Owner
-        th Collaborator
-        th Created
-        th Published/Private
-        th Completed
+        th(scope='col') Book title
+        th(scope='col') Owner
+        th(scope='col') Collaborator
+        th(scope='col') Created
+        th(scope='col') Published/Private
+        th(scope='col') Completed
     tbody
       each book in books
         tr
-          td
+          th(scope='row')
             a(href='/book/' + book.id)= book.title
           td
             a(href='/user/' + book.owner.id)= book.owner.name
@@ -24,4 +24,7 @@ block content
             td Published
           else
             td Private
-          td= book.completed
+          if book.completed
+            td Yes
+          else
+            td No

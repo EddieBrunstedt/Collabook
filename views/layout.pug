@@ -4,21 +4,18 @@ html
     title=h.title
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
-    link(rel='stylesheet', href='/stylesheets/normalize.css')
-    link(rel='stylesheet', href='/stylesheets/skeleton.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(defer='', src='/javascripts/fontawesome-all.js')
   body
-    .container
+    include navbar
+    .row.justify-content-center
+      .col-12.col-md-10.col-xl-8.text-center
+        include flash
+    main.container(role='main')
       .row
-        .five.columns
-          a#title-link(href='/')
-            h1=h.title
-        .seven.columns
-          include flash
-      .row
-        include sidebar
-        .nine.columns
+        .col-12
           block content
     include footer
     script(src='/javascripts/jquery-3.2.1.min.js')
+    script(src='/javascripts/bootstrap.bundle.js')

@@ -13,7 +13,7 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
-//todo: Is mongodb needed? if not; remove.
+//Todo: Is mongodb needed? if not; remove.
 //const mongodb = require('mongodb');
 
 const helpers = require('./helpers');
@@ -34,7 +34,7 @@ mongoose.Promise = global.Promise;
 
 //---------------------- LOGGING --------------------------//
 
-//ToDo: Change 'dev' to 'combine' before production
+//Todo: Change 'dev' to 'combine' before production
 //Stream all error > 400 to stderr
 app.use(morgan('dev', {
   skip: function (req, res) {
@@ -43,7 +43,7 @@ app.use(morgan('dev', {
   stream: process.stderr
 }));
 
-//ToDo: Change 'dev' to 'combine' before production
+//Todo: Change 'dev' to 'combine' before production
 //Stream all error < 400 to stdout
 app.use(morgan('dev', {
   skip: function (req, res) {
@@ -89,7 +89,7 @@ app.use((req, res, next) => {
   next();
 });
 
-//ToDo: for testing. Delete before production
+//Todo: for testing. Delete before production
 app.use((req, res, next) => {
   next();
 });

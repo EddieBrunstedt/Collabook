@@ -29,7 +29,7 @@ const BookSchema = mongoose.Schema({
   },
   public: {
     type: Boolean,
-    //ToDo: Change to false before production
+    //Todo: Change to false before production
     default: true
   },
   activeWriter: {
@@ -46,7 +46,7 @@ module.exports.createBook = (newBook) => {
 
 module.exports.findAllPublicBooks = () => {
   return Book
-  //ToDo: Change below to '.find({'public': true})' before production
+  //Todo: Change below to '.find({'public': true})' before production
     .find({})
     .populate('owner collaborator')
     .sort({createdDate: -1})

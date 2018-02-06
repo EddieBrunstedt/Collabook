@@ -1,0 +1,33 @@
+nav.navbar.navbar-expand-md.navbar-dark.fixed-top.bg-dark
+  .container
+    span.navbar-brand(href='/') Collabook
+    button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarCollapse', aria-controls='navbarCollapse', aria-expanded='false', aria-label='Toggle navigation')
+      span.navbar-toggler-icon
+    #navbarCollapse.collapse.navbar-collapse
+      ul.navbar-nav.mr-auto
+        li.nav-item
+          a.nav-link(href='/create-book') Create book
+        li.nav-item.active
+          a.nav-link(href='/') View all books
+      //Todo: Reference html, remove before production
+      //ul.navbar-nav.mr-auto
+      //  li.nav-item.active
+      //    a.nav-link(href='#')
+      //      | Home
+      //      span.sr-only (current)
+      //  li.nav-item
+      //    a.nav-link(href='#') Link
+      //  li.nav-item
+      //    a.nav-link.disabled(href='#') Disabled
+      ul.navbar-nav.mt-2.mt-md-0
+        if user
+          li.nav-item.dropdown
+            //Todo: Remove link and make toggle button to non-link but change mouse curser on hover
+            a#dropdown01.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')= user.name
+            .dropdown-menu(aria-labelledby='dropdown01')
+              a.dropdown-item(href='/logout') Logout
+        else
+          li.nav-item
+            a.nav-link(href='/login') Login
+          li.nav-item
+            a.nav-link(href='/register') Register
