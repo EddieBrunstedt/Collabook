@@ -62,7 +62,7 @@ exports.switchActiveWriter = (req, res, next) => {
     });
 };
 
-//Todo: Change min/max before production
+//ToDo: Change min/max before production
 exports.passageValidation = [
   check('bodyInput')
     .exists()

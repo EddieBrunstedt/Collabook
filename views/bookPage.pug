@@ -18,7 +18,7 @@ block content
       if book.collaborator.id === book.activeWriter.id
         i.fas.fa-long-arrow-alt-left
         | &nbsp;Active Writer
-    //TODO: You are here
+    //ToDo: You are here
     button(onclick=`window.location="${book.id}/switch-writer";`) Switch writer
     li Completed:
       if book.completed

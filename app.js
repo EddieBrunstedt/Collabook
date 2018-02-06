@@ -34,7 +34,7 @@ mongoose.Promise = global.Promise;
 
 //---------------------- LOGGING --------------------------//
 
-//Todo: Change 'dev' to 'combine' before production
+//ToDo: Change 'dev' to 'combine' before production
 //Stream all error > 400 to stderr
 app.use(morgan('dev', {
   skip: function (req, res) {
@@ -43,7 +43,7 @@ app.use(morgan('dev', {
   stream: process.stderr
 }));
 
-//Todo: Change 'dev' to 'combine' before production
+//ToDo: Change 'dev' to 'combine' before production
 //Stream all error < 400 to stdout
 app.use(morgan('dev', {
   skip: function (req, res) {
@@ -89,7 +89,7 @@ app.use((req, res, next) => {
   next();
 });
 
-//Todo: for testing. Delete before production
+//ToDo: for testing. Delete before production
 app.use((req, res, next) => {
   next();
 });
