@@ -6,16 +6,12 @@ html
     meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
     link(rel='stylesheet', href='/stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
+    link(href='https://fonts.googleapis.com/css?family=Alegreya:700', rel='stylesheet')
     script(defer='', src='/javascripts/fontawesome-all.js')
   body
     include navbar
-    .row.justify-content-center
-      .col-12.col-md-10.col-xl-8.text-center
-        include flash
-    main.container(role='main')
-      .row
-        .col-12
-          block content
+    include flash
+    block content
     include footer
     script(src='/javascripts/jquery-3.2.1.min.js')
     script(src='/javascripts/bootstrap.bundle.js')

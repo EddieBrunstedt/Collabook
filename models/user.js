@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const md5 = require('md5');
 
 // User Schema
 const UserSchema = mongoose.Schema({
@@ -28,6 +29,12 @@ const UserSchema = mongoose.Schema({
     default: true
   }
 }, {runSettersOnQuery: true});
+
+UserSchema.virtual('gravatar').get(function () {
+  const gravatarURL = 'https://www.gravatar.com/avatar/';
+  const hashedEmail = md5(this.email);
+  return gravatarURL + hashedEmail
+});
 
 const User = module.exports = mongoose.model('User', UserSchema);
 

@@ -1,14 +1,17 @@
-if success_msg.length > 0
-  each val in success_msg
-    .alert.alert-success(role='alert')
-      | #{val}
-if error_msg.length > 0
-  each val in error_msg
-    .alert.alert-danger(role='alert')
-      | #{val}
-if error.length > 0
-  .alert.alert-danger(role='alert')
-    | #{error}
-if success.length > 0
-  .alert.alert-success(role='alert')
-    | #{success}
+section.container
+  .row.justify-content-center
+    .col-12.col-md-10.col-xl-8.text-center
+      if success_msg.length > 0
+        each val in success_msg
+          .alert.alert-success(role='alert')
+            | #{val}
+      if error_msg.length > 0
+        each val in error_msg
+          .alert.alert-danger(role='alert')
+            | #{val}
+      if error.length > 0
+        .alert.alert-danger(role='alert')
+          | #{error}
+      if success.length > 0
+        .alert.alert-success(role='alert')
+          | #{success}

@@ -38,16 +38,16 @@ exports.postRegisterForm = (req, res) => {
     });
     return res.redirect('/register');
   }
-  User.getUserByEmail(req.body.emailInput)
+  User.getUserByEmail(req.body.inputEmail)
     .then(user => {
       if (user) {
         req.flash('error_msg', 'There is already an account associated with this Email address');
         return res.redirect('/register')
       }
       const newUser = new User({
-        email: req.body.emailInput,
-        password: req.body.passwordInput,
-        name: req.body.nameInput
+        email: req.body.inputEmail,
+        password: req.body.inputPassword,
+        name: req.body.inputName
       });
       User.createUser(newUser);
       req.flash('success_msg', 'You are registered and can now login');
@@ -78,16 +78,16 @@ exports.postCreateBookForm = (req, res, next) => {
     return res.redirect('/create-book');
   }
 
-  User.getUserByEmail(req.body.collaboratorInput)
+  User.getUserByEmail(req.body.inputCollaborator)
     .then((user) => {
       if (!user) {
-        req.flash('error_msg', 'There is no user associated with the Email address ' + req.body.collaboratorInput)
+        req.flash('error_msg', 'There is no user associated with the Email address ' + req.body.inputcollaborator)
         res.redirect('/create-book');
       }
 
       const newBook = new Book({
-        title: req.body.titleInput,
-        introduction: req.body.introductionInput,
+        title: req.body.inputTitle,
+        introduction: req.body.inputIntroduction,
         collaborator: user.id,
         owner: req.user.id,
         activeWriter: req.user.id,
@@ -110,6 +110,10 @@ exports.postCreateBookForm = (req, res, next) => {
     );
 };
 
+exports.getDashboard = (req, res) => {
+  res.render('dashboard');
+};
+
 exports.passportAuthenticate = passport.authenticate('local', {
   successRedirect: '/',
   successFlash: 'You are now logged in',
@@ -119,16 +123,16 @@ exports.passportAuthenticate = passport.authenticate('local', {
 
 exports.registerValidation = [
   //Todo: Work out proper rules before production
-  check('emailInput').exists().isEmail().trim().normalizeEmail(),
-  check('nameInput').exists().isLength({min: 3}).withMessage('Name needs to be at least 3 characters long'),
-  check('passwordInput').exists().isLength({min: 3}).withMessage('Password needs to be at least 3 characters long'),
-  check('passwordConfInput', 'Your passwords don\'t match')
+  check('inputEmail').exists().isEmail().trim().normalizeEmail(),
+  check('inputName').exists().isLength({min: 3}).withMessage('Name needs to be at least 3 characters long'),
+  check('inputPassword').exists().isLength({min: 3}).withMessage('Password needs to be at least 3 characters long'),
+  check('inputPasswordConf', 'Your passwords don\'t match')
     .exists()
-    .custom((value, {req}) => value === req.body.passwordInput)
+    .custom((value, {req}) => value === req.body.inputPassword)
 ];
 
 exports.createBookValidation = [
-  check('titleInput').exists().trim().isLength({
+  check('inputTitle').exists().trim().isLength({
     min: 2,
     max: 100
   }).withMessage('Your book title must be between 2 and 100 characters long')

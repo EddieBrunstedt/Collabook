@@ -31,7 +31,7 @@ exports.postBookPage = (req, res, next) => {
 
   const newPassage = new Passage({
     author: req.user._id,
-    body: req.body.bodyInput,
+    body: req.body.inputBody,
     book: req.params.id,
   });
 
@@ -64,7 +64,7 @@ exports.switchActiveWriter = (req, res, next) => {
 
 //Todo: Change min/max before production
 exports.passageValidation = [
-  check('bodyInput')
+  check('inputBody')
     .exists()
     .isLength({
       min: 1,

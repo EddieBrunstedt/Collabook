@@ -4,14 +4,15 @@ const passport = require('passport'), LocalStrategy = require('passport-local').
 
 //Import controllers
 const rootControllers = require('../controllers/rootControllers');
+const authControllers = require('../controllers/authControllers');
 
 const User = require('../models/user');
 
 //---------------------------------------------------------//
 
 passport.use(new LocalStrategy({
-    usernameField: 'emailInput',
-    passwordField: 'passwordInput'
+    usernameField: 'inputEmail',
+    passwordField: 'inputPassword'
   },
   (email, password, done) => {
     User.getUserByEmail(email)
@@ -65,5 +66,7 @@ router.get('/logout', rootControllers.logOut);
 router.get('/create-book', rootControllers.getCreateBookForm);
 
 router.post('/create-book',rootControllers.createBookValidation, rootControllers.postCreateBookForm);
+
+router.get('/dashboard', authControllers.isLoggedIn, rootControllers.getDashboard);
 
 module.exports = router;
