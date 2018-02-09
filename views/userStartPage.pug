@@ -4,10 +4,61 @@ block content
   .container
     section
       h3 Books where you are next in turn
+      .card-deck
+        .card
+          i.fas.fa-book.card-img-top
+          .card-body
+            h5.card-title Card title
+            p.card-text
+              | This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.
+          .card-footer
+            small.text-muted Last updated 3 mins ago
+        .card
+          img.card-img-top(src='http://via.placeholder.com/384x180', alt='Card image cap')
+          .card-body
+            h5.card-title Card title
+            p.card-text This card has supporting text below as a natural lead-in to additional content.
+          .card-footer
+            small.text-muted Last updated 3 mins ago
+        .card
+          img.card-img-top(src='http://via.placeholder.com/384x180', alt='Card image cap')
+          .card-body
+            h5.card-title Card title
+            p.card-text
+              | This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.
+          .card-footer
+            small.text-muted Last updated 3 mins ago
     section
       h3 All your books
+      table.table
+        thead
+          tr
+            th(scope='col') Book title
+            th(scope='col') Owner
+            th(scope='col') Collaborator
+            th(scope='col') Created
+            th(scope='col') Published/Private
+            th(scope='col') Completed
+        tbody
+          each book in allUserBooks
+            tr
+              th(scope='row')
+                a(href='/book/' + book.id)= book.title
+              td
+                a(href='/user/' + book.owner.id)= book.owner.name
+              td
+                a(href='/user/' + book.collaborator.id)= book.collaborator.name
+              td= h.moment(book.createdDate).calendar()
+              if book.public
+                td Published
+              else
+                td Private
+              if book.completed
+                td Yes
+              else
+                td No
     section
-      h3 All books from all writers
+      h3 All public books from all writers
       table.table
         thead
           tr

@@ -11,8 +11,19 @@ exports.getHomePage = (req, res, next) => {
   if (req.user) {
     Book.findAllPublicBooks()
       .then((allPublicBooks) => {
-
-        res.render('userStartPage', {allPublicBooks});
+        Book.findAllUserBooks(req.user._id)
+          .then((allUserBooks) => {
+            Book.findAllUserActiveBooks(req.user._id)
+              .then((allUserActiveBooks) => {
+                res.render('userStartPage', {allPublicBooks, allUserBooks, allUserActiveBooks});
+              })
+              .catch((err) => {
+                next(err);
+              });
+          })
+          .catch((err) => {
+            next(err);
+          });
       })
       .catch((err) => {
         next(err);
