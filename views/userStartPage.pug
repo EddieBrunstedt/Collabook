@@ -1,0 +1,65 @@
+extends layout
+
+block content
+  .container
+    section
+      h3 Books where you are next in turn
+    section
+      h3 All your books
+    section
+      h3 All books from all writers
+      table.table
+        thead
+          tr
+            th(scope='col') Book title
+            th(scope='col') Owner
+            th(scope='col') Collaborator
+            th(scope='col') Created
+            th(scope='col') Published/Private
+            th(scope='col') Completed
+        tbody
+          each book in allPublicBooks
+            tr
+              th(scope='row')
+                a(href='/book/' + book.id)= book.title
+              td
+                a(href='/user/' + book.owner.id)= book.owner.name
+              td
+                a(href='/user/' + book.collaborator.id)= book.collaborator.name
+              td= h.moment(book.createdDate).calendar()
+              if book.public
+                td Published
+              else
+                td Private
+              if book.completed
+                td Yes
+              else
+                td No
+
+  //table.table
+  //  thead
+  //    tr
+  //      th(scope='col') Book title
+  //      th(scope='col') Owner
+  //      th(scope='col') Collaborator
+  //      th(scope='col') Created
+  //      th(scope='col') Published/Private
+  //      th(scope='col') Completed
+  //  tbody
+  //    each book in books
+  //      tr
+  //        th(scope='row')
+  //          a(href='/book/' + book.id)= book.title
+  //        td
+  //          a(href='/user/' + book.owner.id)= book.owner.name
+  //        td
+  //          a(href='/user/' + book.collaborator.id)= book.collaborator.name
+  //        td= h.moment(book.createdDate).calendar()
+  //        if book.public
+  //          td Published
+  //        else
+  //          td Private
+  //        if book.completed
+  //          td Yes
+  //        else
+  //          td No

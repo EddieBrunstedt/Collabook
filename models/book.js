@@ -15,10 +15,12 @@ const BookSchema = mongoose.Schema({
     trim: true,
     default: '',
   },
+  //Todo: Change to ownerId
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  //Todo: Change to collaboratorId
   collaborator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
@@ -32,6 +34,7 @@ const BookSchema = mongoose.Schema({
     //Todo: Change to false before production
     default: true
   },
+  //Todo: Change to activeWriterId
   activeWriter: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -46,21 +49,38 @@ module.exports.createBook = (newBook) => {
 
 module.exports.findAllPublicBooks = () => {
   return Book
-  //Todo: Change below to '.find({'public': true})' before production
-    .find({})
+    .find({'public': true})
+    .populate('owner collaborator')
+    .sort({createdDate: -1})
+    .exec()
+};
+
+module.exports.findAllActiveBooks = (userId) => {
+  return Book
+    .find({activeWriter: userId})
+    .populate('owner collaborator')
+    .sort({createdDate: -1})
+    .exec()
+};
+
+module.exports.findAllBooksForUser = (userId) => {
+  return Book
+    .or({owner: userId, collaborator: userId})
     .populate('owner collaborator')
     .sort({createdDate: -1})
     .exec()
 };
 
 module.exports.findBookById = (id) => {
-  return Book.findById(id)
+  return Book
+    .findById(id)
     .populate('owner collaborator activeWriter')
     .exec();
 };
 
 module.exports.switchActiveWriter = (bookId, activeWriter) => {
-  return Book.findByIdAndUpdate(bookId, {activeWriter: activeWriter})
+  return Book
+    .findByIdAndUpdate(bookId, {activeWriter: activeWriter})
     .exec();
 };
 

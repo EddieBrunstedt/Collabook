@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const PassageSchema = mongoose.Schema({
+  //Todo: Change name to authorId
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
@@ -13,6 +14,7 @@ const PassageSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  //Todo: Change name to bookId
   book: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Book'

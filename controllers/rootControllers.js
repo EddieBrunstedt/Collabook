@@ -8,13 +8,18 @@ const User = require('../models/user');
 const Book = require('../models/book');
 
 exports.getHomePage = (req, res, next) => {
-  Book.findAllPublicBooks()
-    .then((books) => {
-      res.render('index', {books});
-    })
-    .catch((err) => {
-      next(err);
-    });
+  if (req.user) {
+    Book.findAllPublicBooks()
+      .then((allPublicBooks) => {
+
+        res.render('userStartPage', {allPublicBooks});
+      })
+      .catch((err) => {
+        next(err);
+      });
+  } else {
+    res.render('guestStartPage');
+  }
 };
 
 exports.getLoginForm = (req, res) => {
