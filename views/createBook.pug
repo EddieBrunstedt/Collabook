@@ -2,18 +2,21 @@ extends layout
 
 block content
   .container
+    h1.google-font Create Book
     .row
-      .col-12
+      .col-lg-6
         form(action='/create-book', method='post')
           .form-group
             label(for='inputTitle') Book Title
             input#inputTitle.form-control(type='text', placeholder='Enter book title', required=true, name='inputTitle')
-            small.form-text.text-muted We'll never share your book title with enyone else.
           .form-group
-            label(for='inputBookIntroduction') Book introduction
-            textarea#inputBookIntroduction.form-control(rows='3', name='inputBookIntroduction')
-            small.form-text.text-muted You can write an introduction here if you so choose. You can always edit this later so feel free to leave this blank for now.
-          .form-group
-            label(for='inputCollaborator') Book Title
+            label(for='inputCollaborator') Collaborator email
             input#inputCollaborator.form-control(type='email', placeholder='Enter collaborator email', required=true, name='inputCollaborator')
-          button.btn.btn-warning(type='submit') Create book
+          .form-group
+            label(for='inputIntroduction') Book introduction
+            textarea#inputIntroduction.form-control(rows='3', name='inputIntroduction')
+            small.form-text.text-muted You can write an introduction here if you so choose. You can always edit this later so feel free to leave this blank for now.
+          hr
+          button.btn.btn-warning(type='submit') Submit
+            | &nbsp;&nbsp;
+            i.fas.fa-caret-right

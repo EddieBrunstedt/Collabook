@@ -1,161 +1,62 @@
 extends layout
 
 block content
-  //Todo: Make this fluid?
+
+  mixin bookCard(book)
+    .card.mb-3
+      .card-body
+        h5.card-title
+          a.link-primary(href='/book/' + book.id)= book.title
+        - var shortenedIntroduction = book.introduction.length > 100 ? book.introduction.substring(0,100) + '...' : book.introduction
+        p.card-text.text-muted= shortenedIntroduction
+      ul.list-group.list-group-flush
+        li.list-group-item
+          i.fas.fa-star.text-warning
+          span &nbsp;
+          a(href='/user/' + book.owner.id)= book.owner.name
+        li.list-group-item
+          i.fas.fa-user-plus.text-warning
+          span &nbsp;
+          a(href='/user/' + book.collaborator.id)= book.collaborator.name
+        li.list-group-item.small.text-muted= `Created ${h.moment(book.createdDate).calendar()}`
+
   .container
     #nav-field.mb-5
-      button.btn.btn-warning(onclick='window.location="/create-book";') Create book
+      button.btn.btn-lg.btn-warning(onclick='window.location="/create-book";')
+        i.fas.fa-book
+        | &nbsp;
+        | Create new book
+    h3.google-font Your books
     .row
-      .col-4
-        h5.text-center Books where you are next in turn
-        each book in allUserActiveBooks
-          .card
-            .card-body
-              h5.card-title
-                a(href='/book/' + book.id)= book.title
-              //Todo: Add trim-feature
-              h6.card-subtitle.text-muted= book.introduction
-              p.card-text hejsan
-            .card-footer
-              small.text-muted= `Created ${h.moment(book.createdDate).calendar()}`
-    section
-
-      table.table
-        thead
+      each book in allUserBooks
+        .col-3
+          + bookCard(book)
+    .row
+    h3.google-font All public books
+    table.table
+      thead
+        tr
+          th(scope='col') Book title
+          th(scope='col') Owner
+          th(scope='col') Collaborator
+          th(scope='col') Created
+          th(scope='col') Published/Private
+          th(scope='col') Completed
+      tbody
+        each book in allPublicBooks
           tr
-            th(scope='col') Book title
-            th(scope='col') Owner
-            th(scope='col') Collaborator
-            th(scope='col') Created
-            th(scope='col') Published/Private
-            th(scope='col') Completed
-        tbody
-          each book in allUserBooks
-            tr
-              th(scope='row')
-                a(href='/book/' + book.id)= book.title
-              td
-                a(href='/user/' + book.owner.id)= book.owner.name
-              td
-                a(href='/user/' + book.collaborator.id)= book.collaborator.name
-              td= h.moment(book.createdDate).calendar()
-              if book.public
-                td Published
-              else
-                td Private
-              if book.completed
-                td Yes
-              else
-                td No
-    section
-      h3 All your books
-      table.table
-        thead
-          tr
-            th(scope='col') Book title
-            th(scope='col') Owner
-            th(scope='col') Collaborator
-            th(scope='col') Created
-            th(scope='col') Published/Private
-            th(scope='col') Completed
-        tbody
-          each book in allUserBooks
-            tr
-              th(scope='row')
-                a(href='/book/' + book.id)= book.title
-              td
-                a(href='/user/' + book.owner.id)= book.owner.name
-              td
-                a(href='/user/' + book.collaborator.id)= book.collaborator.name
-              td= h.moment(book.createdDate).calendar()
-              if book.public
-                td Published
-              else
-                td Private
-              if book.completed
-                td Yes
-              else
-                td No
-    section
-      h3 All public books from all writers
-      table.table
-        thead
-          tr
-            th(scope='col') Book title
-            th(scope='col') Owner
-            th(scope='col') Collaborator
-            th(scope='col') Created
-            th(scope='col') Published/Private
-            th(scope='col') Completed
-        tbody
-          each book in allPublicBooks
-            tr
-              th(scope='row')
-                a(href='/book/' + book.id)= book.title
-              td
-                a(href='/user/' + book.owner.id)= book.owner.name
-              td
-                a(href='/user/' + book.collaborator.id)= book.collaborator.name
-              td= h.moment(book.createdDate).calendar()
-              if book.public
-                td Published
-              else
-                td Private
-              if book.completed
-                td Yes
-              else
-                td No
-
-  //table.table
-  //  thead
-  //    tr
-  //      th(scope='col') Book title
-  //      th(scope='col') Owner
-  //      th(scope='col') Collaborator
-  //      th(scope='col') Created
-  //      th(scope='col') Published/Private
-  //      th(scope='col') Completed
-  //  tbody
-  //    each book in books
-  //      tr
-  //        th(scope='row')
-  //          a(href='/book/' + book.id)= book.title
-  //        td
-  //          a(href='/user/' + book.owner.id)= book.owner.name
-  //        td
-  //          a(href='/user/' + book.collaborator.id)= book.collaborator.name
-  //        td= h.moment(book.createdDate).calendar()
-  //        if book.public
-  //          td Published
-  //        else
-  //          td Private
-  //        if book.completed
-  //          td Yes
-  //        else
-  //          td No
-
-  //.card-deck
-    //  .card
-    //    .card-body
-    //      h5.card-title= test
-    //      h6.card-subtitle.text-muted Card Subtitle
-    //      p.card-text
-    //        | hejsan
-    //    .card-footer
-    //      small.text-muted Last updated 3 mins ago
-    //  .card
-    //    .card-body
-    //      h5.card-title Card title
-    //      h6.card-subtitle.text-muted Card Subtitle
-    //      p.card-text
-    //        | hejsan
-    //    .card-footer
-    //      small.text-muted Last updated 3 mins ago
-    //  .card
-    //    .card-body
-    //      h5.card-title Card title
-    //      h6.card-subtitle.text-muted Card Subtitle
-    //      p.card-text
-    //        | hejsan
-    //    .card-footer
-    //      small.text-muted Last updated 3 mins ago
+            th(scope='row')
+              a(href='/book/' + book.id)= book.title
+            td
+              a(href='/user/' + book.owner.id)= book.owner.name
+            td
+              a(href='/user/' + book.collaborator.id)= book.collaborator.name
+            td= h.moment(book.createdDate).calendar()
+            if book.public
+              td Published
+            else
+              td Private
+            if book.completed
+              td Yes
+            else
+              td No
