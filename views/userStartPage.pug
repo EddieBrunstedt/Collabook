@@ -3,22 +3,41 @@ extends layout
 block content
 
   mixin bookCard(book)
-    .card.mb-3
+    .card.mb-3.book-card
+      h5.card-header.bg-light
+        a.link-primary(href='/book/' + book.id)= book.title
       .card-body
-        h5.card-title
-          a.link-primary(href='/book/' + book.id)= book.title
         - var shortenedIntroduction = book.introduction.length > 100 ? book.introduction.substring(0,100) + '...' : book.introduction
         p.card-text.text-muted= shortenedIntroduction
       ul.list-group.list-group-flush
         li.list-group-item
-          i.fas.fa-star.text-warning
-          span &nbsp;
           a(href='/user/' + book.owner.id)= book.owner.name
+          if book.owner.id === book.activeWriter.id
+            span &nbsp;
+            i.fas.fa-pencil-alt.text-success
         li.list-group-item
-          i.fas.fa-user-plus.text-warning
-          span &nbsp;
           a(href='/user/' + book.collaborator.id)= book.collaborator.name
+          if book.collaborator.id === book.activeWriter.id
+            span &nbsp;
+            i.fas.fa-pencil-alt.text-success
         li.list-group-item.small.text-muted= `Created ${h.moment(book.createdDate).calendar()}`
+
+    //.card.mb-3
+    //  .card-body
+    //    h5.card-title
+    //      a.link-primary(href='/book/' + book.id)= book.title
+    //    - var shortenedIntroduction = book.introduction.length > 100 ? book.introduction.substring(0,100) + '...' : book.introduction
+    //    p.card-text.text-muted= shortenedIntroduction
+    //  ul.list-group.list-group-flush
+    //    li.list-group-item
+    //      i.fas.fa-star.text-warning
+    //      span &nbsp;
+    //      a(href='/user/' + book.owner.id)= book.owner.name
+    //    li.list-group-item
+    //      i.fas.fa-user-plus.text-warning
+    //      span &nbsp;
+    //      a(href='/user/' + book.collaborator.id)= book.collaborator.name
+    //    li.list-group-item.small.text-muted= `Created ${h.moment(book.createdDate).calendar()}`
 
   .container
     #nav-field.mb-5

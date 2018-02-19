@@ -66,7 +66,7 @@ module.exports.findAllUserActiveBooks = (userId) => {
 module.exports.findAllUserBooks = (userId) => {
   return Book
     .find({$or: [{owner: userId}, {collaborator: userId}]})
-    .populate('owner collaborator')
+    .populate('owner collaborator activeWriter')
     .sort({createdDate: -1})
     .exec()
 };

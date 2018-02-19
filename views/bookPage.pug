@@ -1,48 +1,68 @@
 extends layout
 
 block content
-  h1= book.title
-  ul
-    li Created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
-    li Owner:&nbsp;
-      a(href='/user/' + book.owner.id)
-        strong #{book.owner.name}
-      | &nbsp;
-      if book.owner.id === book.activeWriter.id
-        i.fas.fa-long-arrow-alt-left
-        | &nbsp;Active Writer
-    li Collaborator:&nbsp;
-      a(href='/user/' + book.collaborator.id)
-        strong #{book.collaborator.name}
-      | &nbsp;
-      if book.collaborator.id === book.activeWriter.id
-        i.fas.fa-long-arrow-alt-left
-        | &nbsp;Active Writer
-    //Todo: You are here
-    button(onclick=`window.location="${book.id}/switch-writer";`) Switch writer
-    li Completed:
-      if book.completed
-        strong &nbsp;Yes
-      else
-        strong &nbsp;No
-    li Published:
-      if book.public
-        strong &nbsp;Yes
-      else
-        strong &nbsp;No
-    li Next writer:&nbsp;
-      a(href='/user/' + book.activeWriter.id)
-        strong #{book.activeWriter.name}
-  hr
-  h4 Introduction
-  p= book.introduction
-  hr
-  //Todo: Is this correct way of checking for if user is logged in?
-  if user && user.id === book.activeWriter.id
-    form(action='/book/' + book.id, method='post')
-      label(for='bodyInput') Write a passage
-      textarea#bodyInput.u-full-width(name='bodyInput')
-      button.button-primary(type='submit') Add passage
-  each passage in passages
-    p= passage.body
+  .container
+    h1.google-font= book.title
+    h5.text-muted Created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
+    .row
+      .col-5
+        ul
+          li Owner:&nbsp;
+            a(href='/user/' + book.owner.id)
+              strong #{book.owner.name}
+            | &nbsp;
+            if book.owner.id === book.activeWriter.id
+              i.fas.fa-long-arrow-alt-left
+              | &nbsp;Active Writer
+          li Collaborator:&nbsp;
+            a(href='/user/' + book.collaborator.id)
+              strong #{book.collaborator.name}
+            | &nbsp;
+            if book.collaborator.id === book.activeWriter.id
+              i.fas.fa-long-arrow-alt-left
+              | &nbsp;Active Writer
+      .col-2
+        button.btn.btn-sm.btn-warning(onclick=`window.location="${book.id}/switch-writer";`) Switch writer
+    ul
+      li Owner:&nbsp;
+        a(href='/user/' + book.owner.id)
+          strong #{book.owner.name}
+        | &nbsp;
+        if book.owner.id === book.activeWriter.id
+          i.fas.fa-long-arrow-alt-left
+          | &nbsp;Active Writer
+      li Collaborator:&nbsp;
+        a(href='/user/' + book.collaborator.id)
+          strong #{book.collaborator.name}
+        | &nbsp;
+        if book.collaborator.id === book.activeWriter.id
+          i.fas.fa-long-arrow-alt-left
+          | &nbsp;Active Writer
+      //Todo: You are here
+      button(onclick=`window.location="${book.id}/switch-writer";`) Switch writer
+      li Completed:
+        if book.completed
+          strong &nbsp;Yes
+        else
+          strong &nbsp;No
+      li Published:
+        if book.public
+          strong &nbsp;Yes
+        else
+          strong &nbsp;No
+      li Next writer:&nbsp;
+        a(href='/user/' + book.activeWriter.id)
+          strong #{book.activeWriter.name}
     hr
+    h4 Introduction
+    p= book.introduction
+    hr
+    //Todo: Is this correct way of checking for if user is logged in?
+    if user && user.id === book.activeWriter.id
+      form(action='/book/' + book.id, method='post')
+        label(for='bodyInput') Write a passage
+        textarea#bodyInput.u-full-width(name='bodyInput')
+        button.button-primary(type='submit') Add passage
+    each passage in passages
+      p= passage.body
+      hr
