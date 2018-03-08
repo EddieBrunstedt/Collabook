@@ -1,6 +1,7 @@
 const {check, validationResult} = require('express-validator/check');
 const {matchedData, sanitize} = require('express-validator/filter');
 const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
+const slug = require('slug');
 
 const logger = require('../logger');
 
@@ -32,6 +33,11 @@ exports.getHomePage = (req, res, next) => {
     res.render('guestStartPage');
   }
 };
+
+exports.getTestPage = (req, res, next) => {
+  res.render('test', {slug: slug('this is a test of things...')})
+};
+
 
 exports.getLoginForm = (req, res) => {
   res.render('login');
@@ -97,7 +103,7 @@ exports.postCreateBookForm = (req, res, next) => {
   User.getUserByEmail(req.body.inputCollaborator)
     .then((user) => {
       if (!user) {
-        req.flash('error_msg', 'There is no user associated with the Email address ' + req.body.inputcollaborator)
+        req.flash('error_msg', 'There is no user associated with the Email address ' + req.body.inputcollaborator);
         res.redirect('/create-book');
       }
 

@@ -13,6 +13,7 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
+const slug = require('slug');
 //Todo: Is mongodb needed? if not; remove.
 //const mongodb = require('mongodb');
 

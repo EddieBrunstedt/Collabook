@@ -53,6 +53,8 @@ passport.deserializeUser((id, done) => {
 
 router.get('/', rootControllers.getHomePage);
 
+router.get('/test', rootControllers.getTestPage);
+
 router.get('/register', rootControllers.getRegisterForm);
 
 router.post('/register', rootControllers.registerValidation, rootControllers.postRegisterForm);

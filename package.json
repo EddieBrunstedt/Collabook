@@ -24,6 +24,7 @@
     "passport-local": "^1.0.0",
     "pug": "2.0.0-beta11",
     "serve-favicon": "~2.4.5",
+    "slug": "^0.9.1",
     "winston": "^3.0.0-rc1"
   }
 }

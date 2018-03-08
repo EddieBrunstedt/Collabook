@@ -1,5 +1,6 @@
 const {check, validationResult} = require('express-validator/check');
 const {matchedData, sanitize} = require('express-validator/filter');
+const slug = require('slug');
 
 const Book = require('../models/book');
 const Passage = require('../models/passage');
@@ -56,6 +57,41 @@ exports.switchActiveWriter = (req, res, next) => {
         .catch((err) => {
           next(err);
         });
+    })
+    .catch((err) => {
+      next(err)
+    });
+};
+
+/*
+exports.deleteBook = (req, res, next) => {
+  Book.deleteBookById(req.params.id)
+    .then(() => {
+      req.flash('success_msg', 'The book was successfully removed');
+      res.redirect('/');
+    })
+    .catch((err) => {
+      next(err);
+    })
+};
+*/
+
+exports.deleteBook = (req, res, next) => {
+  Book.findBookById(req.params.id)
+    .then((book) => {
+      if (slug(book.title, {lower: true}) === req.body.inputConfirmation) {
+        Book.deleteBookById(book.id)
+          .then(() => {
+            req.flash('success_msg', 'Book successfully deleted.');
+            res.redirect('/');
+          })
+          .catch((err) => {
+            next(err)
+          });
+      } else {
+        req.flash('error_msg', 'The text you entered didn\'t match.');
+        res.redirect('back');
+      }
     })
     .catch((err) => {
       next(err)

@@ -84,6 +84,12 @@ module.exports.switchActiveWriter = (bookId, activeWriter) => {
     .exec();
 };
 
+module.exports.deleteBookById = (id) => {
+  return Book
+    .deleteOne({_id: id})
+    .exec();
+};
+
 /*
 module.exports.findBooksWithUser = (userId, callback) => {
   Book

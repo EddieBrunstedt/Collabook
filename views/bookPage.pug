@@ -1,27 +1,45 @@
 extends layout
 
 block content
-	.container
-		h1.google-font= book.title
-		.row
-			.col-12
-				h6 A book by #{book.owner.name} and #{book.collaborator.name}
-				h6.text-muted Created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
-				if user.id === book.owner.id
-					a.btn.btn-sm.btn-outline-secondary.btn-block.col-1(id='slideToggle' href='#', role='button') Tools
-					#expandable-div
-						button.btn.btn-sm.btn-warning.mt-3.mr-3(onclick=`window.location="${book.id}/switch-writer";`) Switch writer to #{book.activeWriter.id === book.owner.id ? book.collaborator.name : book.owner.name}
-						button.btn.btn-sm.btn-danger.mt-3 Delete book
-		hr
-		h4 Introduction
-		p= book.introduction
-		hr
-		//Todo: Is this correct way of checking for if user is logged in?
-		if user && user.id === book.activeWriter.id
-			form(action='/book/' + book.id, method='post')
-				label(for='bodyInput') Write a passage
-				textarea#bodyInput.u-full-width(name='bodyInput')
-				button.button-primary(type='submit') Add passage
-		each passage in passages
-			p= passage.body
-			hr
+  .container
+    h1.google-font= book.title
+    .row
+      .col-12
+        h6 A book by #{book.owner.name} and #{book.collaborator.name}
+        h6.text-muted Created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
+        if user.id === book.owner.id
+          a.btn.btn-sm.btn-outline-secondary.btn-block.col-1(id='slideToggle' href='#', role='button') Tools
+          #expandable-div
+            button.btn.btn-sm.btn-warning.mt-3.mr-3(onclick=`window.location="${book.id}/switch-writer";`) Switch writer to #{book.activeWriter.id === book.owner.id ? book.collaborator.name : book.owner.name}
+            button.btn.btn-sm.btn-danger.mt-3(data-toggle="modal" data-target="#confirm-delete-modal") Delete book
+            #confirm-delete-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
+              .modal-dialog.modal-dialog-centered(role='document')
+                .modal-content
+                  form(action='/book/' + book.id + '/delete', method='post')
+                    .modal-body
+                      h4.text-center
+                        strong Warning!
+                      p.text-center Are you sure that you want to remove this book?
+                      p.text-center To permanently remove your book, please enter:
+                      h6#confirm-delete-slug.text-center
+                        strong= h.slug(book.title, {lower: true})
+                      p.text-center in the box below and press confirm.
+                      .form-group
+                        input#confirm-delete-input.form-control.text-center(type='text', name='inputConfirmation')
+                        small#emailHelp.form-text.text-muted.text-center This action cannot be undone
+                    .modal-footer
+                      button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                      button.btn.btn-danger(type='submit') Confirm
+    hr
+    h4 Introduction
+    p= book.introduction
+    hr
+    //Todo: Is this correct way of checking for if user is logged in?
+    if user && user.id === book.activeWriter.id
+      form(action='/book/' + book.id, method='post')
+        label(for='bodyInput') Write a passage
+        textarea#bodyInput.u-full-width(name='bodyInput')
+        button.button-primary(type='submit') Add passage
+    each passage in passages
+      p= passage.body
+      hr
