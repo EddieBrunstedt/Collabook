@@ -26,6 +26,13 @@ module.exports.createPassage = (newPassage) => {
   return newPassage.save();
 };
 
+module.exports.countPassagesInBook = (bookId) => {
+  return Passage
+    .count({'bookId': bookId})
+    .exec()
+};
+
+
 module.exports.findAllPassagesInBook = (bookId) => {
   const query = {'bookId': bookId};
   return Passage

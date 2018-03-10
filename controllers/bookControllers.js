@@ -6,9 +6,9 @@ const Book = require('../models/book');
 const Passage = require('../models/passage');
 
 exports.getBookPage = (req, res, next) => {
-  Book.findBookById(req.params.id)
+  Book.findBookById(req.params.bookId)
     .then((book) => {
-      Passage.findAllPassagesInBook(book._id)
+      Passage.findAllPassagesInBook(book.id)
         .then((passages) => {
           res.render('bookPage', {book, passages});
         })
@@ -19,6 +19,22 @@ exports.getBookPage = (req, res, next) => {
     .catch((err) => {
       next(err)
     });
+};
+
+exports.getBookPageRedirect = (req, res, next) => {
+  Passage.countPassagesInBook(req.params.bookId)
+    .then((numberOfPassages) => {
+      const page = numberOfPassages < 1 ? 1 : Math.ceil(numberOfPassages / 2)
+      if (numberOfPassages < 1) {
+        res.redirect('/book/' + req.params.bookId + '/' + page);
+      } else {
+        res.redirect('/book/' + req.params.bookId + '/' + page);
+      }
+
+    })
+    .catch((err) => {
+      next(err);
+    })
 };
 
 exports.createPassage = (req, res, next) => {
@@ -33,7 +49,7 @@ exports.createPassage = (req, res, next) => {
   const newPassage = new Passage({
     authorId: req.user._id,
     body: req.body.inputPassageBody,
-    book: req.params.id,
+    bookId: req.params.id,
   });
 
   Passage.createPassage(newPassage)
