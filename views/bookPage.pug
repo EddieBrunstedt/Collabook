@@ -2,13 +2,15 @@ extends layout
 
 block content
   .container
-    h1.google-font= book.title
+    h2.google-font= book.title
     .row
       .col-12
-        h6 A book by #{book.owner.name} and #{book.collaborator.name}
-        h6.text-muted Created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
+        i.fas.fa-users.text-warning
+        |
+        |
+        span.text-muted A book by #{book.owner.name} and #{book.collaborator.name}
         if user.id === book.owner.id
-          a.btn.btn-sm.btn-outline-secondary.btn-block.col-1(id='slideToggle' href='#', role='button') Tools
+          a.btn.btn-sm.btn-outline-secondary.btn-block.col-1.mt-2(id='slideToggle' href='#', role='button') Tools
           #expandable-div
             button.btn.btn-sm.btn-warning.mt-3.mr-3(onclick=`window.location="${book.id}/switch-writer";`) Switch writer to #{book.activeWriter.id === book.owner.id ? book.collaborator.name : book.owner.name}
             button.btn.btn-sm.btn-danger.mt-3(data-toggle="modal" data-target="#confirm-delete-modal") Delete book
@@ -30,10 +32,12 @@ block content
                     .modal-footer
                       button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
                       button.btn.btn-danger(type='submit') Confirm
-    hr
-    h4 Introduction
-    p= book.introduction
-    hr
+    .card.mb-3.mt-3
+      .card-body
+        h6.text-muted Created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
+        hr
+        p.card-text
+          em= book.introduction
     //Todo: Is this correct way of checking for if user is logged in?
     if user && user.id === book.activeWriter.id
       form(action='/book/' + book.id, method='post')
