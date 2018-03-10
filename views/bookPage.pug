@@ -51,20 +51,20 @@ block content
       .card-body
         .row
           .col-md-6
-            p Bacon ipsum dolor amet capicola ball tip venison alcatra shank. Leberkas pork buffalo, short loin tongue ham cupim flank pork loin fatback ribeye frankfurter short ribs shoulder turducken. Landjaeger turducken cow tongue, shoulder tenderloin andouille frankfurter picanha meatloaf ball tip ground round. Pork venison tail, tri-tip doner turducken tongue.
-            p Jowl bacon chuck picanha tail, beef ribs strip steak kevin shankle biltong meatball. Spare ribs ham tri-tip short loin jerky buffalo swine pork cow landjaeger t-bone chuck ham hock venison drumstick. Drumstick short loin corned beef swine fatback burgdoggen buffalo pork loin tenderloin biltong chuck. Jowl doner meatball ham kielbasa buffalo. Ham tail short loin filet mignon jerky andouille pastrami leberkas drumstick spare ribs venison capicola picanha. Pastrami burgdoggen strip steak corned beef, pancetta boudin ball tip kevin spare ribs shankle swine. Tri-tip sausage jerky burgdoggen biltong.
-            p Pastrami doner t-bone beef corned beef short loin sausage tenderloin capicola swine short ribs pork belly andouille flank pig. Boudin shank bresaola filet mignon capicola pancetta tri-tip bacon beef meatball short ribs shankle pork belly. Ball tip kielbasa cupim, tri-tip hamburger tenderloin meatball bresaola pancetta pork bacon frankfurter prosciutto burgdoggen drumstick. Beef porchetta ribeye, capicola t-bone tongue kevin.
+            p= passages[0].body
           .col-md-6
+            if passages[1]
             .d-md-none
               hr
-            p Bacon ipsum dolor amet capicola ball tip venison alcatra shank. Leberkas pork buffalo, short loin tongue ham cupim flank pork loin fatback ribeye frankfurter short ribs shoulder turducken. Landjaeger turducken cow tongue, shoulder tenderloin andouille frankfurter picanha meatloaf ball tip ground round. Pork venison tail, tri-tip doner turducken tongue.
-            p Jowl bacon chuck picanha tail, beef ribs strip steak kevin shankle biltong meatball. Spare ribs ham tri-tip short loin jerky buffalo swine pork cow landjaeger t-bone chuck ham hock venison drumstick. Drumstick short loin corned beef swine fatback burgdoggen buffalo pork loin tenderloin biltong chuck. Jowl doner meatball ham kielbasa buffalo. Ham tail short loin filet mignon jerky andouille pastrami leberkas drumstick spare ribs venison capicola picanha. Pastrami burgdoggen strip steak corned beef, pancetta boudin ball tip kevin spare ribs shankle swine. Tri-tip sausage jerky burgdoggen biltong.
-            p Pastrami doner t-bone beef corned beef short loin sausage tenderloin capicola swine short ribs pork belly andouille flank pig. Boudin shank bresaola filet mignon capicola pancetta tri-tip bacon beef meatball short ribs shankle pork belly. Ball tip kielbasa cupim, tri-tip hamburger tenderloin meatball bresaola pancetta pork bacon frankfurter prosciutto burgdoggen drumstick. Beef porchetta ribeye, capicola t-bone tongue kevin.
+            p= passages[1].body
+    each passage in passages
+      h2= passage.body
     form(action='/book/' + book.id + '/addPassage', method='post')
       .form-group
         label(for='inputPassageBody') Write Passage here
         textarea#inputPassageBody.form-control(rows='3', name='inputPassageBody')
       button.btn.btn-primary(type='submit') Submit
+
     nav.mb-5(aria-label='Page navigation example')
       ul.pagination.justify-content-center
         li.page-item.disabled

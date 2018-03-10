@@ -33,10 +33,21 @@ module.exports.countPassagesInBook = (bookId) => {
 };
 
 
+module.exports.findSomePassages = (bookId, page) => {
+  console.log(1, page);
+  return Passage
+    .find({'bookId': bookId})
+    //for each page we need to skip ([perPage] * [currentPage]) - [perPage]) values
+    .skip((2 * page) - 2)
+    .limit(2)
+    .populate('authorId')
+    .exec();
+};
+
 module.exports.findAllPassagesInBook = (bookId) => {
   const query = {'bookId': bookId};
   return Passage
     .find(query)
-    .populate('creator')
+    .populate('authorId')
     .exec();
 };
