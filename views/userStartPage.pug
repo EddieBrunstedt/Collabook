@@ -3,7 +3,7 @@ extends layout
 block content
 
   mixin bookCard(book)
-    .card.mb-3.book-card
+    .card.mb-3.card-shadow
       h5.card-header.bg-light
         a.link-primary(href='/book/' + book.id)= book.title
       .card-body

@@ -2,8 +2,8 @@ const User = require('../models/user');
 
 exports.getUserPage = (req, res, next) => {
   User.getUserById(req.params.id)
-    .then((user) => {
-      res.render('userPage', {user});
+    .then((viewedUser) => {
+      res.render('userPage', {viewedUser});
     })
     .catch((err) => {
       next(err)

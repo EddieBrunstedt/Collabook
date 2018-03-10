@@ -21,7 +21,7 @@ exports.getBookPage = (req, res, next) => {
     });
 };
 
-exports.postBookPage = (req, res, next) => {
+exports.createPassage = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     errors.array().map(error => {
@@ -32,7 +32,7 @@ exports.postBookPage = (req, res, next) => {
 
   const newPassage = new Passage({
     author: req.user._id,
-    body: req.body.inputBody,
+    body: req.body.inputPassageBody,
     book: req.params.id,
   });
 
@@ -63,19 +63,6 @@ exports.switchActiveWriter = (req, res, next) => {
     });
 };
 
-/*
-exports.deleteBook = (req, res, next) => {
-  Book.deleteBookById(req.params.id)
-    .then(() => {
-      req.flash('success_msg', 'The book was successfully removed');
-      res.redirect('/');
-    })
-    .catch((err) => {
-      next(err);
-    })
-};
-*/
-
 exports.deleteBook = (req, res, next) => {
   Book.findBookById(req.params.id)
     .then((book) => {
@@ -98,9 +85,15 @@ exports.deleteBook = (req, res, next) => {
     });
 };
 
+//Todo: Add validation
+exports.addPassage = (req, res, next) => {
+  console.log('we are go!')
+
+};
+
 //Todo: Change min/max before production
 exports.passageValidation = [
-  check('inputBody')
+  check('inputPassageBody')
     .exists()
     .isLength({
       min: 1,

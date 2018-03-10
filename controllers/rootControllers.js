@@ -82,7 +82,7 @@ exports.postRegisterForm = (req, res) => {
 
 exports.logOut = (req, res) => {
   req.logout();
-  req.flash('success_msg', 'You are logged out');
+  req.flash('success_msg', 'You have been successfully logged out');
   res.redirect('/');
 };
 
@@ -138,7 +138,6 @@ exports.getDashboard = (req, res) => {
 
 exports.passportAuthenticate = passport.authenticate('local', {
   successRedirect: '/',
-  successFlash: 'You are now logged in',
   failureFlash: true,
   failureRedirect: '/login',
 });

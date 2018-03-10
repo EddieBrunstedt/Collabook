@@ -2,48 +2,93 @@ extends layout
 
 block content
   .container
-    h2.google-font= book.title
-    .row
-      .col-12
-        i.fas.fa-users.text-warning
+    h3.google-font= book.title
+    i.fas.fa-users.text-warning
+    |
+    |
+    span.text-muted by
+      |
+      |
+      a(href='/user/' + book.owner.id)= book.owner.name
+      |
+      | and
+      |
+      a(href='/user/' + book.collaborator.id)= book.collaborator.name
+    br
+    if user && user.id === book.owner.id
+      a.btn.btn-sm.btn-outline-secondary.mt-2.mb-1(id='slideToggle' href='#', role='button')
+        i.fas.fa-cog
         |
-        |
-        span.text-muted A book by #{book.owner.name} and #{book.collaborator.name}
-        if user.id === book.owner.id
-          a.btn.btn-sm.btn-outline-secondary.btn-block.col-1.mt-2(id='slideToggle' href='#', role='button') Tools
-          #expandable-div
-            button.btn.btn-sm.btn-warning.mt-3.mr-3(onclick=`window.location="${book.id}/switch-writer";`) Switch writer to #{book.activeWriter.id === book.owner.id ? book.collaborator.name : book.owner.name}
-            button.btn.btn-sm.btn-danger.mt-3(data-toggle="modal" data-target="#confirm-delete-modal") Delete book
-            #confirm-delete-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
-              .modal-dialog.modal-dialog-centered(role='document')
-                .modal-content
-                  form(action='/book/' + book.id + '/delete', method='post')
-                    .modal-body
-                      h4.text-center
-                        strong Warning!
-                      p.text-center Are you sure that you want to remove this book?
-                      p.text-center To permanently remove your book, please enter:
-                      h6#confirm-delete-slug.text-center
-                        strong= h.slug(book.title, {lower: true})
-                      p.text-center in the box below and press confirm.
-                      .form-group
-                        input#confirm-delete-input.form-control.text-center(type='text', name='inputConfirmation')
-                        small#emailHelp.form-text.text-muted.text-center This action cannot be undone
-                    .modal-footer
-                      button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                      button.btn.btn-danger(type='submit') Confirm
-    .card.mb-3.mt-3
-      .card-body
-        h6.text-muted Created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
-        hr
-        p.card-text
-          em= book.introduction
-    //Todo: Is this correct way of checking for if user is logged in?
-    if user && user.id === book.activeWriter.id
-      form(action='/book/' + book.id, method='post')
-        label(for='bodyInput') Write a passage
-        textarea#bodyInput.u-full-width(name='bodyInput')
-        button.button-primary(type='submit') Add passage
-    each passage in passages
-      p= passage.body
+        | Settings
+      #expandable-div
+        .btn-group
+          button.btn.btn-sm.btn-light.mt-3(onclick=`window.location="${book.id}/switch-writer";`) Switch writer to #{book.activeWriter.id === book.owner.id ? book.collaborator.name : book.owner.name}
+          button.btn.btn-sm.btn-danger.mt-3(data-toggle="modal" data-target="#confirm-delete-modal") Delete book
+        #confirm-delete-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
+          .modal-dialog.modal-dialog-centered(role='document')
+            .modal-content
+              form(action='/book/' + book.id + '/delete', method='post')
+                .modal-body
+                  h4.text-center
+                    strong Warning!
+                  p.text-center Are you sure that you want to remove this book?
+                  p.text-center To permanently remove your book, please enter:
+                  h6#confirm-delete-slug.text-center
+                    strong= h.slug(book.title, {lower: true})
+                  p.text-center in the box below and press confirm.
+                  .form-group
+                    input#confirm-delete-input.form-control.text-center(type='text', name='inputConfirmation')
+                    small#emailHelp.form-text.text-muted.text-center This action cannot be undone
+                .modal-footer
+                  button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                  button.btn.btn-danger(type='submit') Confirm
+    h6.text-muted.mt-2 Book created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
+    if book.introduction
       hr
+    p
+      em= book.introduction
+    .card.mb-3#book-container.card-shadow
+      .card-body
+        .row
+          .col-md-6
+            p Bacon ipsum dolor amet capicola ball tip venison alcatra shank. Leberkas pork buffalo, short loin tongue ham cupim flank pork loin fatback ribeye frankfurter short ribs shoulder turducken. Landjaeger turducken cow tongue, shoulder tenderloin andouille frankfurter picanha meatloaf ball tip ground round. Pork venison tail, tri-tip doner turducken tongue.
+            p Jowl bacon chuck picanha tail, beef ribs strip steak kevin shankle biltong meatball. Spare ribs ham tri-tip short loin jerky buffalo swine pork cow landjaeger t-bone chuck ham hock venison drumstick. Drumstick short loin corned beef swine fatback burgdoggen buffalo pork loin tenderloin biltong chuck. Jowl doner meatball ham kielbasa buffalo. Ham tail short loin filet mignon jerky andouille pastrami leberkas drumstick spare ribs venison capicola picanha. Pastrami burgdoggen strip steak corned beef, pancetta boudin ball tip kevin spare ribs shankle swine. Tri-tip sausage jerky burgdoggen biltong.
+            p Pastrami doner t-bone beef corned beef short loin sausage tenderloin capicola swine short ribs pork belly andouille flank pig. Boudin shank bresaola filet mignon capicola pancetta tri-tip bacon beef meatball short ribs shankle pork belly. Ball tip kielbasa cupim, tri-tip hamburger tenderloin meatball bresaola pancetta pork bacon frankfurter prosciutto burgdoggen drumstick. Beef porchetta ribeye, capicola t-bone tongue kevin.
+          .col-md-6
+            .d-md-none
+              hr
+            p Bacon ipsum dolor amet capicola ball tip venison alcatra shank. Leberkas pork buffalo, short loin tongue ham cupim flank pork loin fatback ribeye frankfurter short ribs shoulder turducken. Landjaeger turducken cow tongue, shoulder tenderloin andouille frankfurter picanha meatloaf ball tip ground round. Pork venison tail, tri-tip doner turducken tongue.
+            p Jowl bacon chuck picanha tail, beef ribs strip steak kevin shankle biltong meatball. Spare ribs ham tri-tip short loin jerky buffalo swine pork cow landjaeger t-bone chuck ham hock venison drumstick. Drumstick short loin corned beef swine fatback burgdoggen buffalo pork loin tenderloin biltong chuck. Jowl doner meatball ham kielbasa buffalo. Ham tail short loin filet mignon jerky andouille pastrami leberkas drumstick spare ribs venison capicola picanha. Pastrami burgdoggen strip steak corned beef, pancetta boudin ball tip kevin spare ribs shankle swine. Tri-tip sausage jerky burgdoggen biltong.
+            p Pastrami doner t-bone beef corned beef short loin sausage tenderloin capicola swine short ribs pork belly andouille flank pig. Boudin shank bresaola filet mignon capicola pancetta tri-tip bacon beef meatball short ribs shankle pork belly. Ball tip kielbasa cupim, tri-tip hamburger tenderloin meatball bresaola pancetta pork bacon frankfurter prosciutto burgdoggen drumstick. Beef porchetta ribeye, capicola t-bone tongue kevin.
+    form(action='/book/' + book.id + '/addPassage', method='post')
+      .form-group
+        label(for='inputPassageBody') Write Passage here
+        textarea#inputPassageBody.form-control(rows='3', name='inputPassageBody')
+      button.btn.btn-primary(type='submit') Submit
+    nav(aria-label='Page navigation example')
+      ul.pagination.justify-content-center
+        li.page-item.disabled
+          a.page-link(href='#', tabindex='-1') Previous
+        li.page-item
+          a.page-link(href='#') 1
+        li.page-item
+          a.page-link(href='#') 2
+        li.page-item
+          a.page-link(href='#') 3
+        li.page-item
+          a.page-link(href='#') Next
+
+
+
+    //if user && user.id === book.activeWriter.id
+    //  form(action='/book/' + book.id, method='post')
+    //    .form-group
+    //      label(for='exampleFormControlTextarea1')
+    //        strong It's your turn to write a passage
+    //      textarea#exampleFormControlTextarea1.form-control(rows='3')
+    //    label(for='bodyInput') Write a passage
+    //    textarea#bodyInput.u-full-width(name='bodyInput')
+    //    button.button-primary(type='submit') Add passage
+    //each passage in passages
+    //  p= passage.body
+    //  hr

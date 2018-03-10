@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 
 const PassageSchema = mongoose.Schema({
-  //Todo: Change name to authorId
-  author: {
+  authorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
@@ -15,7 +14,7 @@ const PassageSchema = mongoose.Schema({
     default: Date.now
   },
   //Todo: Change name to bookId
-  book: {
+  bookId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Book'
   }
@@ -28,7 +27,7 @@ module.exports.createPassage = (newPassage) => {
 };
 
 module.exports.findAllPassagesInBook = (bookId) => {
-  const query = {'book': bookId};
+  const query = {'bookId': bookId};
   return Passage
     .find(query)
     .populate('creator')

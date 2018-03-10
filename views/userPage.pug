@@ -9,14 +9,14 @@ block content
         th Active
     tbody
       tr
-        td= user.name
-        td= user.email
-        td= user.active
-  p= user.password
-  p Bio: #{user.bio}
+        td= viewedUser.name
+        td= viewedUser.email
+        td= viewedUser.active
+  p= viewedUser.password
+  p Bio: #{viewedUser.bio}
   hr
-  form(action='/user/' + user.id , method='post')
+  form(action='/user/' + viewedUser.id , method='post')
     label(for='bioInput') Biography
     em Please tell us something about you
-    textarea#bioInput.u-full-width(name='bioInput')= user.bio
+    textarea#bioInput.u-full-width(name='bioInput')= viewedUser.bio
     button.button-primary(type='submit') Update Profile
