@@ -31,7 +31,7 @@ exports.createPassage = (req, res, next) => {
   }
 
   const newPassage = new Passage({
-    author: req.user._id,
+    authorId: req.user._id,
     body: req.body.inputPassageBody,
     book: req.params.id,
   });
@@ -83,12 +83,6 @@ exports.deleteBook = (req, res, next) => {
     .catch((err) => {
       next(err)
     });
-};
-
-//Todo: Add validation
-exports.addPassage = (req, res, next) => {
-  console.log('we are go!')
-
 };
 
 //Todo: Change min/max before production
