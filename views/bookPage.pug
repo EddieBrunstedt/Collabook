@@ -22,18 +22,14 @@ block content
       |
       a(href='/user/' + book.collaborator.id)= book.collaborator.name
     br
-    h6.text-muted Book created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
-    a.btn.btn-primary.mr-2(href='/book/' + book.id + '/addPassage', role='button')
-      i.fas.fa-plus
-      |
-      | Write a new passage
+    h6.text-muted.book-created-date Book created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
     if user && user.id === book.owner.id
       a.btn.btn-sm.btn-outline-secondary(id='slideToggle' href='#', role='button')
         i.fas.fa-cog
         |
         | Settings
       #expandable-div
-        ul.fa-ul.mt-3
+        ul.fa-ul.mt-4
           li
             span.fa-li
               i.fas.fa-exchange-alt
@@ -64,24 +60,31 @@ block content
       hr
     p
       em= book.introduction
+    a.btn.btn-outline-primary.btn-block.mb-4(href='/book/' + book.id + '/addPassage', role='button')
+      i.fas.fa-plus
+      |
+      | Write a new passage
     if currentPassages[0]
       .card-group
-        .card.book-page-container
+        .card.book-page-container.card-shadow
           .card-body
             p= currentPassages[0].body
-        .card.book-page-container
+          .card-page-footer.text-muted.text-center
+            p= currentPage * 2 - 1
+        .card.book-page-container.card-shadow
           .card-body
             if currentPassages[1]
               p= currentPassages[1].body
+          .card-page-footer.text-muted.text-center
+            p= currentPage * 2
     else
       hr
       h5.text-center
         em
           strong Nothing has been written in this book :(
       hr
-    +addPassageForm
     if totalBookPages > 1
-      nav.mb-5
+      nav.mb-5.mt-4
         ul.pagination.justify-content-center
           if currentPage > 1
             li.page-item

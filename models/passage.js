@@ -48,7 +48,7 @@ module.exports.findLastPassageInBook = (bookId) => {
     .find({'bookId': bookId})
     .sort('-createdDate')
     .limit(1)
-    .populate()
+    .populate('authorId')
     .exec();
 };
 
