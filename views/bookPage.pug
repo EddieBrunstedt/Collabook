@@ -51,14 +51,16 @@ block content
       .card-body
         .row
           .col-md-6
-            p= passages[0].body
+            if currentPassages[0]
+              p= currentPassages[0].body
+            else
+              p
+                em Nothing has been written
           .col-md-6
-            if passages[1]
-            .d-md-none
-              hr
-            p= passages[1].body
-    each passage in passages
-      h2= passage.body
+            if currentPassages[1]
+              .d-md-none
+                hr
+              p= currentPassages[1].body
     form(action='/book/' + book.id + '/addPassage', method='post')
       .form-group
         label(for='inputPassageBody') Write Passage here

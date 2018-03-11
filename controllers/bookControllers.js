@@ -6,6 +6,7 @@ const Book = require('../models/book');
 const Passage = require('../models/passage');
 
 /*
+//SAVING UNTIL I NOW THE NEW getBookPage WORKS FLAWLESSLY
 exports.getBookPage = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
@@ -23,10 +24,13 @@ exports.getBookPage = (req, res, next) => {
 };
 */
 
+
+/*
+//SAVING UNTIL I NOW THE NEW getBookPage WORKS FLAWLESSLY
 exports.getBookPage = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
-      Passage.findSomePassages(book.id, req.params.page)
+      Passage.findPassagesForPage(book.id, req.params.currentPage)
         .then((passages) => {
           res.render('bookPage', {book, passages});
         })
@@ -39,6 +43,8 @@ exports.getBookPage = (req, res, next) => {
     });
 };
 
+
+//SAVING UNTIL I NOW THE NEW getBookPage WORKS FLAWLESSLY
 exports.getBookPageRedirect = (req, res, next) => {
   Passage.countPassagesInBook(req.params.bookId)
     .then((numberOfPassages) => {
@@ -52,6 +58,30 @@ exports.getBookPageRedirect = (req, res, next) => {
     .catch((err) => {
       next(err);
     })
+};
+*/
+
+exports.getBookPage = (req, res, next) => {
+  Book.findBookById(req.params.bookId)
+    .then((book) => {
+      Passage.countPassagesInBook(book.id)
+        .then((totalNumOfPassages) => {
+          const totalBookPages = totalNumOfPassages < 1 ? 1 : Math.ceil(totalNumOfPassages / 2);
+          Passage.findPassagesForPage(book.id, req.params.currentPage || 1)
+            .then((currentPassages) => {
+              res.render('bookPage', {book, totalBookPages, currentPassages});
+            })
+            .catch((err) => {
+              next(err)
+            });
+        })
+        .catch((err) => {
+          next(err);
+        });
+    })
+    .catch((err) => {
+      next(err)
+    });
 };
 
 exports.createPassage = (req, res, next) => {
