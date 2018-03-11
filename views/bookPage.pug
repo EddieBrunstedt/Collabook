@@ -66,21 +66,44 @@ block content
         label(for='inputPassageBody') Write Passage here
         textarea#inputPassageBody.form-control(rows='3', name='inputPassageBody')
       button.btn.btn-primary(type='submit') Submit
-
-    nav.mb-5(aria-label='Page navigation example')
-      ul.pagination.justify-content-center
-        li.page-item.disabled
-          a.page-link(href='#', tabindex='-1') Previous
-        li.page-item
-          a.page-link(href='#') 1
-        li.page-item
-          a.page-link(href='#') 2
-        li.page-item
-          a.page-link(href='#') 3
-        li.page-item
-          a.page-link(href='#') Next
-
-
+    if totalBookPages > 1
+      nav.mb-5
+        ul.pagination.justify-content-center
+          if currentPage > 1
+            li.page-item
+              a.page-link(href='/book/' + book.id + '/1') First
+          else
+            li.page-item.disabled
+              a.page-link(href='/book/' + book.id + '/1') First
+          if currentPage > 3
+            li.page-item
+              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 3))= currentPage - 3
+          if currentPage > 2
+            li.page-item
+              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 2))= currentPage - 2
+          if currentPage > 1
+            li.page-item
+              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 1))= currentPage - 1
+          li.page-item.active
+            a.page-link(href=href = '/book/' + book.id + '/' + currentPage)= currentPage
+          unless currentPage === totalBookPages
+            li.page-item
+              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage + 1))= currentPage + 1
+          if totalBookPages > (currentPage + 1)
+            li.page-item
+              a.page-link(href='/book/' + book.id + '/' + totalBookPages)= currentPage + 2
+          if totalBookPages > (currentPage + 2)
+            li.page-item
+              a.page-link(href='/book/' + book.id + '/' + totalBookPages)= currentPage + 3
+          if totalBookPages > (currentPage + 3)
+            li.page-item
+              a.page-link(href='/book/' + book.id + '/' + totalBookPages)= currentPage + 4
+          unless currentPage === totalBookPages
+            li.page-item
+              a.page-link(href='/book/' + book.id + '/' + totalBookPages) Last
+          if currentPage === totalBookPages
+            li.page-item.disabled
+              a.page-link(href='/book/' + book.id + '/' + totalBookPages) Last
 
     //if user && user.id === book.activeWriter.id
     //  form(action='/book/' + book.id, method='post')

@@ -66,10 +66,20 @@ exports.getBookPage = (req, res, next) => {
     .then((book) => {
       Passage.countPassagesInBook(book.id)
         .then((totalNumOfPassages) => {
+
           const totalBookPages = totalNumOfPassages < 1 ? 1 : Math.ceil(totalNumOfPassages / 2);
-          Passage.findPassagesForPage(book.id, req.params.currentPage || 1)
+          const currentPage = req.params.currentPage || totalBookPages;
+
+          Passage.findPassagesForPage(book.id, currentPage)
             .then((currentPassages) => {
-              res.render('bookPage', {book, totalBookPages, currentPassages});
+              console.log(typeof book, book);
+              console.log(typeof currentPage, currentPage);
+              res.render('bookPage', {
+                book,
+                totalBookPages: Number(totalBookPages),
+                currentPassages,
+                currentPage: Number(currentPage)
+              });
             })
             .catch((err) => {
               next(err)
@@ -126,6 +136,7 @@ exports.switchActiveWriter = (req, res, next) => {
     });
 };
 
+//TODO: ALSO DELETE ALL PASSAGES FOR THIS BOOK YOU SILLY
 exports.deleteBook = (req, res, next) => {
   Book.findBookById(req.params.id)
     .then((book) => {
