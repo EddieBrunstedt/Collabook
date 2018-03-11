@@ -11,6 +11,8 @@ router.get('/:bookId/:currentPage(\\d+)*?', bookControllers.getBookPage);
 router.get('/:bookId/addPassage', bookControllers.writePassagePage);
 router.post('/:bookId/addPassage', authControllers.isLoggedIn, bookControllers.passageValidation, bookControllers.createPassage);
 
+router.get('/:bookId/introduction', bookControllers.getIntroduction);
+
 router.get('/:bookId/switch-writer', bookControllers.switchActiveWriter);
 router.post('/:bookId/delete', bookControllers.deleteBook);
 

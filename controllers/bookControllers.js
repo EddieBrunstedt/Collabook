@@ -36,6 +36,10 @@ exports.getBookPage = (req, res, next) => {
     });
 };
 
+exports.getIntroduction = (req, res, next) => {
+
+};
+
 exports.writePassagePage = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
