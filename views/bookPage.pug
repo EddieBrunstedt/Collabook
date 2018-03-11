@@ -23,7 +23,7 @@ block content
       a(href='/user/' + book.collaborator.id)= book.collaborator.name
     br
     h6.text-muted Book created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
-    a.btn.btn-primary.mr-2(href='#', role='button')
+    a.btn.btn-primary.mr-2(href='/book/' + book.id + '/addPassage', role='button')
       i.fas.fa-plus
       |
       | Write a new passage
@@ -64,18 +64,21 @@ block content
       hr
     p
       em= book.introduction
-    .card-group
-      .card.book-page-container
-        .card-body
-          if currentPassages[0]
+    if currentPassages[0]
+      .card-group
+        .card.book-page-container
+          .card-body
             p= currentPassages[0].body
-          else
-            p
-              em Nothing has been written
-      .card.book-page-container
-        .card-body
-          if currentPassages[1]
-            p= currentPassages[1].body
+        .card.book-page-container
+          .card-body
+            if currentPassages[1]
+              p= currentPassages[1].body
+    else
+      hr
+      h5.text-center
+        em
+          strong Nothing has been written in this book :(
+      hr
     +addPassageForm
     if totalBookPages > 1
       nav.mb-5

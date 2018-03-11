@@ -39,7 +39,16 @@ module.exports.findPassagesForPage = (bookId, pageNumber) => {
     //for each page we need to skip ([perPage] * [currentPage]) - [perPage]) values
     .skip((2 * pageNumber) - 2)
     .limit(2)
-    .populate('authorId')
+    .populate()
+    .exec();
+};
+
+module.exports.findLastPassageInBook = (bookId) => {
+  return Passage
+    .find({'bookId': bookId})
+    .sort('-createdDate')
+    .limit(1)
+    .populate()
     .exec();
 };
 
@@ -47,6 +56,6 @@ module.exports.findAllPassagesInBook = (bookId) => {
   const query = {'bookId': bookId};
   return Passage
     .find(query)
-    .populate('authorId')
+    .populate()
     .exec();
 };

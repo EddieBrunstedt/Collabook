@@ -36,6 +36,22 @@ exports.getBookPage = (req, res, next) => {
     });
 };
 
+exports.writePassagePage = (req, res, next) => {
+  Book.findBookById(req.params.bookId)
+    .then((book) => {
+      Passage.findLastPassageInBook(book.id)
+        .then((passage) => {
+          res.render('writePassagePage', {book, passage: passage[0]})
+        })
+        .catch((err) => {
+          next(err)
+        });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 exports.createPassage = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
