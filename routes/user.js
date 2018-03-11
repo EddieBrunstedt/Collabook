@@ -5,7 +5,7 @@ const router = express.Router();
 const userControllers = require('../controllers/userControllers');
 const authControllers = require('../controllers/authControllers');
 
-router.get('/:id', userControllers.getUserPage);
-router.post('/:id', authControllers.isLoggedIn, userControllers.postUserPage);
+router.get('/:userId', userControllers.getUserPage);
+router.post('/:userId', authControllers.isLoggedIn, userControllers.postUserPage);
 
 module.exports = router;

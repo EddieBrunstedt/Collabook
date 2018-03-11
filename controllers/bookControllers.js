@@ -5,62 +5,6 @@ const slug = require('slug');
 const Book = require('../models/book');
 const Passage = require('../models/passage');
 
-/*
-//SAVING UNTIL I NOW THE NEW getBookPage WORKS FLAWLESSLY
-exports.getBookPage = (req, res, next) => {
-  Book.findBookById(req.params.bookId)
-    .then((book) => {
-      Passage.findAllPassagesInBook(book.id)
-        .then((passages) => {
-          res.render('bookPage', {book, passages});
-        })
-        .catch((err) => {
-          next(err)
-        });
-    })
-    .catch((err) => {
-      next(err)
-    });
-};
-*/
-
-
-/*
-//SAVING UNTIL I NOW THE NEW getBookPage WORKS FLAWLESSLY
-exports.getBookPage = (req, res, next) => {
-  Book.findBookById(req.params.bookId)
-    .then((book) => {
-      Passage.findPassagesForPage(book.id, req.params.currentPage)
-        .then((passages) => {
-          res.render('bookPage', {book, passages});
-        })
-        .catch((err) => {
-          next(err)
-        });
-    })
-    .catch((err) => {
-      next(err)
-    });
-};
-
-
-//SAVING UNTIL I NOW THE NEW getBookPage WORKS FLAWLESSLY
-exports.getBookPageRedirect = (req, res, next) => {
-  Passage.countPassagesInBook(req.params.bookId)
-    .then((numberOfPassages) => {
-      const page = numberOfPassages < 1 ? 1 : Math.ceil(numberOfPassages / 2);
-      if (numberOfPassages < 1) {
-        res.redirect('/book/' + req.params.bookId + '/' + page);
-      } else {
-        res.redirect('/book/' + req.params.bookId + '/' + page);
-      }
-    })
-    .catch((err) => {
-      next(err);
-    })
-};
-*/
-
 exports.getBookPage = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
@@ -72,8 +16,6 @@ exports.getBookPage = (req, res, next) => {
 
           Passage.findPassagesForPage(book.id, currentPage)
             .then((currentPassages) => {
-              console.log(typeof book, book);
-              console.log(typeof currentPage, currentPage);
               res.render('bookPage', {
                 book,
                 totalBookPages: Number(totalBookPages),
@@ -106,7 +48,7 @@ exports.createPassage = (req, res, next) => {
   const newPassage = new Passage({
     authorId: req.user._id,
     body: req.body.inputPassageBody,
-    bookId: req.params.id,
+    bookId: req.params.bookId,
   });
 
   Passage.createPassage(newPassage)
@@ -119,11 +61,11 @@ exports.createPassage = (req, res, next) => {
 };
 
 exports.switchActiveWriter = (req, res, next) => {
-  Book.findBookById(req.params.id)
+  Book.findBookById(req.params.bookId)
     .then((book) => {
       let activeWriter;
       book.owner.id === book.activeWriter.id ? activeWriter = book.collaborator.id : activeWriter = book.owner.id;
-      Book.switchActiveWriter(req.params.id, activeWriter)
+      Book.switchActiveWriter(book.id, activeWriter)
         .then(() => {
           res.redirect('back');
         })
@@ -138,7 +80,7 @@ exports.switchActiveWriter = (req, res, next) => {
 
 //TODO: ALSO DELETE ALL PASSAGES FOR THIS BOOK YOU SILLY
 exports.deleteBook = (req, res, next) => {
-  Book.findBookById(req.params.id)
+  Book.findBookById(req.params.bookId)
     .then((book) => {
       if (slug(book.title, {lower: true}) === req.body.inputConfirmation) {
         Book.deleteBookById(book.id)

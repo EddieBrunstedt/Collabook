@@ -1,5 +1,12 @@
 extends layout
 
+mixin addPassageForm
+  form(action='/book/' + book.id + '/addPassage', method='post')
+    .form-group
+      label(for='inputPassageBody') Write Passage here
+      textarea#inputPassageBody.form-control(rows='3', name='inputPassageBody')
+    button.btn.btn-primary(type='submit') Submit
+
 block content
   .container
     h3.google-font= book.title
@@ -15,15 +22,26 @@ block content
       |
       a(href='/user/' + book.collaborator.id)= book.collaborator.name
     br
+    h6.text-muted Book created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
+    a.btn.btn-primary.mr-2(href='#', role='button')
+      i.fas.fa-plus
+      |
+      | Write a new passage
     if user && user.id === book.owner.id
-      a.btn.btn-sm.btn-outline-secondary.mt-2.mb-1(id='slideToggle' href='#', role='button')
+      a.btn.btn-sm.btn-outline-secondary(id='slideToggle' href='#', role='button')
         i.fas.fa-cog
         |
         | Settings
       #expandable-div
-        .btn-group
-          button.btn.btn-sm.btn-light.mt-3(onclick=`window.location="${book.id}/switch-writer";`) Switch writer to #{book.activeWriter.id === book.owner.id ? book.collaborator.name : book.owner.name}
-          button.btn.btn-sm.btn-danger.mt-3(data-toggle="modal" data-target="#confirm-delete-modal") Delete book
+        ul.fa-ul.mt-3
+          li
+            span.fa-li
+              i.fas.fa-exchange-alt
+            a(href='/book/' + book.id + '/switch-writer') Switch writer to #{book.activeWriter.id === book.owner.id ? book.collaborator.name : book.owner.name}
+          li
+            span.fa-li
+              i.fas.fa-trash-alt.text-danger
+            a.text-danger(href='/', data-toggle="modal", data-target="#confirm-delete-modal") Delete book
         #confirm-delete-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
           .modal-dialog.modal-dialog-centered(role='document')
             .modal-content
@@ -42,30 +60,23 @@ block content
                 .modal-footer
                   button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
                   button.btn.btn-danger(type='submit') Confirm
-    h6.text-muted.mt-2 Book created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
     if book.introduction
       hr
     p
       em= book.introduction
-    .card.mb-3#book-container.card-shadow
-      .card-body
-        .row
-          .col-md-6
-            if currentPassages[0]
-              p= currentPassages[0].body
-            else
-              p
-                em Nothing has been written
-          .col-md-6
-            if currentPassages[1]
-              .d-md-none
-                hr
-              p= currentPassages[1].body
-    form(action='/book/' + book.id + '/addPassage', method='post')
-      .form-group
-        label(for='inputPassageBody') Write Passage here
-        textarea#inputPassageBody.form-control(rows='3', name='inputPassageBody')
-      button.btn.btn-primary(type='submit') Submit
+    .card-group
+      .card.book-page-container
+        .card-body
+          if currentPassages[0]
+            p= currentPassages[0].body
+          else
+            p
+              em Nothing has been written
+      .card.book-page-container
+        .card-body
+          if currentPassages[1]
+            p= currentPassages[1].body
+    +addPassageForm
     if totalBookPages > 1
       nav.mb-5
         ul.pagination.justify-content-center
@@ -75,6 +86,9 @@ block content
           else
             li.page-item.disabled
               a.page-link(href='/book/' + book.id + '/1') First
+          if currentPage > 4
+            li.page-item
+              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 4))= currentPage - 4
           if currentPage > 3
             li.page-item
               a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 3))= currentPage - 3
@@ -104,16 +118,3 @@ block content
           if currentPage === totalBookPages
             li.page-item.disabled
               a.page-link(href='/book/' + book.id + '/' + totalBookPages) Last
-
-    //if user && user.id === book.activeWriter.id
-    //  form(action='/book/' + book.id, method='post')
-    //    .form-group
-    //      label(for='exampleFormControlTextarea1')
-    //        strong It's your turn to write a passage
-    //      textarea#exampleFormControlTextarea1.form-control(rows='3')
-    //    label(for='bodyInput') Write a passage
-    //    textarea#bodyInput.u-full-width(name='bodyInput')
-    //    button.button-primary(type='submit') Add passage
-    //each passage in passages
-    //  p= passage.body
-    //  hr

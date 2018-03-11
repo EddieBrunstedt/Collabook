@@ -34,7 +34,6 @@ module.exports.countPassagesInBook = (bookId) => {
 
 
 module.exports.findPassagesForPage = (bookId, pageNumber) => {
-  console.log(1, pageNumber);
   return Passage
     .find({'bookId': bookId})
     //for each page we need to skip ([perPage] * [currentPage]) - [perPage]) values
