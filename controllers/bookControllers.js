@@ -37,6 +37,35 @@ exports.getBookPage = (req, res, next) => {
 };
 
 exports.getIntroduction = (req, res, next) => {
+  Book.findBookById(req.params.bookId)
+    .then((book) => {
+      Passage.countPassagesInBook(book.id)
+        .then((totalNumOfPassages) => {
+
+          const totalBookPages = totalNumOfPassages < 1 ? 1 : Math.ceil(totalNumOfPassages / 2);
+          const currentPage = req.params.currentPage || totalBookPages;
+
+          Passage.findPassagesForPage(book.id, currentPage)
+            .then((currentPassages) => {
+              res.render('bookPage', {
+                book,
+                totalBookPages: Number(totalBookPages),
+                currentPassages,
+                currentPage: Number(currentPage),
+                viewingIntroduction: true
+              });
+            })
+            .catch((err) => {
+              next(err)
+            });
+        })
+        .catch((err) => {
+          next(err);
+        });
+    })
+    .catch((err) => {
+      next(err)
+    });
 
 };
 

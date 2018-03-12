@@ -7,6 +7,7 @@ mixin addPassageForm
       textarea#inputPassageBody.form-control(rows='3', name='inputPassageBody')
     button.btn.btn-primary(type='submit') Submit
 
+
 block content
   .container
     h3.google-font= book.title
@@ -62,19 +63,22 @@ block content
       i.fas.fa-plus
       |
       | Write a new passage
-    if currentPassages[0]
-      .card-group
-        .card.book-page-container.card-shadow
-          .card-body
-            p= currentPassages[0].body
-          .card-page-footer.text-muted.text-center
-            p= currentPage * 2 - 1
-        .card.book-page-container.card-shadow
-          .card-body
-            if currentPassages[1]
-              p= currentPassages[1].body
-          .card-page-footer.text-muted.text-center
-            p= currentPage * 2
+    if viewingIntroduction
+      //TODO: YOU ARE HERE PUTTING INSIDE AN INTRODUCTION
+    else
+      if currentPassages[0]
+        .card-group
+          .card.book-page-container.card-shadow
+            .card-body
+              p= currentPassages[0].body
+            .card-page-footer.text-muted.text-center
+              p= currentPage * 2 - 1
+          .card.book-page-container.card-shadow
+            .card-body
+              if currentPassages[1]
+                p= currentPassages[1].body
+            .card-page-footer.text-muted.text-center
+              p= currentPage * 2
     else
       hr
       h5.text-center
