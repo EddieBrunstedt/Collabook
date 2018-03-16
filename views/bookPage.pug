@@ -7,6 +7,14 @@ mixin addPassageForm
       textarea#inputPassageBody.form-control(rows='3', name='inputPassageBody')
     button.btn.btn-primary(type='submit') Submit
 
+mixin introductionCard
+  .card.book-page-container.card-shadow
+    .card-body
+      h3.google-font.text-center Introduction
+      p= book.introduction
+    .card-page-footer.text-muted.text-center
+      p introduction
+
 
 block content
   .container
@@ -55,19 +63,13 @@ block content
                 .modal-footer
                   button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
                   button.btn.btn-danger(type='submit') Confirm
-    if user.id === book.activeWriter.id
+    if user && user.id === book.activeWriter.id
       a.btn.btn-outline-primary.btn-block.mb-4(href='/book/' + book.id + '/addPassage', role='button')
         i.fas.fa-plus
         |
         | Write a new passage
     if viewingIntroduction
-      .card-group
-        .card.book-page-container.card-shadow
-          .card-body
-            p= book.introduction
-          .card-page-footer.text-muted.text-center
-            p introduction
-      //TODO: YOU ARE HERE PUTTING INSIDE AN INTRODUCTION
+      +introductionCard
     else
       if currentPassages[0]
         .card-group
