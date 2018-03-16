@@ -25,12 +25,12 @@ block content
     br
     h6.text-muted.book-created-date Book created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
     if user && user.id === book.owner.id
-      a.btn.btn-sm.btn-outline-secondary(id='slideToggle' href='#', role='button')
+      a.btn.btn-sm.btn-outline-secondary.mb-3(id='slideToggle' href='#', role='button')
         i.fas.fa-cog
         |
         | Settings
       #expandable-div
-        ul.fa-ul.mt-4
+        ul.fa-ul.mt-2
           li
             span.fa-li
               i.fas.fa-exchange-alt
@@ -55,15 +55,18 @@ block content
                 .modal-footer
                   button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
                   button.btn.btn-danger(type='submit') Confirm
-    if book.introduction
-      hr
-    p
-      em= book.introduction
-    a.btn.btn-outline-primary.btn-block.mb-4(href='/book/' + book.id + '/addPassage', role='button')
-      i.fas.fa-plus
-      |
-      | Write a new passage
+    if user.id === book.activeWriter.id
+      a.btn.btn-outline-primary.btn-block.mb-4(href='/book/' + book.id + '/addPassage', role='button')
+        i.fas.fa-plus
+        |
+        | Write a new passage
     if viewingIntroduction
+      .card-group
+        .card.book-page-container.card-shadow
+          .card-body
+            p= book.introduction
+          .card-page-footer.text-muted.text-center
+            p introduction
       //TODO: YOU ARE HERE PUTTING INSIDE AN INTRODUCTION
     else
       if currentPassages[0]
@@ -79,17 +82,21 @@ block content
                 p= currentPassages[1].body
             .card-page-footer.text-muted.text-center
               p= currentPage * 2
-    else
-      hr
-      h5.text-center
-        em
-          strong Nothing has been written in this book :(
-      hr
-    if totalBookPages > 1
-      nav.mb-5.mt-4
-        ul.pagination.justify-content-center
-          li.page-item.mr-1
-            a.page-link.text-info(href='/book/' + book.id + '/introduction') Introduction
+      else
+        hr
+        h5.text-center
+          em
+            strong Nothing has been written in this book :(
+        hr
+    nav.mb-5.mt-4
+      ul.pagination.justify-content-center
+        if totalBookPages > 1
+          if viewingIntroduction
+            li.page-item.active.mr-1
+              a.page-link(href='/book/' + book.id + '/introduction') Introduction
+          else
+            li.page-item.mr-1
+              a.page-link(href='/book/' + book.id + '/introduction') Introduction
           if currentPage > 1
             li.page-item
               a.page-link(href='/book/' + book.id + '/1') First
@@ -108,8 +115,12 @@ block content
           if currentPage > 1
             li.page-item
               a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 1))= String(((currentPage - 1) * 2 - 1) + '-' + (currentPage - 1) * 2)
-          li.page-item.active
-            a.page-link(href=href = '/book/' + book.id + '/' + currentPage)= String((currentPage * 2 - 1) + '-' + (currentPage * 2))
+          if !viewingIntroduction
+            li.page-item.active
+              a.page-link(href=href = '/book/' + book.id + '/' + currentPage)= String((currentPage * 2 - 1) + '-' + (currentPage * 2))
+          else
+            li.page-item
+              a.page-link(href=href = '/book/' + book.id + '/' + currentPage)= String((currentPage * 2 - 1) + '-' + (currentPage * 2))
           unless currentPage === totalBookPages
             li.page-item
               a.page-link(href=href = '/book/' + book.id + '/' + (currentPage + 1))= String((currentPage * 2 + 1) + '-' + (currentPage + 1) * 2)
