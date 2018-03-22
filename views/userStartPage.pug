@@ -6,9 +6,6 @@ block content
     .card.mb-3.card-shadow
       h5.card-header.bg-light
         a.link-primary(href='/book/' + book.id)= book.title
-      .card-body
-        - var shortenedIntroduction = book.introduction.length > 100 ? book.introduction.substring(0,100) + '...' : book.introduction
-        p.card-text.text-muted= shortenedIntroduction
       ul.list-group.list-group-flush
         li.list-group-item
           a(href='/user/' + book.owner.id)= book.owner.name
@@ -20,24 +17,12 @@ block content
           if book.collaborator.id === book.activeWriter.id
             span &nbsp;
             i.fas.fa-pencil-alt.text-success
-        li.list-group-item.small.text-muted= `Created ${h.moment(book.createdDate).calendar()}`
-
-    //.card.mb-3
-    //  .card-body
-    //    h5.card-title
-    //      a.link-primary(href='/book/' + book.id)= book.title
-    //    - var shortenedIntroduction = book.introduction.length > 100 ? book.introduction.substring(0,100) + '...' : book.introduction
-    //    p.card-text.text-muted= shortenedIntroduction
-    //  ul.list-group.list-group-flush
-    //    li.list-group-item
-    //      i.fas.fa-star.text-warning
-    //      span &nbsp;
-    //      a(href='/user/' + book.owner.id)= book.owner.name
-    //    li.list-group-item
-    //      i.fas.fa-user-plus.text-warning
-    //      span &nbsp;
-    //      a(href='/user/' + book.collaborator.id)= book.collaborator.name
-    //    li.list-group-item.small.text-muted= `Created ${h.moment(book.createdDate).calendar()}`
+  mixin testBook(book)
+    .card.mb-3.card-shadow
+      .card-body
+        h5
+          a.link-primary(href='/book/' + book.id)= book.title
+        p Norea wrote a passage at this and this time
 
   .container
     #nav-field.mb-5
@@ -45,37 +30,72 @@ block content
         i.fas.fa-book
         | &nbsp;
         | Create new book
-    h3.google-font Your books
+    h3.google-font You're up!
     .row
       each book in allUserBooks
         .col-3
           + bookCard(book)
     .row
-    h3.google-font All public books
-    table.table
-      thead
-        tr
-          th(scope='col') Book title
-          th(scope='col') Owner
-          th(scope='col') Collaborator
-          th(scope='col') Created
-          th(scope='col') Published/Private
-          th(scope='col') Completed
-      tbody
-        each book in allPublicBooks
-          tr
-            th(scope='row')
-              a(href='/book/' + book.id)= book.title
-            td
-              a(href='/user/' + book.owner.id)= book.owner.name
-            td
-              a(href='/user/' + book.collaborator.id)= book.collaborator.name
-            td= h.moment(book.createdDate).calendar()
-            if book.public
-              td Published
-            else
-              td Private
-            if book.completed
-              td Yes
-            else
-              td No
+      each book in allUserBooks
+        .col-3
+          + testBook(book)
+    .card.mb-3
+      .card-body
+        h3.google-font All your books
+        .table-responsive-sm
+          table.table.table-sm
+            thead
+              tr
+                th(scope='col') Book title
+                th(scope='col') Owner
+                th(scope='col') Collaborator
+                th(scope='col') Created
+                th(scope='col') Published/Private
+                th(scope='col') Completed
+            tbody
+              each book in allPublicBooks
+                tr
+                  th(scope='row')
+                    a(href='/book/' + book.id)= book.title
+                  td
+                    a(href='/user/' + book.owner.id)= book.owner.name
+                  td
+                    a(href='/user/' + book.collaborator.id)= book.collaborator.name
+                  td= h.moment(book.createdDate).calendar()
+                  if book.public
+                    td Published
+                  else
+                    td Private
+                  if book.completed
+                    td Yes
+                  else
+                    td No
+        h3.google-font All public books
+        .table-responsive
+          table.table
+            thead
+              tr
+                th(scope='col') Book title
+                th(scope='col') Owner
+                th(scope='col') Collaborator
+                th(scope='col') Created
+                th(scope='col') Published/Private
+                th(scope='col') Completed
+            tbody
+              each book in allPublicBooks
+                tr
+                  th(scope='row')
+                    a(href='/book/' + book.id)= book.title
+                  td
+                    a(href='/user/' + book.owner.id)= book.owner.name
+                  td
+                    a(href='/user/' + book.collaborator.id)= book.collaborator.name
+                  td= h.moment(book.createdDate).calendar()
+                  if book.public
+                    td Published
+                  else
+                    td Private
+                  if book.completed
+                    td Yes
+                  else
+                    td No
