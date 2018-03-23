@@ -1,3 +1,5 @@
+//TODO: Only run if on relevant page.
+
 $(document).ready(function () {
   //For sliding the tools section in bookPage.pug
   $("#slideToggle").click(function () {
@@ -5,9 +7,8 @@ $(document).ready(function () {
     $("#slideToggle").button('toggle')
   });
 
-  //
   var confInput = document.getElementById('confirm-delete-input');
-  confInput.onpaste = function(e) {
+  confInput.onpaste = function (e) {
     e.preventDefault();
   }
 });

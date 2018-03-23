@@ -3,26 +3,14 @@ extends layout
 block content
 
   mixin bookCard(book)
-    .card.mb-3.card-shadow
-      h5.card-header.bg-light
-        a.link-primary(href='/book/' + book.id)= book.title
-      ul.list-group.list-group-flush
-        li.list-group-item
-          a(href='/user/' + book.owner.id)= book.owner.name
-          if book.owner.id === book.activeWriter.id
-            span &nbsp;
-            i.fas.fa-pencil-alt.text-success
-        li.list-group-item
-          a(href='/user/' + book.collaborator.id)= book.collaborator.name
-          if book.collaborator.id === book.activeWriter.id
-            span &nbsp;
-            i.fas.fa-pencil-alt.text-success
-  mixin testBook(book)
-    .card.mb-3.card-shadow
+    .card.mb-3.card-shadow.text-center
       .card-body
-        h5
+        h5.card-title
           a.link-primary(href='/book/' + book.id)= book.title
-        p Norea wrote a passage at this and this time
+        hr
+        p.card-text.text-muted Norea wrote a passage at this and this time
+      ul.list-group.list-group-flush
+        li.list-group-item  Cras justo odio
 
   .container
     #nav-field.mb-5
@@ -30,15 +18,11 @@ block content
         i.fas.fa-book
         | &nbsp;
         | Create new book
-    h3.google-font You're up!
+    h3.google-font Recently updated
     .row
       each book in allUserBooks
-        .col-3
+        .col-4
           + bookCard(book)
-    .row
-      each book in allUserBooks
-        .col-3
-          + testBook(book)
     .card.mb-3
       .card-body
         h3.google-font All your books
