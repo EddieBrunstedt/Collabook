@@ -2,84 +2,12 @@ extends layout
 
 block content
 
-  mixin bookCard(book)
-    .card.mb-3.card-shadow.text-center
-      .card-body
-        h5.card-title
-          a.link-primary(href='/book/' + book.id)= book.title
-        hr
-        p.card-text.text-muted Norea wrote a passage at this and this time
-      ul.list-group.list-group-flush
-        li.list-group-item  Cras justo odio
-
   .container
+    //- TODO: Make this button look better
     #nav-field.mb-5
       button.btn.btn-lg.btn-warning(onclick='window.location="/create-book";')
         i.fas.fa-book
         | &nbsp;
         | Create new book
-    h3.google-font Recently updated
-    .row
-      each book in allUserBooks
-        .col-4
-          + bookCard(book)
-    .card.mb-3
-      .card-body
-        h3.google-font All your books
-        .table-responsive-sm
-          table.table.table-sm
-            thead
-              tr
-                th(scope='col') Book title
-                th(scope='col') Owner
-                th(scope='col') Collaborator
-                th(scope='col') Created
-                th(scope='col') Published/Private
-                th(scope='col') Completed
-            tbody
-              each book in allPublicBooks
-                tr
-                  th(scope='row')
-                    a(href='/book/' + book.id)= book.title
-                  td
-                    a(href='/user/' + book.owner.id)= book.owner.name
-                  td
-                    a(href='/user/' + book.collaborator.id)= book.collaborator.name
-                  td= h.moment(book.createdDate).calendar()
-                  if book.public
-                    td Published
-                  else
-                    td Private
-                  if book.completed
-                    td Yes
-                  else
-                    td No
-        h3.google-font All public books
-        .table-responsive
-          table.table
-            thead
-              tr
-                th(scope='col') Book title
-                th(scope='col') Owner
-                th(scope='col') Collaborator
-                th(scope='col') Created
-                th(scope='col') Published/Private
-                th(scope='col') Completed
-            tbody
-              each book in allPublicBooks
-                tr
-                  th(scope='row')
-                    a(href='/book/' + book.id)= book.title
-                  td
-                    a(href='/user/' + book.owner.id)= book.owner.name
-                  td
-                    a(href='/user/' + book.collaborator.id)= book.collaborator.name
-                  td= h.moment(book.createdDate).calendar()
-                  if book.public
-                    td Published
-                  else
-                    td Private
-                  if book.completed
-                    td Yes
-                  else
-                    td No
+    each book in books
+      p= book.title

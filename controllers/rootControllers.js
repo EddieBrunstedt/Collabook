@@ -10,21 +10,10 @@ const Book = require('../models/book');
 
 exports.getHomePage = (req, res, next) => {
   if (req.user) {
-    Book.findAllPublicBooks()
-      .then((allPublicBooks) => {
-        Book.findAllUserBooks(req.user._id)
-          .then((allUserBooks) => {
-            Book.findAllUserActiveBooks(req.user._id)
-              .then((allUserActiveBooks) => {
-                res.render('userStartPage', {allPublicBooks, allUserBooks, allUserActiveBooks});
-              })
-              .catch((err) => {
-                next(err);
-              });
-          })
-          .catch((err) => {
-            next(err);
-          });
+    Book.findAllUserBooks(req.user._id)
+      .then((books) => {
+        console.log(1, books);
+        res.render('userStartPage', {books})
       })
       .catch((err) => {
         next(err);
@@ -34,6 +23,7 @@ exports.getHomePage = (req, res, next) => {
   }
 };
 
+//Todo: Remove this
 exports.getTestPage = (req, res, next) => {
   res.render('test', {slug: slug('this is a test of things...')})
 };
