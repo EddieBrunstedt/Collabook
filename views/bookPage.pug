@@ -10,10 +10,11 @@ mixin addPassageForm
 mixin introductionCard
   .card.book-page-container.card-shadow
     .card-body
-      h3.google-font.text-center Introduction
-      p= book.introduction
+      h1.card-title.google-font.text-center Introduction
+      hr
+      p.text-center= book.introduction
     .card-page-footer.text-muted.text-center
-      p introduction
+      p 0
 
 
 block content
@@ -63,11 +64,14 @@ block content
                 .modal-footer
                   button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
                   button.btn.btn-danger(type='submit') Confirm
+    hr
     if user && user.id === book.activeWriter.id
-      a.btn.btn-outline-primary.btn-block.mb-4(href='/book/' + book.id + '/addPassage', role='button')
-        i.fas.fa-plus
-        |
-        | Write a new passage
+      .row
+        .col-12.text-center
+          a.btn.btn-success.mb-4(href='/book/' + book.id + '/addPassage', role='button')
+            i.fas.fa-plus
+            |
+            | Write a new passage
     if viewingIntroduction
       +introductionCard
     else
@@ -75,13 +79,13 @@ block content
         .card-group
           .card.book-page-container.card-shadow
             .card-body
-              p= currentPassages[0].body
+              p!= currentPassages[0].body
             .card-page-footer.text-muted.text-center
               p= currentPage * 2 - 1
           .card.book-page-container.card-shadow
             .card-body
               if currentPassages[1]
-                p= currentPassages[1].body
+                p!= currentPassages[1].body
             .card-page-footer.text-muted.text-center
               p= currentPage * 2
       else
@@ -92,13 +96,13 @@ block content
         hr
     nav.mb-5.mt-4
       ul.pagination.justify-content-center
-        if totalBookPages > 1
-          if viewingIntroduction
-            li.page-item.active.mr-1
-              a.page-link(href='/book/' + book.id + '/introduction') Introduction
-          else
-            li.page-item.mr-1
-              a.page-link(href='/book/' + book.id + '/introduction') Introduction
+        if viewingIntroduction
+          li.page-item.active.mr-1
+            a.page-link(href='/book/' + book.id + '/introduction') Introduction
+        else
+          li.page-item.mr-1
+            a.page-link(href='/book/' + book.id + '/introduction') Introduction
+        if totalBookPages > 0
           if currentPage > 1
             li.page-item
               a.page-link(href='/book/' + book.id + '/1') First
@@ -135,9 +139,10 @@ block content
           if totalBookPages > (currentPage + 3)
             li.page-item
               a.page-link(href=href = '/book/' + book.id + '/' + (currentPage + 4))= String(((currentPage + 4) * 2 - 1) + '-' + (currentPage + 4) * 2)
-          unless currentPage === totalBookPages
+          //- Why is it not?
+          unless currentPage === totalBookPages && !viewingIntroduction
             li.page-item
               a.page-link(href='/book/' + book.id + '/' + totalBookPages) Last
-          if currentPage === totalBookPages
+          if currentPage === totalBookPages && !viewingIntroduction
             li.page-item.disabled
               a.page-link(href='/book/' + book.id + '/' + totalBookPages) Last
