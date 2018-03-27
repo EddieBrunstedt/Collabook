@@ -16,62 +16,63 @@ mixin introductionCard
     .card-page-footer.text-muted.text-center
       p 0
 
-
 block content
   .container
     h1.google-font= book.title
-    i.fas.fa-users.text-warning
-    |
-    |
-    span.text-muted by
-      |
-      |
-      a(href='/user/' + book.owner.id)= book.owner.name
-      |
-      | and
-      |
-      a(href='/user/' + book.collaborator.id)= book.collaborator.name
-    br
-    h6.text-muted.book-created-date Book created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
-    if user && user.id === book.owner.id
-      a.btn.btn-sm.btn-outline-secondary.mb-3(id='slideToggle' href='#', role='button')
-        i.fas.fa-cog
+    .row
+      .col-12
+        i.fas.fa-users.text-warning
         |
-        | Settings
-      #expandable-div
-        ul.fa-ul.mt-2
-          li
-            span.fa-li
-              i.fas.fa-exchange-alt
-            a(href='/book/' + book.id + '/switch-writer') Switch writer to #{book.activeWriter.id === book.owner.id ? book.collaborator.name : book.owner.name}
-          li
-            span.fa-li
-              i.fas.fa-trash-alt.text-danger
-            a.text-danger(href='/', data-toggle="modal", data-target="#confirm-delete-modal") Delete book
-        #confirm-delete-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
-          .modal-dialog.modal-dialog-centered(role='document')
-            .modal-content
-              form(action='/book/' + book.id + '/delete', method='post')
-                .modal-body
-                  p.text-center Are you sure that you want to remove this book?
-                  p.text-center To permanently remove your book, please enter:
-                  h6#confirm-delete-slug.text-center
-                    strong= h.slug(book.title, {lower: true})
-                  p.text-center in the box below and press confirm.
-                  .form-group
-                    input#confirm-delete-input.form-control.text-center(type='text', name='inputConfirmation')
-                    small#emailHelp.form-text.text-muted.text-center This action cannot be undone
-                .modal-footer
-                  button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                  button.btn.btn-danger(type='submit') Confirm
-    hr
-    if user && user.id === book.activeWriter.id
+        |
+        span by
+          |
+          |
+          a(href='/user/' + book.owner.id)= book.owner.name
+          |
+          | and
+          |
+          a(href='/user/' + book.collaborator.id)= book.collaborator.name
+        h6.text-muted.mt-2 Book created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
+    if user
+      unless user.id === book.owner.id || user.id === book.activeWriter.id
+      hr
       .row
-        .col-12.text-center
-          a.btn.btn-success.mb-4(href='/book/' + book.id + '/addPassage', role='button')
-            i.fas.fa-plus
-            |
-            | Write a new passage
+        .col-6
+          if user && user.id === book.owner.id
+            a.btn.btn-sm.btn-outline-dark.mb-3(id='slideToggle' href='#', role='button')
+              i.fas.fa-cog
+            #expandable-div
+              ul.fa-ul.mt-2
+                li
+                  span.fa-li
+                    i.fas.fa-exchange-alt
+                  a(href='/book/' + book.id + '/switch-writer') Switch writer to #{book.activeWriter.id === book.owner.id ? book.collaborator.name : book.owner.name}
+                li
+                  span.fa-li
+                    i.fas.fa-trash-alt.text-danger
+                  a.text-danger(href='/', data-toggle="modal", data-target="#confirm-delete-modal") Delete book
+              #confirm-delete-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
+                .modal-dialog.modal-dialog-centered(role='document')
+                  .modal-content
+                    form(action='/book/' + book.id + '/delete', method='post')
+                      .modal-body
+                        p.text-center Are you sure that you want to remove this book?
+                        p.text-center To permanently remove your book, please enter:
+                        h6#confirm-delete-slug.text-center
+                          strong= h.slug(book.title, {lower: true})
+                        p.text-center in the box below and press confirm.
+                        .form-group
+                          input#confirm-delete-input.form-control.text-center(type='text', name='inputConfirmation')
+                          small#emailHelp.form-text.text-muted.text-center This action cannot be undone
+                      .modal-footer
+                        button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                        button.btn.btn-danger(type='submit') Confirm
+        .col-6.text-right
+          if user && user.id === book.activeWriter.id
+            a.btn.btn-success.mb-4(href='/book/' + book.id + '/addPassage', role='button')
+              i.fas.fa-plus
+              |
+              | Write a new passage
     if viewingIntroduction
       +introductionCard
     else

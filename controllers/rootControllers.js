@@ -13,6 +13,7 @@ exports.getHomePage = (req, res, next) => {
     Book.findAllUserBooks(req.user._id)
       .then((books) => {
         console.log(1, books);
+
         res.render('userStartPage', {books})
       })
       .catch((err) => {

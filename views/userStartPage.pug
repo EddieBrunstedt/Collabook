@@ -1,13 +1,23 @@
 extends layout
 
+mixin bookCard(book)
+  .card.mb-3.card-shadow.text-center
+    .card-body
+      h5.card-title
+        a.link-primary(href='/book/' + book.id)= book.title
+      hr
+      p.card-text.text-muted Norea wrote a passage at this and this time
+    ul.list-group.list-group-flush
+      li.list-group-item  Cras justo odio
+
 block content
 
   .container
     //- TODO: Make this button look better
-    #nav-field.mb-5
+    #nav-field
       button.btn.btn-lg.btn-warning(onclick='window.location="/create-book";')
         i.fas.fa-book
         | &nbsp;
         | Create new book
     each book in books
-      p= book.title
+      +bookCard(book)

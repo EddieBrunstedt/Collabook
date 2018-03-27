@@ -2,9 +2,9 @@ extends layout
 
 block content
   .container
-    h1.google-font Create Book
-    .row
-      .col-lg-6
+    .row.justify-content-center
+      .col-sm-12.col-md-10.col-lg-6
+        h1.google-font Create Book
         form(action='/create-book', method='post')
           .form-group
             label(for='inputTitle') Book Title
@@ -17,6 +17,7 @@ block content
             textarea#inputIntroduction.form-control(rows='3', name='inputIntroduction')
             small.form-text.text-muted You can write an introduction here if you so choose. You can always edit this later so feel free to leave this blank for now.
           hr
-          button.btn.btn-warning(type='submit') Submit
-            | &nbsp;&nbsp;
-            i.fas.fa-caret-right
+          .text-right
+            button.btn.btn-warning(type='submit') Submit
+              | &nbsp;&nbsp;
+              i.fas.fa-caret-right
