@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Book = require('../models/book')
 
 exports.getUserPage = (req, res, next) => {
   User.getUserById(req.params.userId)
@@ -7,7 +8,13 @@ exports.getUserPage = (req, res, next) => {
       const followsUser = viewedUser.followers.some((item) => {
         return item.equals(req.user.id);
       });
-      res.render('userPage', {viewedUser, followsUser});
+      Book.findAllUserPublicBooks(viewedUser._id)
+        .then((booksByUser) => {
+          res.render('userPage', {viewedUser, followsUser, booksByUser});
+        })
+        .catch((err) => {
+          next(err)
+        });
     })
     .catch((err) => {
       next(err)

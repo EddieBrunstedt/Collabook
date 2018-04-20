@@ -22,6 +22,7 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top
               img#avatar.rounded.img-fluid.mr-3(src=user.gravatar, alt='User Avatar' width="49px")
               span.lead= user.name
             .dropdown-menu(aria-labelledby='navbar-user-button')
-              a.dropdown-item(href='/') Dashboard
+              a.dropdown-item(href='/user/' + user.id) Profile
+              a.dropdown-item(href='/') Followed users
               .dropdown-divider
               a.dropdown-item(href='/logout') Logout

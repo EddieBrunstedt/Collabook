@@ -2,33 +2,42 @@ extends layout
 
 block content
   .container
-    table.table.table-sm
-      tbody
-        tr
-          th(scope='row') Name
-          td= viewedUser.name
-        tr
-          th(scope='row') Email
-          td= viewedUser.email
-        tr
-          th(scope='row') Active
-          td= viewedUser.active
-        tr
-          th(scope='row') Hashed Password
-          td= viewedUser.password
-    if viewedUser.bio
-      p= viewedUser.bio
-    else
-      p This user has not written a bio yet :(
-    hr
-    form(action='/user/' + viewedUser.id , method='post')
-      label(for='bioInput') Biography
-      em Please tell us something about you
-      textarea#bioInput.u-full-width(name='bioInput')= viewedUser.bio
-      button.button-primary(type='submit') Update Profile
-    unless followsUser
-      form(action='/user/' + viewedUser.id + '/follow-user', method='post')
-        input.btn.btn-primary(type='submit', value='Follow')
-    else
-      form(action='/user/' + viewedUser.id + '/unfollow-user', method='post')
-        input.btn.btn-success(type='submit', value='Following')
+    .row
+      .col-md-7.col-lg-8.col-xl-9.text-center.text-md-left
+        h1= viewedUser.name
+      .col-md-5.col-lg-4.col-xl-3
+        #user-hero.ml-auto
+          img.rounded.img-fluid.d-block.mx-auto.mb-3(src=viewedUser.gravatar, alt='User Avatar')
+          unless viewedUser.id === user.id
+            unless followsUser
+              form(action='/user/' + viewedUser.id + '/follow-user', method='post')
+                input.btn.btn-primary.btn-block.mb-3(type='submit', value='Follow')
+            else
+              form(action='/user/' + viewedUser.id + '/unfollow-user', method='post')
+                input.btn.btn-success.btn-block.mb-3(type='submit', value='Following')
+    .card
+      .card-body
+        if viewedUser.bio
+          h3 Biography
+          p= viewedUser.bio
+          hr
+        if user.id === viewedUser.id
+          form(action='/user/' + viewedUser.id , method='post')
+            .form-group
+              textarea#bioInput.form-control(name='bioInput')= viewedUser.bio
+              //- TODO: Change this help text
+              small#bioHelp.form-text.text-muted This is a help text
+            button.btn.btn-sm.btn-success(type='submit') Update biography
+          hr
+        h3 Books by user
+        dl
+          each book in booksByUser
+            dt
+              a(href='/book/' + book.id)= book.title
+            dd.text-muted
+              | With
+              |
+              if book.owner.id === viewedUser.id
+                a(href='/user/' + book.collaborator.id)= book.collaborator.name
+              if book.collaborator.id === viewedUser.id
+                a(href='/user/' + book.owner.id)= book.owner.name

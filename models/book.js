@@ -55,6 +55,14 @@ module.exports.findAllPublicBooks = () => {
     .exec()
 };
 
+module.exports.findAllUserPublicBooks = (userId) => {
+  return Book
+    .find({$or: [{owner: userId}, {collaborator: userId}], public: true})
+    .populate('collaborator owner')
+    .sort({createdDate: -1})
+    .exec()
+};
+
 module.exports.findAllUserActiveBooks = (userId) => {
   return Book
     .find({activeWriter: userId})
