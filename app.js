@@ -30,7 +30,7 @@ const app = express();
 // Get real remote IP's from clients instead of NGINX proxy ip.
 app.set('trust proxy', true);
 
-mongoose.connect(process.env.DB_HOST, {useMongoClient: true});
+mongoose.connect(process.env.DB_HOST);
 mongoose.Promise = global.Promise;
 
 //---------------------- LOGGING --------------------------//

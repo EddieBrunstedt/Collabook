@@ -17,7 +17,15 @@ block content
     #nav-field
       button.btn.btn-lg.btn-warning(onclick='window.location="/create-book";')
         i.fas.fa-book
-        | &nbsp;
+        |
+        |
         | Create new book
+    section
+      h1 Your latest books
+    section
+      h1 Latest books you are following
+    section
+      h1 Popular books (most likes)
+
     each book in books
       +bookCard(book)
