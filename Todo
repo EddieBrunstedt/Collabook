@@ -1,3 +1,4 @@
+- Update bio does not work
 - Add feature for assigning new ownership
 - Add authcontroller for everything (logged in user AND correct logged in specific user?)
 - Add feature for adding images to books. (and for single passages?)

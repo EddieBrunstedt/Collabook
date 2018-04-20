@@ -80,7 +80,16 @@ module.exports.updateUserProfile = (id, updates) => {
   )
 };
 
-/*
-module.exports.followUser = (id) => {
-  return User.findOne({id: id})
-};*/
+module.exports.removeUserFromFollowing = (userIdToRemove, userIdToRemoveFrom) => {
+  return User.update(
+    {_id: userIdToRemoveFrom},
+    {$pull: {following: userIdToRemove}}
+  )
+};
+
+module.exports.removeUserFromFollowers = (userIdToRemove, userIdToRemoveFrom) => {
+  return User.update(
+    {_id: userIdToRemoveFrom},
+    {$pull: {followers: userIdToRemove}}
+  )
+};

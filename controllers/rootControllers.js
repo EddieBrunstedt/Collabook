@@ -12,8 +12,6 @@ exports.getHomePage = (req, res, next) => {
   if (req.user) {
     Book.findAllUserBooks(req.user._id)
       .then((books) => {
-        console.log(1, books);
-
         res.render('userStartPage', {books})
       })
       .catch((err) => {
@@ -28,7 +26,6 @@ exports.getHomePage = (req, res, next) => {
 exports.getTestPage = (req, res, next) => {
   res.render('test', {slug: slug('this is a test of things...')})
 };
-
 
 exports.getLoginForm = (req, res) => {
   res.render('login');
@@ -135,11 +132,10 @@ exports.passportAuthenticate = passport.authenticate('local', {
 
 exports.registerValidation = [
   //Todo: Work out proper rules before production
-  check('inputEmail').exists().isEmail().trim().normalizeEmail(),
+  check('inputEmail').exists().isEmail().trim().normalizeEmail({gmail_remove_dots: false}),
   check('inputName').exists().isLength({min: 3}).withMessage('Name needs to be at least 3 characters long'),
   check('inputPassword').exists().isLength({min: 3}).withMessage('Password needs to be at least 3 characters long'),
-  check('inputPasswordConf', 'Your passwords don\'t match')
-    .exists()
+  check('inputPasswordConf', 'Your passwords don\'t match').exists()
     .custom((value, {req}) => value === req.body.inputPassword)
 ];
 

@@ -6,10 +6,11 @@ $(document).ready(function () {
     $("#expandable-div").slideToggle('fast');
     $("#slideToggle").button('toggle')
   });
-
-  var confInput = document.getElementById('confirm-delete-input');
-  confInput.onpaste = function (e) {
-    e.preventDefault();
+  if (document.getElementById('confirm-delete-input')) {
+    var confInput = document.getElementById('confirm-delete-input');
+    confInput.onpaste = function (e) {
+      e.preventDefault();
+    }
   }
 });
 

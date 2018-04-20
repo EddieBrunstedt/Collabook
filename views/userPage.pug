@@ -1,22 +1,34 @@
 extends layout
 
 block content
-  table.u-full-width
-    thead
-      tr
-        th Name
-        th Email
-        th Active
-    tbody
-      tr
-        td= viewedUser.name
-        td= viewedUser.email
-        td= viewedUser.active
-  p= viewedUser.password
-  p Bio: #{viewedUser.bio}
-  hr
-  form(action='/user/' + viewedUser.id , method='post')
-    label(for='bioInput') Biography
-    em Please tell us something about you
-    textarea#bioInput.u-full-width(name='bioInput')= viewedUser.bio
-    button.button-primary(type='submit') Update Profile
+  .container
+    table.table.table-sm
+      tbody
+        tr
+          th(scope='row') Name
+          td= viewedUser.name
+        tr
+          th(scope='row') Email
+          td= viewedUser.email
+        tr
+          th(scope='row') Active
+          td= viewedUser.active
+        tr
+          th(scope='row') Hashed Password
+          td= viewedUser.password
+    if viewedUser.bio
+      p= viewedUser.bio
+    else
+      p This user has not written a bio yet :(
+    hr
+    form(action='/user/' + viewedUser.id , method='post')
+      label(for='bioInput') Biography
+      em Please tell us something about you
+      textarea#bioInput.u-full-width(name='bioInput')= viewedUser.bio
+      button.button-primary(type='submit') Update Profile
+    unless followsUser
+      form(action='/user/' + viewedUser.id + '/follow-user', method='post')
+        input.btn.btn-primary(type='submit', value='Follow')
+    else
+      form(action='/user/' + viewedUser.id + '/unfollow-user', method='post')
+        input.btn.btn-success(type='submit', value='Following')

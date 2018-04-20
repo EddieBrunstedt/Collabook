@@ -10,6 +10,9 @@ router.post('/:userId', authControllers.isLoggedIn, userControllers.postUserPage
 
 
 //User follow another User
-router.post('/follow-user/:userId', userControllers.followUser);
+router.post('/:userId/follow-user', userControllers.followUser);
+//User unfollow another User
+router.post('/:userId/unfollow-user', userControllers.unfollowUser);
+
 
 module.exports = router;

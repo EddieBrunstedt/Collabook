@@ -3,7 +3,11 @@ const User = require('../models/user');
 exports.getUserPage = (req, res, next) => {
   User.getUserById(req.params.userId)
     .then((viewedUser) => {
-      res.render('userPage', {viewedUser});
+      //set followingUser to true if user follows other user
+      const followsUser = viewedUser.followers.some((item) => {
+        return item.equals(req.user.id);
+      });
+      res.render('userPage', {viewedUser, followsUser});
     })
     .catch((err) => {
       next(err)
@@ -33,22 +37,62 @@ exports.postUserPage = (req, res, next) => {
 
 exports.followUser = (req, res, next) => {
   let followedUserId;
+
+  //Find user to follow
   User.getUserById(req.params.userId)
     .then((user) => {
+      const followsUser = user.followers.some((item) => {
+        return item.equals(req.user.id);
+      });
+      if (followsUser) {
+        req.flash('error_msg', 'You are already following this person.');
+        return res.redirect('/user/' + req.params.userId);
+      }
       user.followers.push(req.user._id);
       followedUserId = user._id;
       user.save();
+
+      //Next, find user currently logged in
+      User.getUserById(req.user._id)
+        .then((user) => {
+          user.following.push(followedUserId);
+          user.save();
+          res.redirect('/user/' + req.params.userId);
+        })
+        .catch((err) => {
+          next(err);
+        });
     })
     .catch((err) => {
       next(err);
     });
-  User.getUserById(followedUserId)
+};
+
+exports.unfollowUser = (req, res, next) => {
+  User.getUserById(req.params.userId)
     .then((user) => {
-      console.log('This log should output the FOLLOWED users id. OUTPUT: ' + followedUserId);
-      user.following.push(followedUserId);
-      user.save();
+      const followsUser = user.followers.some((item) => {
+        return item.equals(req.user.id);
+      });
+      if (!followsUser) {
+        req.flash('error_msg', 'You are not following this person');
+        return res.redirect('/user/' + req.params.userId);
+      }
+      User.removeUserFromFollowers(req.user._id, req.params.userId)
+        .then(() => {
+          User.removeUserFromFollowing(req.params.userId, req.user._id)
+            .then(() => {
+              res.redirect('/user/' + req.params.userId);
+            })
+            .catch((err) => {
+              next(err);
+            })
+        })
+        .catch((err) => {
+          next(err);
+        })
     })
     .catch((err) => {
       next(err);
-    })
+    });
 };
