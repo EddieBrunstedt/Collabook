@@ -67,7 +67,7 @@ router.get('/logout', rootControllers.logOut);
 
 router.get('/create-book', rootControllers.getCreateBookForm);
 
-router.post('/create-book',rootControllers.createBookValidation, rootControllers.postCreateBookForm);
+router.post('/create-book', rootControllers.createBookValidation, rootControllers.postCreateBookForm);
 
 router.get('/dashboard', authControllers.isLoggedIn, rootControllers.getDashboard);
 

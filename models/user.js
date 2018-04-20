@@ -27,7 +27,15 @@ const UserSchema = mongoose.Schema({
   active: {
     type: Boolean,
     default: true
-  }
+  },
+  following: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
+  followers: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }],
 }, {runSettersOnQuery: true});
 
 UserSchema.virtual('gravatar').get(function () {
@@ -64,10 +72,15 @@ module.exports.comparePassword = (candidatePassword, hash) => {
   return bcrypt.compare(candidatePassword, hash);
 };
 
-module.exports.updateUserAccount = (id, updates) => {
+module.exports.updateUserProfile = (id, updates) => {
   return User.findOneAndUpdate(
     {_id: id},
     {$set: updates},
     {new: true, runValidators: true, context: 'query'}
   )
 };
+
+/*
+module.exports.followUser = (id) => {
+  return User.findOne({id: id})
+};*/
