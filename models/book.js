@@ -15,12 +15,14 @@ const BookSchema = mongoose.Schema({
     trim: true,
     default: '',
   },
-  //Todo: Change to ownerId
+  passages: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Passage'
+  }],
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
-  //Todo: Change to collaboratorId
   collaborator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
@@ -34,7 +36,6 @@ const BookSchema = mongoose.Schema({
     //Todo: Change to false before production
     default: true
   },
-  //Todo: Change to activeWriterId
   activeWriter: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -74,7 +75,8 @@ module.exports.findAllUserActiveBooks = (userId) => {
 module.exports.findAllUserBooks = (userId) => {
   return Book
     .find({$or: [{owner: userId}, {collaborator: userId}]})
-    .populate('owner collaborator activeWriter')
+    .populate('owner collaborator activeWriter passages')
+    .populate({path: 'passages', options: {sort: {'createdDate': -1}}})
     .sort({createdDate: -1})
     .exec()
 };
@@ -97,36 +99,3 @@ module.exports.deleteBookById = (id) => {
     .deleteOne({_id: id})
     .exec();
 };
-
-/*
-module.exports.paginationTest = (id) => {
-  const perPage = 9
-  const page = req.params.page || 1
-
-  return Book
-    .find({})
-    .skip((perPage * page) - perPage)
-    .limit(perPage)
-    .exec(function (err, products) {
-      Product.count().exec(function (err, count) {
-        if (err) return next(err)
-        res.render('main/products', {
-          products: products,
-          current: page,
-          pages: Math.ceil(count / perPage)
-        })
-      })
-    })
-};
-*/
-
-
-/*
-module.exports.findBooksWithUser = (userId, callback) => {
-  Book
-    .find({$or: [{owner: userId}, {collaborator: userId}]})
-    .populate('owner collaborator')
-    .sort({createdDate: -1})
-    .exec(callback);
-};
-*/

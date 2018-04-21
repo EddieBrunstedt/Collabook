@@ -11,8 +11,27 @@ const Book = require('../models/book');
 exports.getHomePage = (req, res, next) => {
   if (req.user) {
     Book.findAllUserBooks(req.user._id)
-      .then((books) => {
-        res.render('userStartPage', {books})
+      .then((allUserBooks) => {
+        let notStartedBooks = allUserBooks
+          .filter(book => !book.passages[0]);
+
+        let parsed_allUserBooks = allUserBooks
+          .filter(book => book.passages[0])
+          .sort((a, b) => {
+
+            if (a.passages[0].createdDate < b.passages[0].createdDate) {
+              return 1;
+            }
+            if (b.passages[0].createdDate < a.passages[0].createdDate) {
+              return -1;
+            }
+            return 0;
+          });
+        res.render('userStartPage',
+          {
+            allUserBooks: parsed_allUserBooks,
+            notStartedBooks
+          })
       })
       .catch((err) => {
         next(err);
@@ -141,7 +160,7 @@ exports.registerValidation = [
 
 exports.createBookValidation = [
   check('inputTitle').exists().trim().isLength({
-    min: 2,
+    min: 1,
     max: 100
-  }).withMessage('Your book title must be between 2 and 100 characters long')
+  }).withMessage('Your book title must be between 1 and 100 characters long')
 ];

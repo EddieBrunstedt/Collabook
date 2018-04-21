@@ -7,7 +7,7 @@ block content
         h1= viewedUser.name
       .col-md-5.col-lg-4.col-xl-3
         #user-hero.ml-auto
-          img.rounded.img-fluid.d-block.mx-auto.mb-3(src=viewedUser.gravatar, alt='User Avatar')
+          img.img-fluid.img-thumbnail.d-block.mx-auto.mb-3(src=viewedUser.gravatar, alt='User Avatar')
           unless viewedUser.id === user.id
             unless followsUser
               form(action='/user/' + viewedUser.id + '/follow-user', method='post')

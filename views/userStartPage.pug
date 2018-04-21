@@ -1,14 +1,16 @@
 extends layout
 
-mixin bookCard(book)
-  .card.mb-3.card-shadow.text-center
-    .card-body
-      h5.card-title
-        a.link-primary(href='/book/' + book.id)= book.title
-      hr
-      p.card-text.text-muted Norea wrote a passage at this and this time
-    ul.list-group.list-group-flush
-      li.list-group-item  Cras justo odio
+mixin userBooks(book)
+  .table-responsive
+
+    .card.mb-3.card-shadow.text-center
+      .card-body
+        h5.card-title
+          a.link-primary(href='/book/' + book.id)= book.title
+        hr
+        p.card-text.text-muted Norea wrote a passage at this and this time
+      ul.list-group.list-group-flush
+        li.list-group-item  Cras justo odio
 
 block content
   .container
@@ -21,10 +23,49 @@ block content
         | Create new book
     section
       h1 Your latest books
+      table.table.table-sm
+        thead
+          tr
+            th(scope='col') Title
+            th(scope='col') Collaborator
+            th(scope='col') Next in turn
+            th(scope='col') Last updated
+        tbody
+          each book in allUserBooks
+            tr
+              th(scope='row')
+                a(href='/book/' + book.id)= book.title
+              td
+                if book.owner.id === user.id
+                  a(href='/user/' + book.collaborator.id)= book.collaborator.name
+                if book.collaborator.id === user.id
+                  a(href='/user/' + book.owner.id)= book.owner.name
+              td
+                a(href='/user/' + book.activeWriter.id)= book.activeWriter.name
+              td= h.moment(book.passages[0].createdDate).calendar()
+    section
+      h1 Not started yet
+      table.table.table-sm
+        thead
+          tr
+            th(scope='col') Title
+            th(scope='col') Collaborator
+            th(scope='col') Next in turn
+        tbody
+          each book in notStartedBooks
+            tr
+              th(scope='row')
+                a(href='/book/' + book.id)= book.title
+              td
+                if book.owner.id === user.id
+                  a(href='/user/' + book.collaborator.id)= book.collaborator.name
+                if book.collaborator.id === user.id
+                  a(href='/user/' + book.owner.id)= book.owner.name
+              td
+                a(href='/user/' + book.activeWriter.id)= book.activeWriter.name
+
+
     section
       h1 Latest books you are following
     section
       h1 Popular books (most likes)
-
-    each book in books
-      +bookCard(book)

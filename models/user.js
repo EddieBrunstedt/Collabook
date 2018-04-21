@@ -38,10 +38,9 @@ const UserSchema = mongoose.Schema({
   }],
 }, {runSettersOnQuery: true});
 
+// making User.gravatar
 UserSchema.virtual('gravatar').get(function () {
-  const gravatarURL = 'https://www.gravatar.com/avatar/';
-  const hashedEmail = md5(this.email);
-  return gravatarURL + hashedEmail + '?s=200&r=pg&d=mm';
+  return 'https://www.gravatar.com/avatar/' + md5(this.email) + '?s=200&r=pg&d=mm';
 });
 
 const User = module.exports = mongoose.model('User', UserSchema);

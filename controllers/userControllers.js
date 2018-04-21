@@ -28,7 +28,7 @@ exports.postUserPage = (req, res, next) => {
         req.flash('error_msg', 'You are not authorized to do that.');
         return res.redirect('/')
       }
-      User.updateUserProfile(req.params.userId, {bio: req.body.inputBio})
+      User.updateUserProfile(req.params.userId, {bio: req.body.bioInput})
         .then(() => {
           req.flash('success_msg', 'You have successfully updated your profile');
           res.redirect('/user/' + req.params.userId);

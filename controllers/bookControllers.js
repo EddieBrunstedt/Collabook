@@ -102,7 +102,6 @@ exports.getIntroduction = (req, res, next) => {
 };*/
 
 
-
 exports.writePassagePage = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
@@ -135,8 +134,17 @@ exports.createPassage = (req, res, next) => {
   });
 
   Passage.createPassage(newPassage)
-    .then(() => {
-      res.redirect('back');
+    .then((newPassage) => {
+      Book.findBookById(req.params.bookId)
+        .then((book) => {
+          book.passages.push(newPassage._id);
+          book.save();
+          res.redirect('back');
+        })
+        .catch((err) => {
+          next(err);
+        });
+
     })
     .catch((err) => {
       next(err);
