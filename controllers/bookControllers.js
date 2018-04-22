@@ -2,8 +2,8 @@ const {check, validationResult} = require('express-validator/check');
 const {matchedData, sanitize} = require('express-validator/filter');
 const slug = require('slug');
 
-const Book = require('../models/book');
-const Passage = require('../models/passage');
+const Book = require('../models/bookModel');
+const Passage = require('../models/passageModel');
 
 // Get book page and handle possible specific page numbers
 // Todo: Create checking for correct user in regards to if book is public or not
@@ -39,6 +39,7 @@ exports.getBookPage = (req, res, next) => {
     });
 };
 
+// Get book introduction page
 exports.getIntroduction = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
@@ -71,45 +72,13 @@ exports.getIntroduction = (req, res, next) => {
     });
 };
 
-/*exports.getIntroduction = (req, res, next) => {
-  Book.findBookById(req.params.bookId)
-    .then((book) => {
-      Passage.countPassagesInBook(book.id)
-        .then((totalNumOfPassages) => {
-
-          const totalBookPages = totalNumOfPassages < 1 ? 1 : Math.ceil(totalNumOfPassages / 2);
-          const currentPage = req.params.currentPage || totalBookPages;
-
-          Passage.findPassagesForPage(book.id, currentPage)
-            .then((currentPassages) => {
-              res.render('bookPage', {
-                book,
-                totalBookPages: Number(totalBookPages),
-                currentPassages,
-                currentPage: Number(currentPage),
-                viewingIntroduction: true
-              });
-            })
-            .catch((err) => {
-              next(err)
-            });
-        })
-        .catch((err) => {
-          next(err);
-        });
-    })
-    .catch((err) => {
-      next(err)
-    });
-};*/
-
-
-exports.writePassagePage = (req, res, next) => {
+// Get form page for adding passage
+exports.getCreatePassageForm = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
       Passage.findLastPassageInBook(book.id)
         .then((passage) => {
-          res.render('writePassagePage', {book, passage: passage[0]})
+          res.render('createPassageForm', {book, passage: passage[0]})
         })
         .catch((err) => {
           next(err)
@@ -120,6 +89,7 @@ exports.writePassagePage = (req, res, next) => {
     });
 };
 
+// Create passage
 exports.createPassage = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -135,13 +105,14 @@ exports.createPassage = (req, res, next) => {
     bookId: req.params.bookId,
   });
 
-  Passage.createPassage(newPassage)
+  return newPassage.save()
     .then((newPassage) => {
       Book.findBookById(req.params.bookId)
         .then((book) => {
           book.passages.push(newPassage._id);
           book.save();
-          res.redirect('back');
+          req.flash('success_msg', 'Your passage was successfully saved');
+          res.redirect('/book/' + book.id);
         })
         .catch((err) => {
           next(err);
@@ -153,12 +124,14 @@ exports.createPassage = (req, res, next) => {
     });
 };
 
+// Switch active writer for book
+// Todo: Add checking for correct user
 exports.switchActiveWriter = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
       let activeWriter;
       book.owner.id === book.activeWriter.id ? activeWriter = book.collaborator.id : activeWriter = book.owner.id;
-      Book.switchActiveWriter(book.id, activeWriter)
+      Book.updateActiveWriter(book.id, activeWriter)
         .then(() => {
           res.redirect('back');
         })
@@ -171,18 +144,26 @@ exports.switchActiveWriter = (req, res, next) => {
     });
 };
 
-
-exports.deleteBook = (req, res, next) => {
+// Delete book and all its passages
+// Todo #1: Add checking for correct user
+// Todo #2: Make this also delete all passages for this book.
+exports.deleteBookAndPassages = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
       if (slug(book.title, {lower: true}) === req.body.inputConfirmation) {
-        Book.deleteBookById(book.id)
+        Book.deleteBook(book.id)
           .then(() => {
-            req.flash('success_msg', 'Book successfully deleted.');
-            res.redirect('/');
+            Passage.deletePassagesFromBook(book.id)
+              .then(() => {
+                req.flash('success_msg', 'Book successfully deleted.');
+                res.redirect('/');
+              })
+              .catch((err) => {
+                next(err);
+              });
           })
           .catch((err) => {
-            next(err)
+            next(err);
           });
       } else {
         req.flash('error_msg', 'The text you entered didn\'t match.');
@@ -190,11 +171,20 @@ exports.deleteBook = (req, res, next) => {
       }
     })
     .catch((err) => {
-      next(err)
+      next(err);
     });
 };
 
-//Todo: Change min/max before production
+// Validator for book creation
+exports.bookValidation = [
+  check('inputTitle').exists().trim().isLength({
+    min: 1,
+    max: 100
+  }).withMessage('Your book title must be between 1 and 100 characters long')
+];
+
+// Validator for passage creation
+// Todo: Change min/max before production
 exports.passageValidation = [
   check('inputPassageBody')
     .exists()

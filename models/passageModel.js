@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Book = require('../models/book');
+const Book = require('./bookModel');
 
 const PassageSchema = new mongoose.Schema({
   authorId: {
@@ -53,27 +53,26 @@ PassageSchema.post('remove', function (doc, next) {
 
 const Passage = module.exports = mongoose.model('Passage', PassageSchema);
 
-module.exports.createPassage = (newPassage) => {
-  return newPassage.save();
-};
 
+// Count passages in a specific book
 module.exports.countPassagesInBook = (bookId) => {
   return Passage
     .count({'bookId': bookId})
     .exec()
 };
 
-
+// Get the two passages corresponding to current page number
 module.exports.findPassagesForPage = (bookId, pageNumber) => {
   return Passage
     .find({'bookId': bookId})
-    //for each page we need to skip ([perPage] * [currentPage]) - [perPage]) values
+    //for each page we need to skip: ([passages per page] * [current page]) - [passages per page]) passages
     .skip((2 * pageNumber) - 2)
     .limit(2)
     .populate()
     .exec();
 };
 
+// Get the last passage of specific book
 module.exports.findLastPassageInBook = (bookId) => {
   return Passage
     .find({'bookId': bookId})
@@ -83,10 +82,19 @@ module.exports.findLastPassageInBook = (bookId) => {
     .exec();
 };
 
+// Get all passages for a specific book
+// Todo: Not used as of writing this. Find usage or remove
 module.exports.findAllPassagesInBook = (bookId) => {
-  const query = {'bookId': bookId};
   return Passage
-    .find(query)
+    .find({'bookId': bookId})
     .populate()
+    .exec();
+};
+
+// Remove all passages with specific passage.book.id
+// Only use when completely removing a book
+module.exports.deletePassagesFromBook = (bookId) => {
+  return Passage
+    .deleteMany({bookId: bookId})
     .exec();
 };

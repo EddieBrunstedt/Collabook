@@ -5,8 +5,10 @@ const passport = require('passport'), LocalStrategy = require('passport-local').
 //Import controllers
 const rootControllers = require('../controllers/rootControllers');
 const authControllers = require('../controllers/authControllers');
+const bookControllers = require('../controllers/bookControllers');
+const userControllers = require('../controllers/userControllers');
 
-const User = require('../models/user');
+const User = require('../models/userModel');
 
 passport.use(new LocalStrategy({
     usernameField: 'inputEmail',
@@ -50,31 +52,31 @@ passport.deserializeUser((id, done) => {
 
 // Get users own dashboard
 // Todo: Add correct checking for correct user
-router.get('/', authControllers.isLoggedIn, rootControllers.getDashboard);
+router.get('/', rootControllers.getDashboard);
 
 // Test Get - page for debugging
 // Todo: Remove before production
-router.get('/test', rootControllers.getTestPage);
+router.get('/test', rootControllers.test);
 
 // Get register form
 router.get('/register', rootControllers.getRegisterForm);
 
 // Post for registering user
-router.post('/register', rootControllers.registerValidation, rootControllers.postRegisterForm);
+router.post('/register', userControllers.registerValidation, rootControllers.postRegisterForm);
 
 // Get login page
 router.get('/login', rootControllers.getLoginForm);
 
 // Post for logging in
-router.post('/login', rootControllers.passportAuthenticate, rootControllers.postLoginForm);
+router.post('/login', authControllers.passportAuthenticate);
 
 // Get for passport de-authentication
-router.get('/logout', rootControllers.logOut);
+router.get('/logout', authControllers.logOut);
 
 // Get Book creation page
 router.get('/create-book', authControllers.isLoggedIn, rootControllers.getCreateBookForm);
 
 // Post for creating books
-router.post('/create-book', authControllers.isLoggedIn, rootControllers.createBookValidation, rootControllers.postCreateBookForm);
+router.post('/create-book', authControllers.isLoggedIn, bookControllers.bookValidation, rootControllers.createBook);
 
 module.exports = router;

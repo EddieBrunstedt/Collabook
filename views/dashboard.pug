@@ -31,7 +31,7 @@ block content
             th(scope='col') Next in turn
             th(scope='col') Last updated
         tbody
-          each book in allUserBooks
+          each book in booksByUser
             tr
               th(scope='row')
                 a(href='/book/' + book.id)= book.title
@@ -52,7 +52,7 @@ block content
             th(scope='col') Collaborator
             th(scope='col') Next in turn
         tbody
-          each book in notStartedBooks
+          each book in booksNotStarted
             tr
               th(scope='row')
                 a(href='/book/' + book.id)= book.title

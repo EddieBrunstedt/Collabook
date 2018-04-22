@@ -1,6 +1,10 @@
-const User = require('../models/user');
-const Book = require('../models/book');
+const {check, validationResult} = require('express-validator/check');
+const {matchedData, sanitize} = require('express-validator/filter');
 
+const User = require('../models/userModel');
+const Book = require('../models/bookModel');
+
+// Get profile page of a user
 exports.getProfilePage = (req, res, next) => {
   User.getUserById(req.params.userId)
     .then((viewedUser) => {
@@ -8,7 +12,7 @@ exports.getProfilePage = (req, res, next) => {
       const followsUser = viewedUser.followers.some((item) => {
         return item.equals(req.user.id);
       });
-      Book.findAllUserPublicBooks(viewedUser._id)
+      Book.findAllPublicBooksByUser(viewedUser._id)
         .then((booksByUser) => {
           res.render('userPage', {viewedUser, followsUser, booksByUser});
         })
@@ -21,6 +25,7 @@ exports.getProfilePage = (req, res, next) => {
     });
 };
 
+// Make profile updates
 exports.postUserPage = (req, res, next) => {
   User.getUserById(req.params.userId)
     .then((user) => {
@@ -28,7 +33,7 @@ exports.postUserPage = (req, res, next) => {
         req.flash('error_msg', 'You are not authorized to do that.');
         return res.redirect('/')
       }
-      User.updateUserProfile(req.params.userId, {bio: req.body.bioInput})
+      User.updateUser(req.params.userId, {bio: req.body.bioInput})
         .then(() => {
           req.flash('success_msg', 'You have successfully updated your profile');
           res.redirect('/user/' + req.params.userId);
@@ -42,6 +47,7 @@ exports.postUserPage = (req, res, next) => {
     })
 };
 
+// User follow another user
 exports.followUser = (req, res, next) => {
   let followedUserId;
 
@@ -75,6 +81,7 @@ exports.followUser = (req, res, next) => {
     });
 };
 
+// User unfollow another user
 exports.unfollowUser = (req, res, next) => {
   User.getUserById(req.params.userId)
     .then((user) => {
@@ -103,3 +110,13 @@ exports.unfollowUser = (req, res, next) => {
       next(err);
     });
 };
+
+// Validator for user registration
+exports.registerValidation = [
+  //Todo: Work out proper rules before production
+  check('inputEmail').exists().isEmail().trim().normalizeEmail({gmail_remove_dots: false}),
+  check('inputName').exists().isLength({min: 3}).withMessage('Name needs to be at least 3 characters long'),
+  check('inputPassword').exists().isLength({min: 3}).withMessage('Password needs to be at least 3 characters long'),
+  check('inputPasswordConf', 'Your passwords don\'t match').exists()
+    .custom((value, {req}) => value === req.body.inputPassword)
+];

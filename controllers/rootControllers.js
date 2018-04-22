@@ -1,20 +1,26 @@
-const {check, validationResult} = require('express-validator/check');
-const {matchedData, sanitize} = require('express-validator/filter');
-const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
+const {validationResult} = require('express-validator/check');
+
 const slug = require('slug');
 
 const logger = require('../logger');
 
-const User = require('../models/user');
-const Book = require('../models/book');
+const User = require('../models/userModel');
+const Book = require('../models/bookModel');
 
+// Test controller
+// Todo: Remove before production
+exports.test = (req, res, next) => {
+  res.render('test', {slug: slug('this is a test of things...')})
+};
+
+// Get users own dashboard
 exports.getDashboard = (req, res, next) => {
   if (req.user) {
-    Book.findAllUserBooks(req.user._id)
-      .then((allUserBooks) => {
-        let notStartedBooks = allUserBooks
+    Book.findAllBooksWithUser(req.user._id)
+      .then((booksByUser) => {
+        let booksNotStarted = booksByUser
           .filter(book => !book.passages[0]);
-        let parsed_allUserBooks = allUserBooks
+        let booksByUserParsed = booksByUser
         //Remove books without passages
           .filter(book => book.passages[0])
           //Sort array after lastPassageStamp in book
@@ -29,35 +35,34 @@ exports.getDashboard = (req, res, next) => {
           });
         res.render('dashboard',
           {
-            allUserBooks: parsed_allUserBooks,
-            notStartedBooks
+            booksByUser: booksByUserParsed,
+            booksNotStarted
           })
       })
       .catch((err) => {
         next(err);
       });
   } else {
-    res.render('guestStartPage');
+    res.redirect('/login');
   }
 };
 
-//Todo: Remove this
-exports.getTestPage = (req, res, next) => {
-  res.render('test', {slug: slug('this is a test of things...')})
-};
-
+// Get login page
 exports.getLoginForm = (req, res) => {
   res.render('login');
 };
 
+// Post for logging in
 exports.postLoginForm = (req, res) => {
   res.redirect('/')
 };
 
+// Get register form
 exports.getRegisterForm = (req, res) => {
   res.render('register');
 };
 
+// Post for registering user
 exports.postRegisterForm = (req, res) => {
   const errors = validationResult(req);
 
@@ -87,17 +92,13 @@ exports.postRegisterForm = (req, res) => {
     });
 };
 
-exports.logOut = (req, res) => {
-  req.logout();
-  req.flash('success_msg', 'You have been successfully logged out');
-  res.redirect('/');
-};
-
+// Get Book creation page
 exports.getCreateBookForm = (req, res) => {
   res.render('createBook');
 };
 
-exports.postCreateBookForm = (req, res, next) => {
+// Create book
+exports.createBook = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -123,9 +124,8 @@ exports.postCreateBookForm = (req, res, next) => {
       });
 
       newBook.save()
-        .then((returnedValue) => {
-          //Todo: Add Book ID in log
-          logger.info(`BOOK CREATED: owner: ${req.user.id}/${req.user.name} collaborator: ${user.id}/${user.name}`);
+        .then((book) => {
+          logger.info(`BOOK CREATED - book/owner/collaborator: ${book.id} / ${book.owner} / ${book.collaborator}`);
           req.flash('success_msg', 'Your book was created successfully');
           res.redirect('/');
         })
@@ -138,25 +138,3 @@ exports.postCreateBookForm = (req, res, next) => {
       }
     );
 };
-
-exports.passportAuthenticate = passport.authenticate('local', {
-  successRedirect: '/',
-  failureFlash: true,
-  failureRedirect: '/login',
-});
-
-exports.registerValidation = [
-  //Todo: Work out proper rules before production
-  check('inputEmail').exists().isEmail().trim().normalizeEmail({gmail_remove_dots: false}),
-  check('inputName').exists().isLength({min: 3}).withMessage('Name needs to be at least 3 characters long'),
-  check('inputPassword').exists().isLength({min: 3}).withMessage('Password needs to be at least 3 characters long'),
-  check('inputPasswordConf', 'Your passwords don\'t match').exists()
-    .custom((value, {req}) => value === req.body.inputPassword)
-];
-
-exports.createBookValidation = [
-  check('inputTitle').exists().trim().isLength({
-    min: 1,
-    max: 100
-  }).withMessage('Your book title must be between 1 and 100 characters long')
-];

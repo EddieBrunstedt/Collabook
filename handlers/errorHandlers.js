@@ -6,7 +6,7 @@ exports.catch404 = (req, res, next) => {
 };
 
 // error handler
-exports.erroHandler = (err, req, res, next) => {
+exports.erroHandler = (err, req, res) => {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

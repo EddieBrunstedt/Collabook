@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const md5 = require('md5');
 
-// User Schema
+// Define user schema
 const UserSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -38,13 +38,15 @@ const UserSchema = new mongoose.Schema({
   }],
 }, {runSettersOnQuery: true});
 
-// making User.gravatar
+// Virtual for Gravatar profile picture link
 UserSchema.virtual('gravatar').get(function () {
   return 'https://www.gravatar.com/avatar/' + md5(this.email) + '?s=200&r=pg&d=mm';
 });
 
 const User = module.exports = mongoose.model('User', UserSchema);
 
+
+// Create a useruser
 module.exports.createUser = (newUser) => {
   bcrypt.genSalt(10)
     .then((salt) => {
@@ -59,19 +61,23 @@ module.exports.createUser = (newUser) => {
     })
 };
 
+// Get user by id
 module.exports.getUserById = (id) => {
   return User.findById(id);
 };
 
+// Get user by email
 module.exports.getUserByEmail = (email) => {
   return User.findOne({email: email});
 };
 
+// Compare candidate password with stored hash
 module.exports.comparePassword = (candidatePassword, hash) => {
   return bcrypt.compare(candidatePassword, hash);
 };
 
-module.exports.updateUserProfile = (id, updates) => {
+// Update user
+module.exports.updateUser = (id, updates) => {
   return User.findOneAndUpdate(
     {_id: id},
     {$set: updates},
@@ -79,6 +85,7 @@ module.exports.updateUserProfile = (id, updates) => {
   )
 };
 
+// Remove user.id from user.following
 module.exports.removeUserFromFollowing = (userIdToRemove, userIdToRemoveFrom) => {
   return User.update(
     {_id: userIdToRemoveFrom},
@@ -86,6 +93,7 @@ module.exports.removeUserFromFollowing = (userIdToRemove, userIdToRemoveFrom) =>
   )
 };
 
+// Remove user.id from user.following
 module.exports.removeUserFromFollowers = (userIdToRemove, userIdToRemoveFrom) => {
   return User.update(
     {_id: userIdToRemoveFrom},

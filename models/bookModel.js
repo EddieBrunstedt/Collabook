@@ -48,19 +48,24 @@ const BookSchema = new mongoose.Schema({
 
 const Book = module.exports = mongoose.model('Book', BookSchema);
 
+
+// Create a book
 module.exports.createBook = (newBook) => {
   return newBook.save();
 };
 
+// Find ALL public books
+// Todo: Not used as for writing this. Make sure it is used somewhere
 module.exports.findAllPublicBooks = () => {
   return Book
     .find({'public': true})
-    .populate('owner collaborator')
+    .populate('')
     .sort({createdDate: -1})
     .exec()
 };
 
-module.exports.findAllUserPublicBooks = (userId) => {
+// Find all public books by a specific user
+module.exports.findAllPublicBooksByUser = (userId) => {
   return Book
     .find({$or: [{owner: userId}, {collaborator: userId}], public: true})
     .populate('collaborator owner')
@@ -68,15 +73,18 @@ module.exports.findAllUserPublicBooks = (userId) => {
     .exec()
 };
 
-module.exports.findAllUserActiveBooks = (userId) => {
+// Find all books active for a specific user
+// Todo: Not used as for writing this. Make sure it is used somewhere
+module.exports.findAllBooksActiveForUser = (userId) => {
   return Book
     .find({activeWriter: userId})
-    .populate('owner collaborator')
+    .populate('')
     .sort({createdDate: -1})
     .exec()
 };
 
-module.exports.findAllUserBooks = (userId) => {
+// Find all books where user is owner or collaborator
+module.exports.findAllBooksWithUser = (userId) => {
   return Book
     .find({$or: [{owner: userId}, {collaborator: userId}]})
     .populate('owner collaborator activeWriter passages')
@@ -85,6 +93,7 @@ module.exports.findAllUserBooks = (userId) => {
     .exec()
 };
 
+// Find a book by id
 module.exports.findBookById = (id) => {
   return Book
     .findById(id)
@@ -92,14 +101,16 @@ module.exports.findBookById = (id) => {
     .exec();
 };
 
-module.exports.switchActiveWriter = (bookId, activeWriter) => {
+// Update active writer for book
+module.exports.updateActiveWriter = (bookId, userIdToActive) => {
   return Book
-    .findByIdAndUpdate(bookId, {activeWriter: activeWriter})
+    .findByIdAndUpdate(bookId, {activeWriter: userIdToActive})
     .exec();
 };
 
-module.exports.deleteBookById = (id) => {
+// Delete a book by id
+module.exports.deleteBook = (id) => {
   return Book
-    .deleteOne({_id: id})
+    .remove({_id: id})
     .exec();
 };
