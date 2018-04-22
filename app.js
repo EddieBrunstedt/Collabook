@@ -7,7 +7,6 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const lessMiddleware = require('less-middleware');
-const logger = require('./logger');
 const expressValidator = require('express-validator');
 const flash = require('connect-flash');
 const session = require('express-session');
@@ -16,6 +15,8 @@ const mongoose = require('mongoose');
 const slug = require('slug');
 const helpers = require('./helpers');
 const errorHandlers = require('./handlers/errorHandlers');
+
+const logger = require('./logger');
 
 const index = require('./routes/rootRoute');
 const user = require('./routes/userRoute');
