@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const BookSchema = mongoose.Schema({
+const BookSchema = new mongoose.Schema({
   title: {
     type: String,
     trim: true,
@@ -39,6 +39,10 @@ const BookSchema = mongoose.Schema({
   activeWriter: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+  },
+  lastPassageStamp: {
+    type: Date,
+    default: Date.now
   }
 });
 
@@ -84,7 +88,7 @@ module.exports.findAllUserBooks = (userId) => {
 module.exports.findBookById = (id) => {
   return Book
     .findById(id)
-    .populate('owner collaborator activeWriter')
+    .populate('owner collaborator activeWriter passages')
     .exec();
 };
 

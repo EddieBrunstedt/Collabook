@@ -1,12 +1,5 @@
 extends layout
 
-mixin addPassageForm
-  form(action='/book/' + book.id + '/addPassage', method='post')
-    .form-group
-      label(for='inputPassageBody') Write Passage here
-      textarea#inputPassageBody.form-control(rows='3', name='inputPassageBody')
-    button.btn.btn-primary(type='submit') Submit
-
 mixin introductionCard
   .card.book-page-container.card-shadow
     .card-body

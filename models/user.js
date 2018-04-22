@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const md5 = require('md5');
 
 // User Schema
-const UserSchema = mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     index: true,

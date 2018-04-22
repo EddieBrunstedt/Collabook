@@ -8,26 +8,26 @@ const logger = require('../logger');
 const User = require('../models/user');
 const Book = require('../models/book');
 
-exports.getHomePage = (req, res, next) => {
+exports.getDashboard = (req, res, next) => {
   if (req.user) {
     Book.findAllUserBooks(req.user._id)
       .then((allUserBooks) => {
         let notStartedBooks = allUserBooks
           .filter(book => !book.passages[0]);
-
         let parsed_allUserBooks = allUserBooks
+        //Remove books without passages
           .filter(book => book.passages[0])
+          //Sort array after lastPassageStamp in book
           .sort((a, b) => {
-
-            if (a.passages[0].createdDate < b.passages[0].createdDate) {
+            if (a.lastPassageStamp < b.lastPassageStamp) {
               return 1;
             }
-            if (b.passages[0].createdDate < a.passages[0].createdDate) {
+            if (b.lastPassageStamp < a.lastPassageStamp) {
               return -1;
             }
             return 0;
           });
-        res.render('userStartPage',
+        res.render('dashboard',
           {
             allUserBooks: parsed_allUserBooks,
             notStartedBooks
@@ -137,10 +137,6 @@ exports.postCreateBookForm = (req, res, next) => {
         next(err);
       }
     );
-};
-
-exports.getDashboard = (req, res) => {
-  res.render('dashboard');
 };
 
 exports.passportAuthenticate = passport.authenticate('local', {

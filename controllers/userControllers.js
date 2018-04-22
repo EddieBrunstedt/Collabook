@@ -1,7 +1,7 @@
 const User = require('../models/user');
-const Book = require('../models/book')
+const Book = require('../models/book');
 
-exports.getUserPage = (req, res, next) => {
+exports.getProfilePage = (req, res, next) => {
   User.getUserById(req.params.userId)
     .then((viewedUser) => {
       //set followingUser to true if user follows other user

@@ -5,9 +5,11 @@ const router = express.Router();
 const userControllers = require('../controllers/userControllers');
 const authControllers = require('../controllers/authControllers');
 
-router.get('/:userId', userControllers.getUserPage);
-router.post('/:userId', authControllers.isLoggedIn, userControllers.postUserPage);
+//Get User Profile page
+router.get('/:userId', userControllers.getProfilePage);
 
+// Post to profile for profile updates
+router.post('/:userId', authControllers.isLoggedIn, userControllers.postUserPage);
 
 //User follow another User
 router.post('/:userId/follow-user', userControllers.followUser);

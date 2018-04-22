@@ -5,6 +5,8 @@ const slug = require('slug');
 const Book = require('../models/book');
 const Passage = require('../models/passage');
 
+// Get book page and handle possible specific page numbers
+// Todo: Create checking for correct user in regards to if book is public or not
 exports.getBookPage = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
@@ -169,7 +171,7 @@ exports.switchActiveWriter = (req, res, next) => {
     });
 };
 
-//TODO: ALSO DELETE ALL PASSAGES FOR THIS BOOK YOU SILLY
+
 exports.deleteBook = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {

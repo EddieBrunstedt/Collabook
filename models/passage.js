@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
-const PassageSchema = mongoose.Schema({
+const Book = require('../models/book');
+
+const PassageSchema = new mongoose.Schema({
   authorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
@@ -18,6 +20,35 @@ const PassageSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Book'
   }
+});
+
+PassageSchema.post('save', function (doc, next) {
+  Book.findBookById(this.bookId)
+    .then((book) => {
+      book.lastPassageStamp = this.createdDate;
+      book.save();
+      next();
+    })
+    .catch((err) => {
+      next(err);
+    });
+});
+
+PassageSchema.post('remove', function (doc, next) {
+  Book.findBookById(this.bookId)
+    .then((book) => {
+      if (!book.passages[0]) {
+        book.lastPassageStamp = book.createdDate;
+        book.save();
+        next();
+      }
+      book.lastPassageStamp = book.passages[0].createdDate;
+      book.save();
+      next();
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 const Passage = module.exports = mongoose.model('Passage', PassageSchema);

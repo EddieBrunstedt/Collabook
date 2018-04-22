@@ -8,13 +8,10 @@ const authControllers = require('../controllers/authControllers');
 
 const User = require('../models/user');
 
-//---------------------------------------------------------//
-
 passport.use(new LocalStrategy({
     usernameField: 'inputEmail',
     passwordField: 'inputPassword'
-  },
-  (email, password, done) => {
+  }, (email, password, done) => {
     User.getUserByEmail(email)
       .then((user) => {
         if (!user) {
@@ -28,11 +25,11 @@ passport.use(new LocalStrategy({
             return done(null, user);
           })
           .catch((err) => {
-            throw err;
+            next(err);
           });
       })
       .catch(err => {
-        throw err;
+        next(err);
       })
   }
 ));
@@ -47,28 +44,37 @@ passport.deserializeUser((id, done) => {
       done(null, user);
     })
     .catch(err => {
-      throw err;
+      next(err);
     })
 });
 
-router.get('/', rootControllers.getHomePage);
+// Get users own dashboard
+// Todo: Add correct checking for correct user
+router.get('/', authControllers.isLoggedIn, rootControllers.getDashboard);
 
+// Test Get - page for debugging
+// Todo: Remove before production
 router.get('/test', rootControllers.getTestPage);
 
+// Get register form
 router.get('/register', rootControllers.getRegisterForm);
 
+// Post for registering user
 router.post('/register', rootControllers.registerValidation, rootControllers.postRegisterForm);
 
+// Get login page
 router.get('/login', rootControllers.getLoginForm);
 
+// Post for logging in
 router.post('/login', rootControllers.passportAuthenticate, rootControllers.postLoginForm);
 
+// Get for passport de-authentication
 router.get('/logout', rootControllers.logOut);
 
-router.get('/create-book', rootControllers.getCreateBookForm);
+// Get Book creation page
+router.get('/create-book', authControllers.isLoggedIn, rootControllers.getCreateBookForm);
 
-router.post('/create-book', rootControllers.createBookValidation, rootControllers.postCreateBookForm);
-
-router.get('/dashboard', authControllers.isLoggedIn, rootControllers.getDashboard);
+// Post for creating books
+router.post('/create-book', authControllers.isLoggedIn, rootControllers.createBookValidation, rootControllers.postCreateBookForm);
 
 module.exports = router;

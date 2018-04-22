@@ -1,32 +1,70 @@
 extends layout
 
+mixin userBooks(book)
+  .table-responsive
+
+    .card.mb-3.card-shadow.text-center
+      .card-body
+        h5.card-title
+          a.link-primary(href='/book/' + book.id)= book.title
+        hr
+        p.card-text.text-muted Norea wrote a passage at this and this time
+      ul.list-group.list-group-flush
+        li.list-group-item  Cras justo odio
+
 block content
-  .container-fluid
-    .row
-      nav.col-md-2.d-none.d-md-block.bg-light.sidebar
-        .sidebar-sticky
-          ul.nav.flex-column
-            li.nav-item
-              a.nav-link.active(href='#')
-                span My books
-            li.nav-item
-              a.nav-link(href='#')
-                span Create book
-          h6.sidebar-heading.d-flex.justify-content-between.align-items-center.px-3.mt-4.mb-1.text-muted
-            span Separator Placeholder
-            a.d-flex.align-items-center.text-muted(href='#')
-              span(data-feather='plus-circle')
-          ul.nav.flex-column.mb-2
-            li.nav-item
-              a.nav-link(href='#')
-                span Create book
-      main.col-md-9.ml-sm-auto.col-lg-10.pt-3.px-4(role='main')
-        .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pb-2.mb-3.border-bottom
-          h1.h2 Dashboard
-          .btn-toolbar.mb-2.mb-md-0
-            .btn-group.mr-2
-              button.btn.btn-sm.btn-outline-secondary Share
-              button.btn.btn-sm.btn-outline-secondary Export
-            button.btn.btn-sm.btn-outline-secondary.dropdown-toggle
-              span(data-feather='calendar')
-              | This week
+  .container
+    //- TODO: Make this button look better
+    #nav-field
+      button.btn.btn-lg.btn-warning(onclick='window.location="/create-book";')
+        i.fas.fa-book
+        |
+        |
+        | Create new book
+    section
+      h1 Your latest books
+      table.table.table-sm
+        thead
+          tr
+            th(scope='col') Title
+            th(scope='col') Collaborator
+            th(scope='col') Next in turn
+            th(scope='col') Last updated
+        tbody
+          each book in allUserBooks
+            tr
+              th(scope='row')
+                a(href='/book/' + book.id)= book.title
+              td
+                if book.owner.id === user.id
+                  a(href='/user/' + book.collaborator.id)= book.collaborator.name
+                if book.collaborator.id === user.id
+                  a(href='/user/' + book.owner.id)= book.owner.name
+              td
+                a(href='/user/' + book.activeWriter.id)= book.activeWriter.name
+              td= h.moment(book.lastPassageStamp).calendar()
+    section
+      h1 Not started yet
+      table.table.table-sm
+        thead
+          tr
+            th(scope='col') Title
+            th(scope='col') Collaborator
+            th(scope='col') Next in turn
+        tbody
+          each book in notStartedBooks
+            tr
+              th(scope='row')
+                a(href='/book/' + book.id)= book.title
+              td
+                if book.owner.id === user.id
+                  a(href='/user/' + book.collaborator.id)= book.collaborator.name
+                if book.collaborator.id === user.id
+                  a(href='/user/' + book.owner.id)= book.owner.name
+              td
+                a(href='/user/' + book.activeWriter.id)= book.activeWriter.name
+
+    section
+      h1 Latest books you are following
+    section
+      h1 Popular books (most likes)
