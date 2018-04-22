@@ -10,6 +10,7 @@ const Passage = require('../models/passageModel');
 exports.getBookPage = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
+
       Passage.countPassagesInBook(book.id)
         .then((totalNumOfPassages) => {
 
