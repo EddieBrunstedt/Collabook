@@ -10,6 +10,7 @@ exports.getBookPage = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
 
+      // Check for correct user when book is private.
       if (!book.public && !req.user || (req.user.id !== book.owner.id && req.user.id !== book.collaborator.id)) {
         req.flash('error_msg', 'That is a private book. You can see it only if it becomes public.');
         return res.redirect('/')
