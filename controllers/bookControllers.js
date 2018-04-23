@@ -6,10 +6,14 @@ const Book = require('../models/bookModel');
 const Passage = require('../models/passageModel');
 
 // Get book page and handle possible specific page numbers
-// Todo: Create checking for correct user in regards to if book is public or not
 exports.getBookPage = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
+
+      if (!book.public && !req.user || (req.user.id !== book.owner.id && req.user.id !== book.collaborator.id)) {
+        req.flash('error_msg', 'That is a private book. You can see it only if it becomes public.');
+        return res.redirect('/')
+      }
 
       Passage.countPassagesInBook(book.id)
         .then((totalNumOfPassages) => {
