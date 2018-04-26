@@ -44,25 +44,26 @@ block content
                 a(href='/user/' + book.activeWriter.id)= book.activeWriter.name
               td= h.moment(book.lastPassageStamp).calendar()
     section
-      h1 Not started yet
-      table.table.table-sm
-        thead
-          tr
-            th(scope='col') Title
-            th(scope='col') Collaborator
-            th(scope='col') Next in turn
-        tbody
-          each book in booksNotStarted
+      if booksNotStarted.length > 0
+        h1 Not started yet
+        table.table.table-sm
+          thead
             tr
-              th(scope='row')
-                a(href='/book/' + book.id)= book.title
-              td
-                if book.owner.id === user.id
-                  a(href='/user/' + book.collaborator.id)= book.collaborator.name
-                if book.collaborator.id === user.id
-                  a(href='/user/' + book.owner.id)= book.owner.name
-              td
-                a(href='/user/' + book.activeWriter.id)= book.activeWriter.name
+              th(scope='col') Title
+              th(scope='col') Collaborator
+              th(scope='col') Next in turn
+          tbody
+            each book in booksNotStarted
+              tr
+                th(scope='row')
+                  a(href='/book/' + book.id)= book.title
+                td
+                  if book.owner.id === user.id
+                    a(href='/user/' + book.collaborator.id)= book.collaborator.name
+                  if book.collaborator.id === user.id
+                    a(href='/user/' + book.owner.id)= book.owner.name
+                td
+                  a(href='/user/' + book.activeWriter.id)= book.activeWriter.name
 
     section
       h1 Latest books you are following

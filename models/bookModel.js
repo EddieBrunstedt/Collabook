@@ -108,6 +108,13 @@ module.exports.updateActiveWriter = (bookId, userIdToActive) => {
     .exec();
 };
 
+// Set a book private if it is public and vice versa
+module.exports.setPrivateOrPublic = (bookId, newStatus) => {
+  return Book
+    .findByIdAndUpdate(bookId, {public: newStatus})
+    .exec();
+};
+
 // Delete a book by id
 module.exports.deleteBook = (id) => {
   return Book

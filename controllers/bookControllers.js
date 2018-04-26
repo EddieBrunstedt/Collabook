@@ -11,6 +11,7 @@ exports.getBookPage = (req, res, next) => {
     .then((book) => {
 
       // Check for correct user when book is private.
+      // Todo: FIX "TypeError: Cannot read property 'id' of undefined" when guest tries to access private book.
       if (!book.public && !req.user || (req.user.id !== book.owner.id && req.user.id !== book.collaborator.id)) {
         req.flash('error_msg', 'That is a private book. You can see it only if it becomes public.');
         return res.redirect('/')
@@ -123,11 +124,21 @@ exports.createPassage = (req, res, next) => {
         .catch((err) => {
           next(err);
         });
-
     })
     .catch((err) => {
       next(err);
     });
+};
+
+// Set a book private if it is public and vice versa
+exports.setPrivateOrPublic = (req, res, next) => {
+  Book.setPrivateOrPublic()
+    .then(() => {
+      res.redirect('back');
+    })
+    .catch((err) => {
+      next(err);
+    })
 };
 
 // Switch active writer for book

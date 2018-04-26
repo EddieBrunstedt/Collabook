@@ -14,6 +14,7 @@ exports.getProfilePage = (req, res, next) => {
       });
       Book.findAllPublicBooksByUser(viewedUser._id)
         .then((booksByUser) => {
+          console.log(booksByUser);
           res.render('userPage', {viewedUser, followsUser, booksByUser});
         })
         .catch((err) => {

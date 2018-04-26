@@ -12,34 +12,45 @@ mixin introductionCard
 block content
   .container
     h1.google-font= book.title
-    .row
-      .col-12
-        i.fas.fa-users.text-warning
-        |
-        |
-        span by
-          |
-          |
-          a(href='/user/' + book.owner.id)= book.owner.name
-          |
-          | and
-          |
-          a(href='/user/' + book.collaborator.id)= book.collaborator.name
-        h6.text-muted.mt-2 Book created on #{h.moment(book.createdDate).format('MMMM Do YYYY, h:mm:ss a')}
+    p#author-text Authors:
+      |
+      |
+      a(href='/user/' + book.owner.id)= book.owner.name
+      |
+      | &
+      |
+      a(href='/user/' + book.collaborator.id)= book.collaborator.name
+    p.text-muted.mt-2 Created #{h.moment(book.createdDate).format('MMMM Do YYYY')}
+    if !book.public
+      i.fas.fa-lock.text-danger
+      |
+      | This is a private book
     if user
       unless user.id === book.owner.id || user.id === book.activeWriter.id
       hr
       .row
-        .col-6
+        .col-4
           if user && user.id === book.owner.id
             a.btn.btn-sm.btn-outline-dark.mb-3(id='slideToggle' href='#', role='button')
               i.fas.fa-cog
+              |
+              | Settings
             #expandable-div
               ul.fa-ul.mt-2
                 li
                   span.fa-li
                     i.fas.fa-exchange-alt
                   a(href='/book/' + book.id + '/switch-writer') Switch writer to #{book.activeWriter.id === book.owner.id ? book.collaborator.name : book.owner.name}
+                if book.public
+                  li
+                    span.fa-li
+                      i.fas.fa-lock.text-warning
+                    a(href='/', data-toggle="modal", data-target="#confirm-make-private") Make Private
+                if !book.public
+                  li
+                    span.fa-li
+                      i.fas.fa-lock.text-warning
+                    a(href='/', data-toggle="modal", data-target="#confirm-make-public") Make Public
                 li
                   span.fa-li
                     i.fas.fa-trash-alt.text-danger
@@ -60,6 +71,40 @@ block content
                       .modal-footer
                         button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
                         button.btn.btn-danger(type='submit') Confirm
+              if book.public
+                #confirm-make-private.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
+                  .modal-dialog.modal-dialog-centered(role='document')
+                    .modal-content
+                      form(action='/book/' + book.id + '/delete', method='post')
+                        .modal-body
+                          p.text-center Are you sure that you want to remove this book?
+                          p.text-center To permanently remove your book, please enter:
+                          h6#confirm-delete-slug.text-center
+                            strong= h.slug(book.title, {lower: true})
+                          p.text-center in the box below and press confirm.
+                          .form-group
+                            input#confirm-delete-input.form-control.text-center(type='text', name='inputConfirmation')
+                            small#emailHelp.form-text.text-muted.text-center This action cannot be undone
+                        .modal-footer
+                          button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                          button.btn.btn-danger(type='submit') Confirm
+              if !book.public
+                #confirm-make-public.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
+                  .modal-dialog.modal-dialog-centered(role='document')
+                    .modal-content
+                      form(action='/book/' + book.id + '/delete', method='post')
+                        .modal-body
+                          p.text-center Are you sure that you want to remove this book?
+                          p.text-center To permanently remove your book, please enter:
+                          h6#confirm-delete-slug.text-center
+                            strong= h.slug(book.title, {lower: true})
+                          p.text-center in the box below and press confirm.
+                          .form-group
+                            input#confirm-delete-input.form-control.text-center(type='text', name='inputConfirmation')
+                            small#emailHelp.form-text.text-muted.text-center This action cannot be undone
+                        .modal-footer
+                          button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                          button.btn.btn-danger(type='submit') Confirm
         .col-6.text-right
           if user && user.id === book.activeWriter.id
             a.btn.btn-success.mb-4(href='/book/' + book.id + '/addPassage', role='button')
@@ -80,8 +125,17 @@ block content
             .card-body
               if currentPassages[1]
                 p!= currentPassages[1].body
-            .card-page-footer.text-muted.text-center
-              p= currentPage * 2
+            .card-page-footer.text-muted
+              .row
+                .col
+                .col.align-self-center.text-center
+                  p= currentPage * 2
+                .col.text-right
+                  if user && user.id === book.activeWriter.id
+                    a#new-passage-button.btn.btn-sm.btn-success(href='/book/' + book.id + '/addPassage', role='button')
+                      i.fas.fa-plus
+                      |
+                      | New passage
       else
         hr
         h5.text-center
@@ -133,7 +187,6 @@ block content
           if totalBookPages > (currentPage + 3)
             li.page-item
               a.page-link(href=href = '/book/' + book.id + '/' + (currentPage + 4))= String(((currentPage + 4) * 2 - 1) + '-' + (currentPage + 4) * 2)
-          //- Why is it not?
           unless currentPage === totalBookPages && !viewingIntroduction
             li.page-item
               a.page-link(href='/book/' + book.id + '/' + totalBookPages) Last

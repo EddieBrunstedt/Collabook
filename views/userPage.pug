@@ -15,29 +15,44 @@ block content
             else
               form(action='/user/' + viewedUser.id + '/unfollow-user', method='post')
                 input.btn.btn-success.btn-block.mb-3(type='submit', value='Following')
-    .card
-      .card-body
-        if viewedUser.bio
-          h3 Biography
-          p= viewedUser.bio
-          hr
-        if user.id === viewedUser.id
-          form(action='/user/' + viewedUser.id , method='post')
-            .form-group
-              textarea#bioInput.form-control(name='bioInput')= viewedUser.bio
-              //- TODO: Change this help text
-              small#bioHelp.form-text.text-muted This is a help text
-            button.btn.btn-sm.btn-success(type='submit') Update biography
-          hr
-        h3 Books by user
-        dl
-          each book in booksByUser
-            dt
-              a(href='/book/' + book.id)= book.title
-            dd.text-muted
-              | With
-              |
-              if book.owner.id === viewedUser.id
-                a(href='/user/' + book.collaborator.id)= book.collaborator.name
-              if book.collaborator.id === viewedUser.id
-                a(href='/user/' + book.owner.id)= book.owner.name
+    if viewedUser.bio
+      h3 Biography
+      p= viewedUser.bio
+      hr
+    if user.id === viewedUser.id
+      form(action='/user/' + viewedUser.id , method='post')
+        .form-group
+          textarea#bioInput.form-control(name='bioInput')= viewedUser.bio
+          //- TODO: Change this help text
+          small#bioHelp.form-text.text-muted This is a help text
+        button.btn.btn-sm.btn-success(type='submit') Update biography
+
+    if booksByUser.length > 0
+      hr
+      h3 Books by user
+      .row
+        each book in booksByUser
+          .col-4
+            .card
+              .card-body
+                h5.card-title
+                  a(href='/book/' + book.id)= book.title
+                hr
+                p#author-text Authors:
+                  |
+                  |
+                  a(href='/user/' + book.owner.id)= book.owner.name
+                  |
+                  | &
+                  |
+                  a(href='/user/' + book.collaborator.id)= book.collaborator.name
+                p.text-muted.mt-2 Created #{h.moment(book.createdDate).format('MMMM Do YYYY')}
+              //dt
+              //  a(href='/book/' + book.id)= book.title
+              //dd.text-muted
+              //  | With
+              //  |
+              //  if book.owner.id === viewedUser.id
+              //    a(href='/user/' + book.collaborator.id)= book.collaborator.name
+              //  if book.collaborator.id === viewedUser.id
+              //    a(href='/user/' + book.owner.id)= book.owner.name

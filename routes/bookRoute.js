@@ -19,6 +19,8 @@ router.post('/:bookId/addPassage', authControllers.isLoggedIn, bookControllers.p
 // Get book introduction page
 router.get('/:bookId/introduction', bookControllers.getIntroduction);
 
+router.get('/:bookId/switch-status', bookControllers.setPrivateOrPublic);
+
 // Get request for switching active writer in book
 // Todo: Add checking for correct user
 router.get('/:bookId/switch-writer', bookControllers.switchActiveWriter);
