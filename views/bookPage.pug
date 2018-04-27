@@ -76,19 +76,12 @@ block content
                 #confirm-make-private.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
                   .modal-dialog.modal-dialog-centered(role='document')
                     .modal-content
-                      form(action='/book/' + book.id + '/delete', method='post')
-                        .modal-body
-                          p.text-center Are you sure that you want to remove this book?
-                          p.text-center To permanently remove your book, please enter:
-                          h6#confirm-delete-slug.text-center
-                            strong= h.slug(book.title, {lower: true})
-                          p.text-center in the box below and press confirm.
-                          .form-group
-                            input#confirm-delete-input.form-control.text-center(type='text', name='inputConfirmation')
-                            small#emailHelp.form-text.text-muted.text-center This action cannot be undone
-                        .modal-footer
-                          button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                          button.btn.btn-danger(type='submit') Confirm
+                      .modal-body
+                        p.text-center You are about to make this book private. Only you and the book collaborator will be able to see this book in the future.
+                        p.text-center Are you sure you want to do this?
+                      .modal-footer
+                        button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                        a.btn.btn-primary(type='submit') Confirm
               if !book.public
                 #confirm-make-public.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
                   .modal-dialog.modal-dialog-centered(role='document')
@@ -133,7 +126,7 @@ block content
                   p= currentPage * 2
                 .col.text-right
                   if user && user.id === book.activeWriter.id
-                    a#new-passage-button.btn.btn-sm.btn-success(href='/book/' + book.id + '/addPassage', role='button')
+                    a.btn.btn-sm.btn-success(href='/book/' + book.id + '/addPassage', role='button')
                       i.fas.fa-plus
                       |
                       | New passage

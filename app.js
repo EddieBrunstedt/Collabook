@@ -49,6 +49,8 @@ app.use(morgan('dev', {
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DB_HOST)
   .then(() => {
+    const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
     logger.info('Succesfully connected to Mongo database');
   })
   .catch((err) => {

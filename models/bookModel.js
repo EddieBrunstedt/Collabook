@@ -93,6 +93,20 @@ module.exports.findAllBooksWithUser = (userId) => {
     .exec()
 };
 
+// Find all public books from users that a user is following
+module.exports.findFollowedUsersBooks = (userIDArray, idToExclude) => {
+  return Book
+  //.find({'_id': {$in: userIDArray}})
+    .find({})
+    .or([{owner: {$in: userIDArray}}, {collaborator: {$in: userIDArray}}])
+    .nor([{owner: idToExclude}, {collaborator: idToExclude}])
+    .populate('activeWriter owner collaborator')
+    .populate({path: 'passages', options: {sort: {'createdDate': -1}}})
+    .sort({createdDate: -1})
+    .exec()
+}
+;
+
 // Find a book by id
 module.exports.findBookById = (id) => {
   return Book

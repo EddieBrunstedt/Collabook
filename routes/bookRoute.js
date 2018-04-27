@@ -19,6 +19,7 @@ router.post('/:bookId/addPassage', authControllers.isLoggedIn, bookControllers.p
 // Get book introduction page
 router.get('/:bookId/introduction', bookControllers.getIntroduction);
 
+// Get for making book private or public
 router.get('/:bookId/switch-status', bookControllers.setPrivateOrPublic);
 
 // Get request for switching active writer in book

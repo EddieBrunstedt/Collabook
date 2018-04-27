@@ -1,77 +1,134 @@
 extends layout
 
 mixin bookCard(book)
-  .card
+  .card.mb-3.border-dark
+    .card-header.bg-light
+      h3.google-font
+        a(href='/book/' + book.id)= book.title
+      if book.owner.id === user.id
+        span With:
+          |
+          |
+          a(href='/user/' + book.collaborator.id)= book.collaborator.name
+      if book.collaborator.id === user.id
+        span With:
+          |
+          |
+          a(href='/user/' + book.owner.id)= book.owner.name
     .card-body
-      .text-center
-        .card-body
-          h5.card-title
-            a.link-primary(href='/book/' + book.id)= book.title
-          hr
-          p.card-text.text-muted Norea wrote a passage at this and this time
-        ul.list-group.list-group-flush
-          li.list-group-item  Cras justo odio
+      if book.activeWriter.id === user.id
+        .row
+          .col-auto
+            p.card-text Next writer:
+          .col-auto
+            i.heartbeat.fas.fa-star.text-success
+            span You
+      else
+        .row
+          .col-auto
+            p.card-text Next writer:
+          .col-auto
+            span= book.activeWriter.name
+    ul.list-group.list-group-flush
+      li.list-group-item
+        p.card-text.text-muted Last updated: #{h.moment(book.lastPassageStamp).calendar()}
+        p.card-text.text-muted Pages written: #{book.passages.length}
+
+mixin blankBookCard(book)
+  .card.mb-3.border-dark
+    .card-header.bg-light
+      h3.google-font
+        a(href='/book/' + book.id)= book.title
+      if book.owner.id === user.id
+        span With:
+          |
+          |
+          a(href='/user/' + book.collaborator.id)= book.collaborator.name
+      if book.collaborator.id === user.id
+        span With:
+          |
+          |
+          a(href='/user/' + book.owner.id)= book.owner.name
+    .card-body
+      if book.activeWriter.id === user.id
+        p.card-text Next writer:
+          |
+          |
+          span.text-success You
+      else
+        p.card-text Next writer:
+          |
+          |
+          span= book.activeWriter.name
+
+mixin followedBookCard(book)
+  .card.mb-3.border-dark
+    .card-header.bg-light
+      h3.google-font
+        a(href='/book/' + book.id)= book.title
+      span With #{book.owner.name} & #{book.collaborator.name}
+      //if book.owner.id === user.id
+      //  span With:
+      //    |
+      //    |
+      //    a(href='/user/' + book.collaborator.id)= book.collaborator.name
+      //if book.collaborator.id === user.id
+      //  span With:
+      //    |
+      //    |
+      //    a(href='/user/' + book.owner.id)= book.owner.name
+    .card-body
+      if book.activeWriter.id === user.id
+        p.card-text Next writer:
+          |
+          |
+          span.text-success You
+      else
+        p.card-text Next writer:
+          |
+          |
+          span= book.activeWriter.name
+    ul.list-group.list-group-flush
+      li.list-group-item
+        p.card-text.text-muted Last updated: #{h.moment(book.lastPassageStamp).calendar()}
+        p.card-text.text-muted Pages written: #{book.passages.length}
 
 block content
   .container
-    //- TODO: Make this button look better
     #nav-field
       button.btn.btn-lg.btn-warning(onclick='window.location="/create-book";')
-        i.fas.fa-book
+        i.fas.fa-plus
         |
-        |
-        | Create new book
+        | New book
     section
       if booksByUser.length > 0
         if booksByUser.length === 1
-          h2 Your latest book
+          h2.google-font Your latest book
         else
-          h2 Your latest books
+          h2.google-font Your latest books
         .row
           each book in booksByUser
-            .col-4
+            .col-md-6.col-lg-4
               +bookCard(book)
-        //table.table.table-sm
-        //  thead
-        //    tr
-        //      th(scope='col') Title
-        //      th(scope='col') Collaborator
-        //      th(scope='col') Next in turn
-        //      th(scope='col') Last updated
-        //  tbody
-        //    each book in booksByUser
-        //      tr
-        //        th(scope='row')
-        //          a(href='/book/' + book.id)= book.title
-        //        td
-        //          if book.owner.id === user.id
-        //            a(href='/user/' + book.collaborator.id)= book.collaborator.name
-        //          if book.collaborator.id === user.id
-        //            a(href='/user/' + book.owner.id)= book.owner.name
-        //        td
-        //          a(href='/user/' + book.activeWriter.id)= book.activeWriter.name
-        //        td= h.moment(book.lastPassageStamp).calendar()
+        hr
     section
       if booksNotStarted.length > 0
         if booksNotStarted.length === 1
-          h2 Blank book
+          h2.google-font Blank book
         else
-          h2 Blank books
-        table.table.table-sm
-          thead
-            tr
-              th(scope='col') Title
-              th(scope='col') Collaborator
-              th(scope='col') Next in turn
-          tbody
-            each book in booksNotStarted
-              tr
-                th(scope='row')
-                  a(href='/book/' + book.id)= book.title
-                td
-                  if book.owner.id === user.id
-                    a(href='/user/' + book.collaborator.id)= book.collaborator.name
-                  if book.collaborator.id === user.id
-                    a(href='/user/' + book.owner.id)= book.owner.name
-                td
-                  a(href='/user/' + book.activeWriter.id)= book.activeWriter.name
+          h2.google-font Blank books
+        .row
+          each book in booksNotStarted
+            .col-md-6.col-lg-4
+              +blankBookCard(book)
+        hr
+    section
+      if followedUserBooks.length > 0
+        if followedUserBooks.length === 1
+          h2.google-font Book by people you are following
+        else
+          h2.google-font Books by people you are following
+        .row
+          each book in followedUserBooks
+            .col-md-6.col-lg-4
+              +followedBookCard(book)

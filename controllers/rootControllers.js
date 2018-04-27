@@ -34,14 +34,12 @@ exports.getDashboard = (req, res, next) => {
             }
             return 0;
           });
-
-        //TODO: THIS IS VERY WRONG
-        Passage.findPassageById(booksByUserParsed.passages[0].id)
-          .then((last) => {
+        Book.findFollowedUsersBooks(req.user.following, req.user.id)
+          .then((followedUserBooks) => {
             res.render('dashboard',
               {
                 booksByUser: booksByUserParsed,
-                booksNotStarted
+                booksNotStarted, followedUserBooks
               })
           })
           .catch((err) => {
