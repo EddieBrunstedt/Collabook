@@ -6,6 +6,7 @@ const logger = require('../logger');
 
 const User = require('../models/userModel');
 const Book = require('../models/bookModel');
+const Passage = require('../models/passageModel');
 
 // Test controller
 // Todo: Remove before production
@@ -33,11 +34,19 @@ exports.getDashboard = (req, res, next) => {
             }
             return 0;
           });
-        res.render('dashboard',
-          {
-            booksByUser: booksByUserParsed,
-            booksNotStarted
+
+        //TODO: THIS IS VERY WRONG
+        Passage.findPassageById(booksByUserParsed.passages[0].id)
+          .then((last) => {
+            res.render('dashboard',
+              {
+                booksByUser: booksByUserParsed,
+                booksNotStarted
+              })
           })
+          .catch((err) => {
+            next(err);
+          });
       })
       .catch((err) => {
         next(err);

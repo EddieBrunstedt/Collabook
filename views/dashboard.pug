@@ -1,16 +1,16 @@
 extends layout
 
-mixin userBooks(book)
-  .table-responsive
-
-    .card.mb-3.card-shadow.text-center
-      .card-body
-        h5.card-title
-          a.link-primary(href='/book/' + book.id)= book.title
-        hr
-        p.card-text.text-muted Norea wrote a passage at this and this time
-      ul.list-group.list-group-flush
-        li.list-group-item  Cras justo odio
+mixin bookCard(book)
+  .card
+    .card-body
+      .text-center
+        .card-body
+          h5.card-title
+            a.link-primary(href='/book/' + book.id)= book.title
+          hr
+          p.card-text.text-muted Norea wrote a passage at this and this time
+        ul.list-group.list-group-flush
+          li.list-group-item  Cras justo odio
 
 block content
   .container
@@ -22,30 +22,41 @@ block content
         |
         | Create new book
     section
-      h1 Your latest books
-      table.table.table-sm
-        thead
-          tr
-            th(scope='col') Title
-            th(scope='col') Collaborator
-            th(scope='col') Next in turn
-            th(scope='col') Last updated
-        tbody
+      if booksByUser.length > 0
+        if booksByUser.length === 1
+          h2 Your latest book
+        else
+          h2 Your latest books
+        .row
           each book in booksByUser
-            tr
-              th(scope='row')
-                a(href='/book/' + book.id)= book.title
-              td
-                if book.owner.id === user.id
-                  a(href='/user/' + book.collaborator.id)= book.collaborator.name
-                if book.collaborator.id === user.id
-                  a(href='/user/' + book.owner.id)= book.owner.name
-              td
-                a(href='/user/' + book.activeWriter.id)= book.activeWriter.name
-              td= h.moment(book.lastPassageStamp).calendar()
+            .col-4
+              +bookCard(book)
+        //table.table.table-sm
+        //  thead
+        //    tr
+        //      th(scope='col') Title
+        //      th(scope='col') Collaborator
+        //      th(scope='col') Next in turn
+        //      th(scope='col') Last updated
+        //  tbody
+        //    each book in booksByUser
+        //      tr
+        //        th(scope='row')
+        //          a(href='/book/' + book.id)= book.title
+        //        td
+        //          if book.owner.id === user.id
+        //            a(href='/user/' + book.collaborator.id)= book.collaborator.name
+        //          if book.collaborator.id === user.id
+        //            a(href='/user/' + book.owner.id)= book.owner.name
+        //        td
+        //          a(href='/user/' + book.activeWriter.id)= book.activeWriter.name
+        //        td= h.moment(book.lastPassageStamp).calendar()
     section
       if booksNotStarted.length > 0
-        h1 Not started yet
+        if booksNotStarted.length === 1
+          h2 Blank book
+        else
+          h2 Blank books
         table.table.table-sm
           thead
             tr
@@ -64,8 +75,3 @@ block content
                     a(href='/user/' + book.owner.id)= book.owner.name
                 td
                   a(href='/user/' + book.activeWriter.id)= book.activeWriter.name
-
-    section
-      h1 Latest books you are following
-    section
-      h1 Popular books (most likes)

@@ -82,6 +82,14 @@ module.exports.findLastPassageInBook = (bookId) => {
     .exec();
 };
 
+// FInd Passage by Id
+module.exports.findPassageById = (id) => {
+  return Passage
+    .findById(id)
+    .populate('authorId')
+    .exec();
+};
+
 // Get all passages for a specific book
 // Todo: Not used as of writing this. Find usage or remove
 module.exports.findAllPassagesInBook = (bookId) => {
