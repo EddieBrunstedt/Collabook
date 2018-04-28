@@ -5,7 +5,7 @@ block content
     if passage
       .card.mb-2
         .card-body
-          h6.card-subtitle.mb-2.text-muted Previous page, written by #{passage.authorId.name}
+          h6.card-subtitle.mb-2.text-muted Previous page by #{passage.authorId.name}
           p= passage.body
     form(action='/book/' + book.id + '/addPassage', method='post')
       .form-group

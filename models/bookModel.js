@@ -122,10 +122,17 @@ module.exports.updateActiveWriter = (bookId, userIdToActive) => {
     .exec();
 };
 
-// Set a book private if it is public and vice versa
-module.exports.setPrivateOrPublic = (bookId, newStatus) => {
+// Set a book to private
+module.exports.setPrivate= (bookId) => {
   return Book
-    .findByIdAndUpdate(bookId, {public: newStatus})
+    .findOneAndUpdate(bookId, {public: false})
+    .exec();
+};
+
+// Set a book to public
+module.exports.setPublic= (bookId) => {
+  return Book
+    .findOneAndUpdate(bookId, {public: true})
     .exec();
 };
 
