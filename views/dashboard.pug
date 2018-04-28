@@ -4,8 +4,7 @@ mixin bookCard(book)
   .card.mb-3.border-dark.text-center
     .card-header.bg-light
       h3.head-font
-        a(href='/book/' + book.id)= book.title
-      hr
+        a#main-book-page-link(href='/book/' + book.id)= book.title
       if book.owner.id === user.id
         span With:
           |
@@ -16,18 +15,6 @@ mixin bookCard(book)
           |
           |
           a(href='/user/' + book.owner.id)= book.owner.name
-    .card-body
-      if book.activeWriter.id === user.id
-            p.card-text Next writer: You!
-              |
-              |
-              i.heartbeat.fas.fa-star.text-success
-      else
-        .row
-          .col-auto
-            p.card-text Next writer:
-          .col-auto
-            span= book.activeWriter.name
     ul.list-group.list-group-flush
       li.list-group-item.pb-3.pt-3
         if book.activeWriter.id === user.id
@@ -42,8 +29,7 @@ mixin blankBookCard(book)
   .card.mb-3.border-dark.text-center
     .card-header.bg-light
       h3.head-font
-        a(href='/book/' + book.id)= book.title
-      hr
+        a#main-book-page-link(href='/book/' + book.id)= book.title
       if book.owner.id === user.id
         span With:
           |
@@ -67,11 +53,10 @@ mixin blankBookCard(book)
           span= book.activeWriter.name
 
 mixin followedBookCard(book)
-  .card.mb-3.border-dark.text-center
+  .card.border-dark.text-center
     .card-header.bg-light
       h3.head-font
-        a(href='/book/' + book.id)= book.title
-      hr
+        a#main-book-page-link(href='/book/' + book.id)= book.title
       span Authors:
         |
         |
@@ -90,38 +75,42 @@ mixin followedBookCard(book)
 block content
   .container
     #nav-field
-      button.btn.btn-lg.btn-warning(onclick='window.location="/create-book";')
+      button.btn.btn-lg.btn-success.mt-3.body-font(onclick='window.location="/create-book";')
         i.fas.fa-plus
         |
         | New book
     section
       if booksByUser.length > 0
         if booksByUser.length === 1
-          h2.body-font Your latest book
+          h2.body-font.text-center.mt-5 Your latest book
+          hr
         else
-          h2.body-font Your latest books
+          h2.body-font.text-center.mt-3 Your latest books
+          hr
         .row
           each book in booksByUser
             .col-md-6
               +bookCard(book)
-        hr
     section
       if booksNotStarted.length > 0
         if booksNotStarted.length === 1
-          h2.body-font Blank book
+          h2.body-font.text-center.mt-3 Blank book
+          hr
         else
-          h2.body-font Blank books
+          h2.body-font.text-center.mt-3 Blank books
+          hr
         .row
           each book in booksNotStarted
             .col-md-6
               +blankBookCard(book)
-        hr
     section
       if followedUserBooks.length > 0
         if followedUserBooks.length === 1
-          h2.body-font Book by people you are following
+          h2.body-font.text-center.mt-3 Book by people you are following
+          hr
         else
-          h2.body-font Books by people you are following
+          h2.body-font.text-center.mt-3 Books by people you are following
+          hr
         .row
           each book in followedUserBooks
             .col-md-6

@@ -1,7 +1,7 @@
 extends layout
 
 mixin introductionCard
-  .card.book-page-container.card-shadow
+  .card.book-page-container.card-shadow.mt-3
     .card-body
       h1.card-title.head-font.text-center Introduction
       hr
@@ -13,9 +13,9 @@ block content
   .container
     h1#book-title.head-font.text-center= book.title
     hr.hr-gradient
-    .row.mb-3
-      .col-md-6
-        p#author-text Authors:
+    .row
+      .col-md-6.text-center.text-md-left
+        p Authors:
           |
           |
           a(href='/user/' + book.owner.id)= book.owner.name
@@ -23,27 +23,27 @@ block content
           | &
           |
           a(href='/user/' + book.collaborator.id)= book.collaborator.name
-        if !book.public
+        if !book.public && (user.id === book.owner.id || user.id === book.collaborator.id)
           .mb-3
             i.fas.fa-lock.text-danger
             |
             |
-            span.text-muted This is a private book
+            span Private book
         else
-          .mb-3
-            i.fas.fa-unlock.text-success
-            |
-            |
-            span.text-muted This is a public book
+          if book.public && user
+            .mb-3
+              i.fas.fa-unlock.text-success
+              |
+              |
+              span Public book
         if user && (user.id === book.collaborator.id || user.id === book.owner.id)
           p Next writer: #{book.activeWriter.name}
-      .col-md-6.text-md-right
+      .col-md-6.text-center.text-md-right
         p.text-muted Created #{h.moment(book.createdDate).format('MMMM Do YYYY')}
-        if user && user.id === book.activeWriter.id
-          a.btn.btn-success.mb-1(href='/book/' + book.id + '/addPassage', role='button')
-            i.fas.fa-plus
-            |
-            | Write a new passage
+        if totalNumOfPassages === 1
+          p.text-muted #{totalNumOfPassages} passage has been written in this book.
+        if totalNumOfPassages === 0 || totalNumOfPassages > 1
+          p.text-muted #{totalNumOfPassages} passages has been written in this book.
         if user && user.id === book.owner.id
           .row.justify-content-md-end
             .col.text-lg-right
@@ -122,11 +122,18 @@ block content
                           .modal-footer
                             button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
                             a.btn.btn-success(href='/book/' + book.id + '/make-public', role='button') Confirm
+    if user && user.id === book.activeWriter.id
+      .text-center.mt-3.mt-md-0
+        hr.hr-gradient
+        a.btn.btn-success(href='/book/' + book.id + '/addPassage', role='button')
+          i.fas.fa-plus
+          |
+          | Write a new passage
     if viewingIntroduction
       +introductionCard
     else
       if currentPassages[0]
-        #book-pages-container.card-group
+        #book-pages-container.card-group.mt-3
           .card.book-page-container.card-shadow
             .card-body
               p!= currentPassages[0].body
@@ -150,46 +157,47 @@ block content
         else
           li.page-item.mr-1
             a.page-link(href='/book/' + book.id + '/introduction') Introduction
-        if totalBookPages > 0
-          if currentPage > 1
-            li.page-item
-              a.page-link(href='/book/' + book.id + '/1') First
-          else
-            li.page-item.disabled
-              a.page-link(href='/book/' + book.id + '/1') First
-          if currentPage > 4
-            li.page-item
-              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 4))= String(((currentPage - 4) * 2 - 1) + '-' + (currentPage - 4) * 2)
-          if currentPage > 3
-            li.page-item
-              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 3))= String(((currentPage - 3) * 2 - 1) + '-' + (currentPage - 3) * 2)
-          if currentPage > 2
-            li.page-item
-              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 2))= String(((currentPage - 2) * 2 - 1) + '-' + (currentPage - 2) * 2)
-          if currentPage > 1
-            li.page-item
-              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 1))= String(((currentPage - 1) * 2 - 1) + '-' + (currentPage - 1) * 2)
-          if !viewingIntroduction
-            li.page-item.active
-              a.page-link(href=href = '/book/' + book.id + '/' + currentPage)= String((currentPage * 2 - 1) + '-' + (currentPage * 2))
-          else
-            li.page-item
-              a.page-link(href=href = '/book/' + book.id + '/' + currentPage)= String((currentPage * 2 - 1) + '-' + (currentPage * 2))
-          unless currentPage === totalBookPages
-            li.page-item
-              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage + 1))= String((currentPage * 2 + 1) + '-' + (currentPage + 1) * 2)
-          if totalBookPages > (currentPage + 1)
-            li.page-item
-              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage + 2))= String(((currentPage + 2) * 2 - 1) + '-' + (currentPage + 2) * 2)
-          if totalBookPages > (currentPage + 2)
-            li.page-item
-              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage + 3))= String(((currentPage + 3) * 2 - 1) + '-' + (currentPage + 3) * 2)
-          if totalBookPages > (currentPage + 3)
-            li.page-item
-              a.page-link(href=href = '/book/' + book.id + '/' + (currentPage + 4))= String(((currentPage + 4) * 2 - 1) + '-' + (currentPage + 4) * 2)
-          unless currentPage === totalBookPages && !viewingIntroduction
-            li.page-item
-              a.page-link(href='/book/' + book.id + '/' + totalBookPages) Last
-          if currentPage === totalBookPages && !viewingIntroduction
-            li.page-item.disabled
-              a.page-link(href='/book/' + book.id + '/' + totalBookPages) Last
+        if totalNumOfPassages > 0
+          if totalBookPages > 0
+            if currentPage > 1
+              li.page-item
+                a.page-link(href='/book/' + book.id + '/1') First
+            else
+              li.page-item.disabled
+                a.page-link(href='/book/' + book.id + '/1') First
+            if currentPage > 4
+              li.page-item
+                a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 4))= String(((currentPage - 4) * 2 - 1) + '-' + (currentPage - 4) * 2)
+            if currentPage > 3
+              li.page-item
+                a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 3))= String(((currentPage - 3) * 2 - 1) + '-' + (currentPage - 3) * 2)
+            if currentPage > 2
+              li.page-item
+                a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 2))= String(((currentPage - 2) * 2 - 1) + '-' + (currentPage - 2) * 2)
+            if currentPage > 1
+              li.page-item
+                a.page-link(href=href = '/book/' + book.id + '/' + (currentPage - 1))= String(((currentPage - 1) * 2 - 1) + '-' + (currentPage - 1) * 2)
+            if !viewingIntroduction
+              li.page-item.active
+                a.page-link(href=href = '/book/' + book.id + '/' + currentPage)= String((currentPage * 2 - 1) + '-' + (currentPage * 2))
+            else
+              li.page-item
+                a.page-link(href=href = '/book/' + book.id + '/' + currentPage)= String((currentPage * 2 - 1) + '-' + (currentPage * 2))
+            unless currentPage === totalBookPages
+              li.page-item
+                a.page-link(href=href = '/book/' + book.id + '/' + (currentPage + 1))= String((currentPage * 2 + 1) + '-' + (currentPage + 1) * 2)
+            if totalBookPages > (currentPage + 1)
+              li.page-item
+                a.page-link(href=href = '/book/' + book.id + '/' + (currentPage + 2))= String(((currentPage + 2) * 2 - 1) + '-' + (currentPage + 2) * 2)
+            if totalBookPages > (currentPage + 2)
+              li.page-item
+                a.page-link(href=href = '/book/' + book.id + '/' + (currentPage + 3))= String(((currentPage + 3) * 2 - 1) + '-' + (currentPage + 3) * 2)
+            if totalBookPages > (currentPage + 3)
+              li.page-item
+                a.page-link(href=href = '/book/' + book.id + '/' + (currentPage + 4))= String(((currentPage + 4) * 2 - 1) + '-' + (currentPage + 4) * 2)
+            unless currentPage === totalBookPages && !viewingIntroduction
+              li.page-item
+                a.page-link(href='/book/' + book.id + '/' + totalBookPages) Last
+            if currentPage === totalBookPages && !viewingIntroduction
+              li.page-item.disabled
+                a.page-link(href='/book/' + book.id + '/' + totalBookPages) Last

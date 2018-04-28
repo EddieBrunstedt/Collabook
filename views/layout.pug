@@ -11,8 +11,7 @@ html
 
     //- tinymce for rich format text area
     script(src='/javascripts/tinymce/tinymce.min.js')
-    script.
-      tinymce.init({selector: '#inputPassageBody'});
+    script tinymce.init({selector: '#inputPassageBody', theme: 'modern', height: 300, toolbar: 'undo redo | bold italic | removeformat',branding: false, menubar: false});
 
     body
     include navbar

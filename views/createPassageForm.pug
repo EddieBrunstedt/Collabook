@@ -2,13 +2,17 @@ extends layout
 
 block content
   .container
-    if passage
-      .card.mb-2
-        .card-body
-          h6.card-subtitle.mb-2.text-muted Previous page by #{passage.authorId.name}
-          p= passage.body
+    h1.head-font.text-center.mb-5 Write a new passage
     form(action='/book/' + book.id + '/addPassage', method='post')
       .form-group
-        label(for='inputPassageBody') Write Passage here
         textarea#inputPassageBody.form-control(rows='3', name='inputPassageBody')
-      button.btn.btn-primary(type='submit') Submit
+      .text-right
+        button.btn.btn-success(type='submit') Submit
+          |
+          |
+          i.fas.fa-pencil-alt
+    if passage
+      .card.mt-3
+        .card-body
+          h5.mb-3.text-muted Previous page by #{passage.authorId.name}
+          p!= passage.body

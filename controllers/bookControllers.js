@@ -25,12 +25,17 @@ exports.getBookPage = (req, res, next) => {
       Passage.countPassagesInBook(book.id)
         .then((totalNumOfPassages) => {
 
+          if (totalNumOfPassages <= 0) {
+            return res.redirect('/book/' + book.id + '/introduction');
+          }
+
           const totalBookPages = totalNumOfPassages < 1 ? 1 : Math.ceil(totalNumOfPassages / 2);
           const currentPage = req.params.currentPage || totalBookPages;
 
           Passage.findPassagesForPage(book.id, currentPage)
             .then((currentPassages) => {
               res.render('bookPage', {
+                totalNumOfPassages,
                 book,
                 totalBookPages: Number(totalBookPages),
                 currentPassages,
@@ -64,6 +69,7 @@ exports.getIntroduction = (req, res, next) => {
           Passage.findPassagesForPage(book.id, currentPage)
             .then((currentPassages) => {
               res.render('bookPage', {
+                totalNumOfPassages,
                 book,
                 totalBookPages: Number(totalBookPages),
                 currentPassages,
@@ -88,6 +94,10 @@ exports.getIntroduction = (req, res, next) => {
 exports.getCreatePassageForm = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
+      if (req.user.id !== book.activeWriter.id) {
+        req.flash('error_msg', 'You are not authorized to do that');
+        return res.redirect('/');
+      }
       Passage.findLastPassageInBook(book.id)
         .then((passage) => {
           res.render('createPassageForm', {book, passage: passage[0]})
@@ -138,8 +148,7 @@ exports.createPassage = (req, res, next) => {
 // Set a book private if it is public and vice versa
 exports.makeBookPrivate = (req, res, next) => {
   Book.setPrivate(req.params.bookId)
-    .then((book) => {
-      console.log(book);
+    .then(() => {
       res.redirect('back');
     })
     .catch((err) => {
@@ -150,8 +159,7 @@ exports.makeBookPrivate = (req, res, next) => {
 // Set a book private if it is public and vice versa
 exports.makeBookPublic = (req, res, next) => {
   Book.setPublic(req.params.bookId)
-    .then((book) => {
-      console.log(book);
+    .then(() => {
       res.redirect('back');
     })
     .catch((err) => {
@@ -159,11 +167,13 @@ exports.makeBookPublic = (req, res, next) => {
     })
 };
 
-// Switch active writer for book
-// Todo: Add checking for correct user
 exports.switchActiveWriter = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
+      if (req.user.id !== book.owner.id) {
+        req.flash('error_msg', 'You are not authorized to do that');
+        return res.redirect('/');
+      }
       let activeWriter;
       book.owner.id === book.activeWriter.id ? activeWriter = book.collaborator.id : activeWriter = book.owner.id;
       Book.updateActiveWriter(book.id, activeWriter)
@@ -180,10 +190,13 @@ exports.switchActiveWriter = (req, res, next) => {
 };
 
 // Delete book and all its passages
-// Todo #1: Add checking for correct user
 exports.deleteBookAndPassages = (req, res, next) => {
   Book.findBookById(req.params.bookId)
     .then((book) => {
+      if (req.user.id !== book.owner.id) {
+        req.flash('error_msg', 'You are not authorized to do that');
+        return res.redirect('/');
+      }
       if (slug(book.title, {lower: true}) === req.body.inputConfirmation) {
         Book.deleteBook(book.id)
           .then(() => {

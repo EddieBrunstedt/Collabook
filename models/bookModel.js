@@ -33,8 +33,7 @@ const BookSchema = new mongoose.Schema({
   },
   public: {
     type: Boolean,
-    //Todo: Change to false before production
-    default: true
+    default: false
   },
   activeWriter: {
     type: mongoose.Schema.Types.ObjectId,
