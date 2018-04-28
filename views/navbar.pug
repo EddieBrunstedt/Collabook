@@ -2,25 +2,25 @@ nav.navbar.navbar-expand-md.navbar-dark.bg-dark.fixed-top
   section.container
     a#navbar-brand-link(href='/')
       i#navbar-logo.fas.fa-book
-      strong#navbar-title= h.title
+      strong.head-font= h.title
     if !user
       button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNavDropdown', aria-controls='navbarNavDropdown', aria-expanded='false', aria-label='Toggle navigation')
         span.navbar-toggler-icon
       #navbarNavDropdown.collapse.navbar-collapse
         ul.navbar-nav.ml-auto
-          li.nav-item.mb-1.mb-lg-0.mr-lg-3
-            a#navbar-login-button.nav-link.btn.btn-lg.btn-outline-warning(href="/register") Register
+          li.nav-item.mb-1.mb-lg-0.mr-md-3
+            a#navbar-login-button.nav-link.btn.btn-lg.btn-outline-warning.body-font(href="/register") Register
           li.nav-item
-            a#navbar-register-button.nav-link.btn.btn-lg.btn-outline-warning(href="/login") Login
+            a#navbar-register-button.nav-link.btn.btn-lg.btn-outline-warning.body-font(href="/login") Login
     else
-      button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNavDropdown', aria-controls='navbarNavDropdown', aria-expanded='false', aria-label='Toggle navigation')
-        span.navbar-toggler-icon
+      a.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarNavDropdown', aria-controls='navbarNavDropdown', aria-expanded='false', aria-label='Toggle navigation')
+        img#avatar.rounded.img-fluid.mr-3(src=user.gravatar, alt='User Avatar' width="49px")
       #navbarNavDropdown.collapse.navbar-collapse
         ul.navbar-nav.ml-auto
           li.nav-item.dropdown
             a#navbar-user-button.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
               img#avatar.rounded.img-fluid.mr-3(src=user.gravatar, alt='User Avatar' width="49px")
-              span.lead= user.name
+              span.lead.body-font= user.name
             .dropdown-menu(aria-labelledby='navbar-user-button')
               a.dropdown-item(href='/user/' + user.id) Profile
               a.dropdown-item(href='/') Followed users

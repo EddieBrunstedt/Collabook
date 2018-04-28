@@ -1,10 +1,11 @@
 extends layout
 
 mixin bookCard(book)
-  .card.mb-3.border-dark
+  .card.mb-3.border-dark.text-center
     .card-header.bg-light
-      h3.google-font
+      h3.head-font
         a(href='/book/' + book.id)= book.title
+      hr
       if book.owner.id === user.id
         span With:
           |
@@ -17,12 +18,10 @@ mixin bookCard(book)
           a(href='/user/' + book.owner.id)= book.owner.name
     .card-body
       if book.activeWriter.id === user.id
-        .row
-          .col-auto
-            p.card-text Next writer:
-          .col-auto
-            i.heartbeat.fas.fa-star.text-success
-            span You
+            p.card-text Next writer: You!
+              |
+              |
+              i.heartbeat.fas.fa-star.text-success
       else
         .row
           .col-auto
@@ -30,15 +29,21 @@ mixin bookCard(book)
           .col-auto
             span= book.activeWriter.name
     ul.list-group.list-group-flush
-      li.list-group-item
+      li.list-group-item.pb-3.pt-3
+        if book.activeWriter.id === user.id
+          p.card-text Next writer: You!
+            |
+            |
+            i.heartbeat.fas.fa-star.text-success
         p.card-text.text-muted Last updated: #{h.moment(book.lastPassageStamp).calendar()}
         p.card-text.text-muted Pages written: #{book.passages.length}
 
 mixin blankBookCard(book)
-  .card.mb-3.border-dark
+  .card.mb-3.border-dark.text-center
     .card-header.bg-light
-      h3.google-font
+      h3.head-font
         a(href='/book/' + book.id)= book.title
+      hr
       if book.owner.id === user.id
         span With:
           |
@@ -51,10 +56,10 @@ mixin blankBookCard(book)
           a(href='/user/' + book.owner.id)= book.owner.name
     .card-body
       if book.activeWriter.id === user.id
-        p.card-text Next writer:
+        p.card-text Next writer: You!
           |
           |
-          span.text-success You
+          i.heartbeat.fas.fa-star.text-success
       else
         p.card-text Next writer:
           |
@@ -62,32 +67,21 @@ mixin blankBookCard(book)
           span= book.activeWriter.name
 
 mixin followedBookCard(book)
-  .card.mb-3.border-dark
+  .card.mb-3.border-dark.text-center
     .card-header.bg-light
-      h3.google-font
+      h3.head-font
         a(href='/book/' + book.id)= book.title
-      span With #{book.owner.name} & #{book.collaborator.name}
-      //if book.owner.id === user.id
-      //  span With:
-      //    |
-      //    |
-      //    a(href='/user/' + book.collaborator.id)= book.collaborator.name
-      //if book.collaborator.id === user.id
-      //  span With:
-      //    |
-      //    |
-      //    a(href='/user/' + book.owner.id)= book.owner.name
-    .card-body
-      if book.activeWriter.id === user.id
-        p.card-text Next writer:
-          |
-          |
-          span.text-success You
-      else
-        p.card-text Next writer:
-          |
-          |
-          span= book.activeWriter.name
+      hr
+      span Authors:
+        |
+        |
+        a(href='/user/' + book.owner.id)= book.owner.name
+        |
+        |
+        span &
+        |
+        |
+        a(href='/user/' + book.collaborator.id)= book.collaborator.name
     ul.list-group.list-group-flush
       li.list-group-item
         p.card-text.text-muted Last updated: #{h.moment(book.lastPassageStamp).calendar()}
@@ -103,32 +97,32 @@ block content
     section
       if booksByUser.length > 0
         if booksByUser.length === 1
-          h2.google-font Your latest book
+          h2.body-font Your latest book
         else
-          h2.google-font Your latest books
+          h2.body-font Your latest books
         .row
           each book in booksByUser
-            .col-md-6.col-lg-4
+            .col-md-6
               +bookCard(book)
         hr
     section
       if booksNotStarted.length > 0
         if booksNotStarted.length === 1
-          h2.google-font Blank book
+          h2.body-font Blank book
         else
-          h2.google-font Blank books
+          h2.body-font Blank books
         .row
           each book in booksNotStarted
-            .col-md-6.col-lg-4
+            .col-md-6
               +blankBookCard(book)
         hr
     section
       if followedUserBooks.length > 0
         if followedUserBooks.length === 1
-          h2.google-font Book by people you are following
+          h2.body-font Book by people you are following
         else
-          h2.google-font Books by people you are following
+          h2.body-font Books by people you are following
         .row
           each book in followedUserBooks
-            .col-md-6.col-lg-4
+            .col-md-6
               +followedBookCard(book)

@@ -98,6 +98,7 @@ module.exports.findFollowedUsersBooks = (userIDArray, idToExclude) => {
   return Book
   //.find({'_id': {$in: userIDArray}})
     .find({})
+    .where({public: true})
     .or([{owner: {$in: userIDArray}}, {collaborator: {$in: userIDArray}}])
     .nor([{owner: idToExclude}, {collaborator: idToExclude}])
     .populate('activeWriter owner collaborator')
@@ -125,14 +126,14 @@ module.exports.updateActiveWriter = (bookId, userIdToActive) => {
 // Set a book to private
 module.exports.setPrivate= (bookId) => {
   return Book
-    .findOneAndUpdate(bookId, {public: false})
+    .findOneAndUpdate({_id: bookId}, {public: false})
     .exec();
 };
 
 // Set a book to public
 module.exports.setPublic= (bookId) => {
   return Book
-    .findOneAndUpdate(bookId, {public: true})
+    .findOneAndUpdate({_id: bookId}, {public: true})
     .exec();
 };
 

@@ -137,9 +137,9 @@ exports.createPassage = (req, res, next) => {
 
 // Set a book private if it is public and vice versa
 exports.makeBookPrivate = (req, res, next) => {
-  Book.setPrivate()
-    .then((keso) => {
-      console.log(keso);
+  Book.setPrivate(req.params.bookId)
+    .then((book) => {
+      console.log(book);
       res.redirect('back');
     })
     .catch((err) => {
@@ -149,8 +149,9 @@ exports.makeBookPrivate = (req, res, next) => {
 
 // Set a book private if it is public and vice versa
 exports.makeBookPublic = (req, res, next) => {
-  Book.setPublic()
-    .then(() => {
+  Book.setPublic(req.params.bookId)
+    .then((book) => {
+      console.log(book);
       res.redirect('back');
     })
     .catch((err) => {

@@ -6,8 +6,22 @@ body {
   padding-top: 5rem;
 }
 
-.google-font {
-  font-family: 'Alegreya', serif;
+.head-font {
+  font-family: 'Playfair Display', serif;
+  font-weight: bold;
+}
+
+.body-font {
+  font-family: 'Fauna One', serif;
+}
+
+a {
+  color: #4088ff;
+}
+
+a:hover {
+  text-decoration: none;
+  color: #14aeff;
 }
 
 //-----------------------------------------------
@@ -31,22 +45,17 @@ body {
   margin-right: 0.5rem;
 }
 
-#navbar-title {
-  font-family: 'Alegreya', serif;
-}
-
 #navbar-login-button {
-  font-family: 'Alegreya', serif;
+
   color: white;
 }
 
 #navbar-register-button {
-  font-family: 'Alegreya', serif;
   color: white;
 }
 
 #navbar-logout-button {
-  font-family: 'Alegreya', serif;
+
   color: white;
 }
 
@@ -63,10 +72,12 @@ body {
 }
 
 #navbar-user-button {
-  font-family: 'Alegreya', serif;
   color: white;
-  display: block;
   padding: 0 !important;
+}
+
+.nav-toggler:hover {
+  cursor: pointer;
 }
 
 #navbar-user-button:hover {
@@ -195,8 +206,6 @@ body {
   border-radius: 0 !important;
 }
 
-
-
 .card-page-footer {
   font-size: smaller;
 }
@@ -216,7 +225,7 @@ body {
 .hr-gradient {
   border: 0;
   height: 1px;
-  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
 }
 
 .heartbeat {
@@ -299,11 +308,11 @@ body {
   #book-pages-container {
     flex-direction: column;
   }
+
   .book-page-container {
     margin-bottom: 1rem !important;
     border: 1px solid rgba(0, 0, 0, 0.125) !important;
   }
-
 
 }
 
@@ -312,6 +321,7 @@ body {
   #book-pages-container {
     flex-direction: column;
   }
+
   .book-page-container {
     margin-bottom: 1rem !important;
   }
