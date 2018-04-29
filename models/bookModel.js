@@ -64,12 +64,23 @@ module.exports.findAllPublicBooks = () => {
 };
 
 // Find all public books by a specific user
-module.exports.findAllPublicBooksByUser = (userId) => {
-  return Book
-    .find({$or: [{owner: userId}, {collaborator: userId}], public: true})
-    .populate('collaborator owner')
-    .sort({createdDate: -1})
-    .exec()
+module.exports.findAllPublicBooksByUser = (userId, idToExclude) => {
+  if (idToExclude) {
+    return Book
+      .find({$or: [{owner: userId}, {collaborator: userId}]})
+      .where({public: true})
+      .nor([{owner: idToExclude}, {collaborator: idToExclude}])
+      .populate('collaborator owner')
+      .sort({createdDate: -1})
+      .exec()
+  } else {
+    return Book
+      .find({$or: [{owner: userId}, {collaborator: userId}]})
+      .where({public: true})
+      .populate('collaborator owner')
+      .sort({createdDate: -1})
+      .exec()
+  }
 };
 
 // Find all books active for a specific user
@@ -123,14 +134,14 @@ module.exports.updateActiveWriter = (bookId, userIdToActive) => {
 };
 
 // Set a book to private
-module.exports.setPrivate= (bookId) => {
+module.exports.setPrivate = (bookId) => {
   return Book
     .findOneAndUpdate({_id: bookId}, {public: false})
     .exec();
 };
 
 // Set a book to public
-module.exports.setPublic= (bookId) => {
+module.exports.setPublic = (bookId) => {
   return Book
     .findOneAndUpdate({_id: bookId}, {public: true})
     .exec();

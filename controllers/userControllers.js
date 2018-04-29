@@ -10,9 +10,10 @@ exports.getProfilePage = (req, res, next) => {
     .then((viewedUser) => {
       //set followingUser to true if user follows other user
       const followsUser = viewedUser.followers.some((item) => {
-        return item.equals(req.user.id);
+        return item.equals(req.user || req.user.id);
       });
-      Book.findAllPublicBooksByUser(viewedUser._id)
+
+      Book.findAllPublicBooksByUser(viewedUser._id, req.user ? req.user.id : null)
         .then((booksByUser) => {
           res.render('userPage', {viewedUser, followsUser, booksByUser});
         })
@@ -49,6 +50,10 @@ exports.postUserPage = (req, res, next) => {
 
 // User follow another user
 exports.followUser = (req, res, next) => {
+  if (req.user && req.user.id === req.params.userId) {
+    req.flash('success_msg', 'You can\'t follow yourself silly')
+  }
+
   let followedUserId;
 
   //Find user to follow

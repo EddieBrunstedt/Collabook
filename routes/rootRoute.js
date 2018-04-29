@@ -51,7 +51,6 @@ passport.deserializeUser((id, done) => {
 });
 
 // Get users own dashboard
-// Todo: Add correct checking for correct user
 router.get('/', rootControllers.getDashboard);
 
 // Test Get - page for debugging

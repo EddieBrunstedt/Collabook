@@ -9,13 +9,13 @@ const authControllers = require('../controllers/authControllers');
 router.get('/:userId', userControllers.getProfilePage);
 
 // Post to profile for profile updates
-router.post('/:userId', authControllers.isLoggedIn, userControllers.postUserPage);
+router.post('/:userId/update-bio', authControllers.isLoggedIn, userControllers.postUserPage);
 
 // User follow another User
-router.post('/:userId/follow-user', userControllers.followUser);
+router.get('/:userId/follow-user', userControllers.followUser);
 
 // User unfollow another User
-router.post('/:userId/unfollow-user', userControllers.unfollowUser);
+router.get('/:userId/unfollow-user', userControllers.unfollowUser);
 
 
 module.exports = router;

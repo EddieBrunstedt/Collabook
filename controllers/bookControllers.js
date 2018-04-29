@@ -24,7 +24,7 @@ exports.getBookPage = (req, res, next) => {
 
       Passage.countPassagesInBook(book.id)
         .then((totalNumOfPassages) => {
-
+          console.log(totalNumOfPassages);
           if (totalNumOfPassages <= 0) {
             return res.redirect('/book/' + book.id + '/introduction');
           }
@@ -122,9 +122,9 @@ exports.createPassage = (req, res, next) => {
   }
 
   const newPassage = new Passage({
-    authorId: req.user._id,
+    author: req.user._id,
     body: req.body.inputPassageBody,
-    bookId: req.params.bookId,
+    book: req.params.bookId,
   });
 
   return newPassage.save()
