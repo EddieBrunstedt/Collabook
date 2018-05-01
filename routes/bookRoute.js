@@ -18,10 +18,10 @@ router.post('/:bookId/addPassage', authControllers.isLoggedIn, bookControllers.p
 router.get('/:bookId/introduction', bookControllers.getIntroduction);
 
 // Get for making book private
-router.get('/:bookId/make-private', authControllers.isLoggedIn, bookControllers.makeBookPrivate);
+router.get('/:bookId/make-private', bookControllers.makeBookPrivate);
 
 // Get for making book public
-router.get('/:bookId/make-public', authControllers.isLoggedIn, bookControllers.makeBookPublic);
+router.get('/:bookId/make-public', bookControllers.makeBookPublic);
 
 // Get request for switching active writer in book
 router.get('/:bookId/switch-writer', bookControllers.switchActiveWriter);

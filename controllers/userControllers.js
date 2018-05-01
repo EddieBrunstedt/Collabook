@@ -15,7 +15,7 @@ exports.getProfilePage = (req, res, next) => {
 
       Book.findAllPublicBooksByUser(viewedUser._id, req.user ? req.user.id : null)
         .then((booksByUser) => {
-          res.render('userPage', {viewedUser, followsUser, booksByUser});
+          res.render('userProfile', {viewedUser, followsUser, booksByUser});
         })
         .catch((err) => {
           next(err)

@@ -71,6 +71,13 @@ module.exports.getUserByEmail = (email) => {
   return User.findOne({email: email});
 };
 
+// Get all users from id in array
+module.exports.getFollowedUsers = (userIdArray) => {
+  return User
+    .where('_id')
+    .in(userIdArray)
+};
+
 // Compare candidate password with stored hash
 module.exports.comparePassword = (candidatePassword, hash) => {
   return bcrypt.compare(candidatePassword, hash);

@@ -47,20 +47,9 @@ const BookSchema = new mongoose.Schema({
 
 const Book = module.exports = mongoose.model('Book', BookSchema);
 
-
 // Create a book
 module.exports.createBook = (newBook) => {
   return newBook.save();
-};
-
-// Find ALL public books
-// Todo: Not used as for writing this. Make sure it is used somewhere
-module.exports.findAllPublicBooks = () => {
-  return Book
-    .find({'public': true})
-    .populate('')
-    .sort({createdDate: -1})
-    .exec()
 };
 
 // Find all public books by a specific user
@@ -71,26 +60,16 @@ module.exports.findAllPublicBooksByUser = (userId, idToExclude) => {
       .where({public: true})
       .nor([{owner: idToExclude}, {collaborator: idToExclude}])
       .populate('collaborator owner')
-      .sort({createdDate: -1})
+      .sort({lastPassageStamp: -1})
       .exec()
   } else {
     return Book
       .find({$or: [{owner: userId}, {collaborator: userId}]})
       .where({public: true})
       .populate('collaborator owner')
-      .sort({createdDate: -1})
+      .sort({lastPassageStamp: -1})
       .exec()
   }
-};
-
-// Find all books active for a specific user
-// Todo: Not used as for writing this. Make sure it is used somewhere
-module.exports.findAllBooksActiveForUser = (userId) => {
-  return Book
-    .find({activeWriter: userId})
-    .populate('')
-    .sort({createdDate: -1})
-    .exec()
 };
 
 // Find all books where user is owner or collaborator
@@ -99,7 +78,7 @@ module.exports.findAllBooksWithUser = (userId) => {
     .find({$or: [{owner: userId}, {collaborator: userId}]})
     .populate('owner collaborator activeWriter passages')
     .populate({path: 'passages', options: {sort: {'createdDate': -1}}})
-    .sort({createdDate: -1})
+    .sort({lastPassageStamp: -1})
     .exec()
 };
 
@@ -113,10 +92,9 @@ module.exports.findFollowedUsersBooks = (userIDArray, idToExclude) => {
     .nor([{owner: idToExclude}, {collaborator: idToExclude}])
     .populate('activeWriter owner collaborator')
     .populate({path: 'passages', options: {sort: {'createdDate': -1}}})
-    .sort({createdDate: -1})
+    .sort({lastPassageStamp: -1})
     .exec()
-}
-;
+};
 
 // Find a book by id
 module.exports.findBookById = (id) => {

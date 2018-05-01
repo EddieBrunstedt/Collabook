@@ -45,6 +45,7 @@ block content
               i.fas.fa-eye-slash
       .col-lg-6.text-center
         if viewedUser.bio
+          h3 Biography
           p= viewedUser.bio
         else
           p.text-muted #{viewedUser.name} hasn't written an biography.
@@ -73,11 +74,9 @@ block content
           else
             h3 Public books by #{viewedUser.name}
           .row
-            each book in booksByUser
-              +bookCard(book)
-    if viewedUser.bio
-      h3 Biography
-      p= viewedUser.bio
+              each book in booksByUser
+                .col-6
+                  +bookCard(book)
     if booksByUser.length > 0
       hr
       if booksByUser === 1
@@ -86,7 +85,7 @@ block content
         h3 Public books by #{viewedUser.name}
       .row
         each book in booksByUser
-          .col-4
+          .col-6
             .card
               .card-body
                 h5.card-title

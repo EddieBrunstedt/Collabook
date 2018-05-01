@@ -24,7 +24,6 @@ exports.getBookPage = (req, res, next) => {
 
       Passage.countPassagesInBook(book.id)
         .then((totalNumOfPassages) => {
-          console.log(totalNumOfPassages);
           if (totalNumOfPassages <= 0) {
             return res.redirect('/book/' + book.id + '/introduction');
           }
@@ -147,24 +146,44 @@ exports.createPassage = (req, res, next) => {
 
 // Set a book private if it is public and vice versa
 exports.makeBookPrivate = (req, res, next) => {
-  Book.setPrivate(req.params.bookId)
-    .then(() => {
-      res.redirect('back');
+  Book.findBookById(req.params.bookId)
+    .then((book) => {
+      if (!req.user || req.user.id !== book.owner.id) {
+        req.flash('error_msg', 'You are not authorized to do that');
+        return res.redirect('/');
+      }
+      Book.setPrivate(req.params.bookId)
+        .then(() => {
+          res.redirect('back');
+        })
+        .catch((err) => {
+          next(err);
+        })
     })
     .catch((err) => {
       next(err);
-    })
+    });
 };
 
 // Set a book private if it is public and vice versa
 exports.makeBookPublic = (req, res, next) => {
-  Book.setPublic(req.params.bookId)
-    .then(() => {
-      res.redirect('back');
+  Book.findBookById(req.params.bookId)
+    .then((book) => {
+      if (!req.user || req.user.id !== book.owner.id) {
+        req.flash('error_msg', 'You are not authorized to do that');
+        return res.redirect('/');
+      }
+      Book.setPublic(req.params.bookId)
+        .then(() => {
+          res.redirect('back');
+        })
+        .catch((err) => {
+          next(err);
+        })
     })
     .catch((err) => {
       next(err);
-    })
+    });
 };
 
 exports.switchActiveWriter = (req, res, next) => {
@@ -231,7 +250,6 @@ exports.bookValidation = [
 ];
 
 // Validator for passage creation
-// Todo: Change min/max before production
 exports.passageValidation = [
   check('inputPassageBody')
     .exists()

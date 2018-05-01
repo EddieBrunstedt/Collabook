@@ -54,6 +54,17 @@ exports.getDashboard = (req, res, next) => {
   }
 };
 
+//Get Followed users page
+exports.getFollowedUsers = (req, res) => {
+  User.getFollowedUsers(req.user.following)
+    .then((followedUsers) => {
+      res.render('followedUsers', {followedUsers});
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
 // Get login page
 exports.getLoginForm = (req, res) => {
   res.render('login');

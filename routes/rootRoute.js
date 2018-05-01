@@ -60,6 +60,9 @@ router.get('/test', rootControllers.test);
 // Get register form
 router.get('/register', rootControllers.getRegisterForm);
 
+// Get followed users page
+router.get('/followed-users', authControllers.isLoggedIn, rootControllers.getFollowedUsers);
+
 // Post for registering user
 router.post('/register', userControllers.registerValidation, rootControllers.postRegisterForm);
 

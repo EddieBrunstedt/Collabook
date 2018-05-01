@@ -1,8 +1,7 @@
 - Add theming: Mix this: https://femmebot.github.io/google-type/
-- Everybody can switch writer. Fix this.
+
 - Finish Followed users page
-- Update bio does not work
+
 - Add feature for assigning new ownership
-- Add authcontroller for everything (logged in user AND correct logged in specific user?)
 - Add feature for adding images to books. (and for single passages?)
 - Add comment function for passages
