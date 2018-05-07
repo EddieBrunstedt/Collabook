@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  .container
+    .row
+      .col-12.text-center
+        h1.head-font.mb-5 First, let's find a collaborator
+        if foundUsers
+          h1 USERS WERE FOUND!
+        .row.justify-content-center
+          .col-md-8.col-lg-6
+            form(action='/create-book/search-collaborator', method='post')
+              .form-group
+                input#inputTitle.form-control(type='text', name='inputName' autofocus)
+                small.form-text.text-muted Search collaborators by writing their name in the box above
+              hr
+              .text-right
+                button.btn.btn-warning(type='submit') Search
+                  | &nbsp;&nbsp;
+                  i.fas.fa-search

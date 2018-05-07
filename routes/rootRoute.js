@@ -76,6 +76,11 @@ router.post('/login', authControllers.passportAuthenticate);
 router.get('/logout', authControllers.logOut);
 
 // Get Book creation page
+router.get('/find-collaborator', authControllers.isLoggedIn, rootControllers.findCollaborator);
+
+router.post('/create-book/search-collaborator', authControllers.isLoggedIn,rootControllers.searchCollaborator);
+
+// Get Book creation page
 router.get('/create-book', authControllers.isLoggedIn, rootControllers.getCreateBookForm);
 
 // Post for creating books

@@ -110,6 +110,27 @@ exports.postRegisterForm = (req, res) => {
     });
 };
 
+//
+exports.searchCollaborator = (req, res) => {
+  console.log(req.body.inputName);
+
+  User.fuzzySearchUserByName(req.body.inputName)
+    .then((foundUsers) => {
+      console.log('foundUsers', foundUsers);
+      res.render('findCollaborator', foundUsers);
+    })
+    .catch((err) => {
+      next(err);
+    });
+
+
+};
+
+// Get find collaborator page in book creation
+exports.findCollaborator = (req, res) => {
+  res.render('findCollaborator');
+};
+
 // Get Book creation page
 exports.getCreateBookForm = (req, res) => {
   res.render('createBook');

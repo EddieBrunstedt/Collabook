@@ -66,6 +66,12 @@ module.exports.getUserById = (id) => {
   return User.findById(id);
 };
 
+// Fuzzy search for user by name
+module.exports.fuzzySearchUserByName = (name) => {
+  return User
+    .find({name: new RegExp('^' + name + '$', "i")});
+};
+
 // Get user by email
 module.exports.getUserByEmail = (email) => {
   return User.findOne({email: email});
