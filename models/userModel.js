@@ -67,9 +67,27 @@ module.exports.getUserById = (id) => {
 };
 
 // Fuzzy search for user by name
-module.exports.fuzzySearchUserByName = (name) => {
-  return User
-    .find({name: new RegExp('^' + name + '$', "i")});
+module.exports.fuzzySearchUserByName = (searchString) => {
+
+  console.log('SEARCH STRING: ' + searchString);
+
+  console.log('IS VALID?', mongoose.Types.ObjectId.isValid(searchString));
+
+  function escapeRegex(searchString) {
+    return searchString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+  }
+
+  const isId = mongoose.Types.ObjectId.isValid(searchString);
+
+  const regex = new RegExp(escapeRegex(searchString), 'gi');
+
+  if (isId) {
+    return User
+      .find({'_id': searchString})
+  } else {
+    return User
+      .find({'name': regex})
+  }
 };
 
 // Get user by email

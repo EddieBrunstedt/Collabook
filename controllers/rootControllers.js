@@ -110,20 +110,18 @@ exports.postRegisterForm = (req, res) => {
     });
 };
 
-//
-exports.searchCollaborator = (req, res) => {
+//TOdo: MAKE IT SO IT CANT FIND EVERYONE WHEN SEARCHING BLANK
+exports.searchCollaborator = (req, res, next) => {
   console.log(req.body.inputName);
 
-  User.fuzzySearchUserByName(req.body.inputName)
+  User.fuzzySearchUserByName(req.body.inputSearchString)
     .then((foundUsers) => {
       console.log('foundUsers', foundUsers);
-      res.render('findCollaborator', foundUsers);
+      res.render('findCollaborator', {foundUsers});
     })
     .catch((err) => {
       next(err);
     });
-
-
 };
 
 // Get find collaborator page in book creation
