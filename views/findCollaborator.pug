@@ -12,29 +12,28 @@ block content
                 input#inputTitle.form-control(type='text', name='inputSearchString' autofocus required)
                 small.form-text.text-muted Search collaborators by writing their name or id in the box above
               .text-right
-                button.btn.btn-warning(type='submit') Search
+                button.btn.btn-warning.mb-3(type='submit') Search
                   | &nbsp;&nbsp;
                   i.fas.fa-search
         .row.mt-3.justify-content-center
-          if foundUsers && foundUsers.length <= 0
-            .col
+          .col-md-10
+            if foundUsers && foundUsers.length <= 0
               hr
               h4 No users were found, please try again.
-          if foundUsers && foundUsers.length > 0
-            each foundUser in foundUsers
-              .col-md-6.col-xl-4
-                .card.mb-3
-                  .card-body
-                    h5.card-title
-                      a(href='/create-book/' + foundUser.id)= foundUser.name
-                    hr
-                    if foundUser.requesterIsFollowingUser
-                      i.fas.fa-eye.text-success.card-text
-                      |
-                      |
-                      span.text-success You are following this user
-                    else
-                      i.fas.fa-eye-slash.text-danger.card-text
-                      |
-                      |
-                      span.text-danger You are not following this user
+            if foundUsers && foundUsers.length > 0
+              table.table.table-hover.table-warning.table-sm
+                tbody
+                  each foundUser in foundUsers
+                    tr.mouse-pointer(onclick=`window.location="/create-book/${foundUser.id}";`)
+                      th(scope='row')= foundUser.name
+                      td
+                        if foundUser.requesterIsFollowingUser
+                          i.fas.fa-eye.text-success.card-text
+                          |
+                          |
+                          span.text-success Following
+                        else
+                          i.fas.fa-eye-slash.text-danger.card-text
+                          |
+                          |
+                          span.text-danger Not Following

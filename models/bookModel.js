@@ -42,6 +42,10 @@ const BookSchema = new mongoose.Schema({
   lastPassageStamp: {
     type: Date,
     default: Date.now
+  },
+  active: {
+    type: Boolean,
+    default: false
   }
 });
 

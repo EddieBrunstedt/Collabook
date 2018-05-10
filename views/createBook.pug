@@ -12,8 +12,9 @@ block content
           strong= collaborator.name
         hr
         form(action='/create-book', method='post')
+          input(type='hidden', value=`${collaborator.id}`, name='collaboratorId')
           .form-group
-            label(for='inputTitle') Book Title
+            label(for='inputTitle') Book title
             input#inputTitle.form-control(type='text', placeholder='Enter book title', required=true, name='inputTitle')
           .form-group
             label(for='inputIntroduction') Book introduction

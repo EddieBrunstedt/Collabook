@@ -1,7 +1,7 @@
 extends layout
 
 mixin bookCard(book)
-  .card.border-dark.text-center
+  .card.border-dark.text-center.mt-2.mb-3
     .card-header.bg-light
       h3.head-font
         a#main-book-page-link(href='/book/' + book.id)= book.title
@@ -35,14 +35,11 @@ block content
         img.img-fluid.img-thumbnail.d-block.mx-auto.mb-3(src=viewedUser.gravatar, alt='User Avatar')
         if user && user.id !== viewedUser.id
           unless followsUser
-            p You are not following #{viewedUser.name}
             a.btn.btn-success.mb-3(href='/user/' + viewedUser.id + '/follow-user') Follow #{viewedUser.name}
               |
               |
               i.fas.fa-eye
           else
-            p.text-success
-              strong You are following #{viewedUser.name}
             a.btn.btn-danger.mb-3(href='/user/' + viewedUser.id + '/unfollow-user') Unfollow #{viewedUser.name}
               |
               |
@@ -70,18 +67,17 @@ block content
                   .modal-footer
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
                     button.btn.btn-success(type='submit') Submit
+    hr
     if booksByUser.length > 0
-      .card.text-center.mt-4
-        .card-body
-          if booksByUser.length === 1
-            h5.card-title Public book by #{viewedUser.name}
-            .row.justify-content-center
-              each book in booksByUser
-                .col-7
-                  +bookCard(book)
-          else
-            h5.card-title Public books by #{viewedUser.name}
-            .row
-              each book in booksByUser
-                .col-md-6
-                  +bookCard(book)
+      if booksByUser.length === 1
+        h4.text-center Public book by #{viewedUser.name}
+        .row.justify-content-center
+          each book in booksByUser
+            .col-7
+              +bookCard(book)
+      else
+        h4.text-center Public books by #{viewedUser.name}
+        .row
+          each book in booksByUser
+            .col-md-6
+              +bookCard(book)

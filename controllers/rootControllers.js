@@ -153,13 +153,11 @@ exports.getCreateBookForm = (req, res, next) => {
       res.render('createBook', {collaborator});
     })
     .catch((err) => next(err));
-
 };
 
 // Create book
 exports.createBook = (req, res, next) => {
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     errors.array().map(error => {
       req.flash('error_msg', error.msg);
@@ -167,10 +165,10 @@ exports.createBook = (req, res, next) => {
     return res.redirect('/create-book');
   }
 
-  User.getUserByEmail(req.body.inputCollaborator)
+  User.getUserById(req.body.collaboratorId)
     .then((user) => {
       if (!user) {
-        req.flash('error_msg', 'There is no user associated with the Email address ' + req.body.inputcollaborator);
+        req.flash('error_msg', 'Please try again');
         res.redirect('/create-book');
       }
 
