@@ -1,5 +1,4 @@
-const {check, validationResult} = require('express-validator/check');
-const {matchedData, sanitize} = require('express-validator/filter');
+
 
 const User = require('../models/userModel');
 const Book = require('../models/bookModel');
@@ -116,12 +115,3 @@ exports.unfollowUser = (req, res, next) => {
     });
 };
 
-// Validator for user registration
-exports.registerValidation = [
-  //Todo: Work out proper rules before production
-  check('inputEmail').exists().isEmail().trim().normalizeEmail({gmail_remove_dots: false}),
-  check('inputName').exists().isLength({min: 3}).withMessage('Name needs to be at least 3 characters long'),
-  check('inputPassword').exists().isLength({min: 3}).withMessage('Password needs to be at least 3 characters long'),
-  check('inputPasswordConf', 'Your passwords don\'t match').exists()
-    .custom((value, {req}) => value === req.body.inputPassword)
-];

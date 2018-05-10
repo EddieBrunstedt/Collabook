@@ -67,11 +67,7 @@ module.exports.getUserById = (id) => {
 };
 
 // Fuzzy search for user by name
-module.exports.fuzzySearchUserByName = (searchString) => {
-
-  console.log('SEARCH STRING: ' + searchString);
-
-  console.log('IS VALID?', mongoose.Types.ObjectId.isValid(searchString));
+module.exports.fuzzySearchUserByName = (searchString, idToExclude) => {
 
   function escapeRegex(searchString) {
     return searchString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
@@ -84,9 +80,11 @@ module.exports.fuzzySearchUserByName = (searchString) => {
   if (isId) {
     return User
       .find({'_id': searchString})
+      .nor([{'_id': idToExclude}])
   } else {
     return User
       .find({'name': regex})
+      .nor([{'_id': idToExclude}])
   }
 };
 

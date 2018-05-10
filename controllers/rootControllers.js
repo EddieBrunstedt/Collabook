@@ -1,4 +1,5 @@
-const {validationResult} = require('express-validator/check');
+const {check, validationResult} = require('express-validator/check');
+const {matchedData, sanitize} = require('express-validator/filter');
 
 const slug = require('slug');
 
@@ -111,13 +112,28 @@ exports.postRegisterForm = (req, res) => {
 };
 
 //TOdo: MAKE IT SO IT CANT FIND EVERYONE WHEN SEARCHING BLANK
-exports.searchCollaborator = (req, res, next) => {
-  console.log(req.body.inputName);
+exports.postFindCollaborators = (req, res, next) => {
 
-  User.fuzzySearchUserByName(req.body.inputSearchString)
+  //Todo: uncomment before production
+  /*if (req.body.inputSearchString.length < 3) {
+    req.flash('error_msg', 'The search criteria needs to be at least 3 characters long');
+    return res.redirect('/create-book/find-collaborator');
+  }*/
+
+
+  User.fuzzySearchUserByName(req.body.inputSearchString, req.user.id)
     .then((foundUsers) => {
-      console.log('foundUsers', foundUsers);
-      res.render('findCollaborator', {foundUsers});
+
+      let parsedFoundUsers = [];
+
+      foundUsers.map((user) => {
+        if (req.user.following.indexOf(user._id) >= 0) {
+          return parsedFoundUsers.push({name: user.name, id: user.id, requesterIsFollowingUser: true})
+        } else {
+          return parsedFoundUsers.push({name: user.name, id: user.id})
+        }
+      });
+      res.render('findCollaborator', {foundUsers: parsedFoundUsers});
     })
     .catch((err) => {
       next(err);
@@ -125,13 +141,19 @@ exports.searchCollaborator = (req, res, next) => {
 };
 
 // Get find collaborator page in book creation
-exports.findCollaborator = (req, res) => {
+exports.getFindCollaborators = (req, res) => {
   res.render('findCollaborator');
 };
 
 // Get Book creation page
-exports.getCreateBookForm = (req, res) => {
-  res.render('createBook');
+exports.getCreateBookForm = (req, res, next) => {
+  User.getUserById(req.params.collaboratorId)
+    .then((collaborator) => {
+      console.log(collaborator);
+      res.render('createBook', {collaborator});
+    })
+    .catch((err) => next(err));
+
 };
 
 // Create book
@@ -175,3 +197,13 @@ exports.createBook = (req, res, next) => {
       }
     );
 };
+
+// Validator for user registration
+exports.registerValidation = [
+  //Todo: Work out proper rules before production
+  check('inputEmail').exists().isEmail().trim().normalizeEmail({gmail_remove_dots: false}),
+  check('inputName').exists().isLength({min: 3}).withMessage('Name needs to be at least 3 characters long'),
+  check('inputPassword').exists().isLength({min: 3}).withMessage('Password needs to be at least 3 characters long'),
+  check('inputPasswordConf', 'Your passwords don\'t match').exists()
+    .custom((value, {req}) => value === req.body.inputPassword)
+];

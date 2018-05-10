@@ -4,23 +4,37 @@ block content
   .container
     .row
       .col-12.text-center
-        h1.head-font.mb-5 First, let's find a collaborator
+        h1.head-font.mb-3 First, let's find a collaborator
         .row.justify-content-center
           .col-md-8.col-lg-6
-            form(action='/create-book/search-collaborator', method='post')
+            form(action='/create-book/find-collaborator', method='post')
               .form-group
-                input#inputTitle.form-control(type='text', name='inputSearchString' autofocus)
+                input#inputTitle.form-control(type='text', name='inputSearchString' autofocus required)
                 small.form-text.text-muted Search collaborators by writing their name or id in the box above
-              hr
               .text-right
                 button.btn.btn-warning(type='submit') Search
                   | &nbsp;&nbsp;
                   i.fas.fa-search
-        .row
-          .col
-            if foundUsers && foundUsers.length > 0
-              table.table.table-sm
-                tbody
-                  each user in foundUsers
-                    tr
-                      td= user.name
+        .row.mt-3.justify-content-center
+          if foundUsers && foundUsers.length <= 0
+            .col
+              hr
+              h4 No users were found, please try again.
+          if foundUsers && foundUsers.length > 0
+            each foundUser in foundUsers
+              .col-md-6.col-xl-4
+                .card.mb-3
+                  .card-body
+                    h5.card-title
+                      a(href='/create-book/' + foundUser.id)= foundUser.name
+                    hr
+                    if foundUser.requesterIsFollowingUser
+                      i.fas.fa-eye.text-success.card-text
+                      |
+                      |
+                      span.text-success You are following this user
+                    else
+                      i.fas.fa-eye-slash.text-danger.card-text
+                      |
+                      |
+                      span.text-danger You are not following this user

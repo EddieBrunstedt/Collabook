@@ -75,7 +75,7 @@ mixin followedBookCard(book)
 block content
   .container
     #nav-field
-      button.btn.btn-lg.btn-success.mt-3.body-font(onclick='window.location="/find-collaborator";')
+      button.btn.btn-lg.btn-success.mt-3.body-font(onclick='window.location="/create-book/find-collaborator";')
         i.fas.fa-plus
         |
         | New book
@@ -87,9 +87,9 @@ block content
         else
           h2.body-font.text-center.mt-3 Your latest books
           hr.hr-gradient
-        .row
+        .row.justify-content-center
           each book in booksByUser
-            .col-md-6
+            .col-xl-4.col-md-6
               +bookCard(book)
     section
       if booksNotStarted.length > 0
@@ -99,9 +99,9 @@ block content
         else
           h2.body-font.text-center.mt-3 Blank books
           hr.hr-gradient
-        .row
+        .row.justify-content-center
           each book in booksNotStarted
-            .col-md-6
+            .col-xl-4.col-md-6
               +blankBookCard(book)
     section
       if followedUserBooks.length > 0
@@ -111,7 +111,7 @@ block content
         else
           h2.body-font.text-center.mt-3 Books by people you are following
           hr.hr-gradient
-        .row
+        .row.justify-content-center
           each book in followedUserBooks
-            .col-md-6
+            .col-xl-4.col-md-6
               +followedBookCard(book)

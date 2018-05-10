@@ -25,6 +25,10 @@ block content
     .row
       .col.text-center
         h1= viewedUser.name
+        p.text-muted Id:
+          |
+          |
+          = viewedUser.id
     hr.hr-gradient
     .row
       .col-lg-6.text-center
@@ -32,14 +36,14 @@ block content
         if user && user.id !== viewedUser.id
           unless followsUser
             p You are not following #{viewedUser.name}
-            a.btn.btn-success(href='/user/' + viewedUser.id + '/follow-user') Follow #{viewedUser.name}
+            a.btn.btn-success.mb-3(href='/user/' + viewedUser.id + '/follow-user') Follow #{viewedUser.name}
               |
               |
               i.fas.fa-eye
           else
             p.text-success
               strong You are following #{viewedUser.name}
-            a.btn.btn-danger(href='/user/' + viewedUser.id + '/unfollow-user') Unfollow #{viewedUser.name}
+            a.btn.btn-danger.mb-3(href='/user/' + viewedUser.id + '/unfollow-user') Unfollow #{viewedUser.name}
               |
               |
               i.fas.fa-eye-slash
@@ -48,6 +52,7 @@ block content
           h3 Biography
           p= viewedUser.bio
         else
+          h3 Biography
           p.text-muted #{viewedUser.name} hasn't written a biography.
         if user && viewedUser.id === user.id
           a.btn.btn-success.btn-sm(href='/', data-toggle="modal", data-target="#update-bio-modal") Update biography

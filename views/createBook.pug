@@ -5,13 +5,16 @@ block content
     .row.justify-content-center
       .col-sm-12.col-md-10.col-lg-6
         h1.head-font Create Book
+        hr
+        p Collaborator:
+          |
+          |
+          strong= collaborator.name
+        hr
         form(action='/create-book', method='post')
           .form-group
             label(for='inputTitle') Book Title
             input#inputTitle.form-control(type='text', placeholder='Enter book title', required=true, name='inputTitle')
-          .form-group
-            label(for='inputCollaborator') Collaborator email
-            input#inputCollaborator.form-control(type='email', placeholder='Enter collaborator email', required=true, name='inputCollaborator')
           .form-group
             label(for='inputIntroduction') Book introduction
             textarea#inputIntroduction.form-control(rows='3', name='inputIntroduction')

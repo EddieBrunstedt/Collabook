@@ -64,7 +64,7 @@ router.get('/register', rootControllers.getRegisterForm);
 router.get('/followed-users', authControllers.isLoggedIn, rootControllers.getFollowedUsers);
 
 // Post for registering user
-router.post('/register', userControllers.registerValidation, rootControllers.postRegisterForm);
+router.post('/register', rootControllers.registerValidation, rootControllers.postRegisterForm);
 
 // Get login page
 router.get('/login', rootControllers.getLoginForm);
@@ -76,14 +76,15 @@ router.post('/login', authControllers.passportAuthenticate);
 router.get('/logout', authControllers.logOut);
 
 // Get Book creation page
-router.get('/find-collaborator', authControllers.isLoggedIn, rootControllers.findCollaborator);
+router.get('/create-book/find-collaborator', authControllers.isLoggedIn, rootControllers.getFindCollaborators);
 
-router.post('/create-book/search-collaborator', authControllers.isLoggedIn,rootControllers.searchCollaborator);
+router.post('/create-book/find-collaborator', authControllers.isLoggedIn, rootControllers.postFindCollaborators);
 
 // Get Book creation page
-router.get('/create-book', authControllers.isLoggedIn, rootControllers.getCreateBookForm);
+router.get('/create-book/:collaboratorId', authControllers.isLoggedIn, rootControllers.getCreateBookForm);
 
 // Post for creating books
 router.post('/create-book', authControllers.isLoggedIn, bookControllers.bookValidation, rootControllers.createBook);
+
 
 module.exports = router;
