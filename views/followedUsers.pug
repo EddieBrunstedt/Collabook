@@ -2,19 +2,15 @@ extends layout
 
 block content
   .container
-    .table-responsive
-      table.table.table-sm
-        thead.thead-light
+    .table-responsive.table-borderless
+      table.table.table-sm.table-warning
+        thead
           tr
             th(scope='col') Name
             th(scope='col') Followers
-            th(scope='col')
-            th(scope='col')
         tbody
           each user in followedUsers
             tr
               th(scope='row')
                 a(href='/user/' + user.id)= user.name
               td= user.followers.length
-              td Otto
-              td @mdo

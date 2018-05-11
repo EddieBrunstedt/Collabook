@@ -130,10 +130,20 @@ exports.createPassage = (req, res, next) => {
     .then((newPassage) => {
       Book.findBookById(req.params.bookId)
         .then((book) => {
-          book.passages.push(newPassage._id);
-          book.save();
-          req.flash('success_msg', 'Your passage was successfully saved');
-          res.redirect('/book/' + book.id);
+
+          // Find who to set as activeWriter
+          const activeWriter = req.user.id === book.owner.id ? book.collaborator.id : book.owner.id;
+
+          Book.updateActiveWriter(book.id, activeWriter)
+            .then(() => {
+              book.passages.push(newPassage._id);
+              book.save();
+              req.flash('success_msg', 'Your passage was successfully saved');
+              res.redirect('/book/' + book.id);
+            })
+            .catch((err) => {
+              next(err);
+            });
         })
         .catch((err) => {
           next(err);
