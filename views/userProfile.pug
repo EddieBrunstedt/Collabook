@@ -33,6 +33,12 @@ block content
     .row
       .col-lg-6.text-center
         img.img-fluid.img-thumbnail.d-block.mx-auto.mb-3(src=viewedUser.gravatar, alt='User Avatar')
+        if user && user.id === viewedUser.id
+          p.text-muted Your profile picture is grabbed from
+            |
+            |
+            a(href='http://www.gravatar.com') Gravatar.com
+            | .
         if user && user.id !== viewedUser.id
           unless followsUser
             a.btn.btn-success.mb-3(href='/user/' + viewedUser.id + '/follow-user') Follow #{viewedUser.name}

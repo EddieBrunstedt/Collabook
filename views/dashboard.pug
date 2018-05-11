@@ -3,7 +3,7 @@ extends layout
 mixin bookCard(book)
   .card.mb-3.border-dark.text-center.card-shadow
     .card-header.bg-light
-      h3.head-font
+      h5.head-font
         a#main-book-page-link(href='/book/' + book.id)= book.title
       if book.owner.id === user.id
         span With:
@@ -28,7 +28,7 @@ mixin bookCard(book)
 mixin blankBookCard(book)
   .card.mb-3.border-dark.text-center.card-shadow
     .card-header.bg-light
-      h3.head-font
+      h5.head-font
         a#main-book-page-link(href='/book/' + book.id)= book.title
       if book.owner.id === user.id
         span With:
@@ -55,7 +55,7 @@ mixin blankBookCard(book)
 mixin followedBookCard(book)
   .card.mb-3.border-dark.text-center.card-shadow
     .card-header.bg-light
-      h3.head-font
+      h5.head-font
         a#main-book-page-link(href='/book/' + book.id)= book.title
       span Authors:
         |
@@ -74,18 +74,18 @@ mixin followedBookCard(book)
 
 block content
   .container
-    #nav-field
-      button.btn.btn-lg.btn-success.mt-3.body-font(onclick='window.location="/create-book/find-collaborator";')
+    #nav-field.text-right
+      button.btn.btn-sm.btn-success.mt-3.body-font(onclick='window.location="/create-book/find-collaborator";')
         i.fas.fa-plus
         |
-        | New book
+        | Create a new book
     section
       if booksByUser.length > 0
         if booksByUser.length === 1
-          h2.body-font.text-center.mt-3 Your latest book
+          h1.body-font.text-center.mt-3 Your latest book
           hr.hr-gradient
         else
-          h2.body-font.text-center.mt-3 Your latest books
+          h1.body-font.text-center.mt-3 Your latest books
           hr.hr-gradient
         .row.justify-content-center
           each book in booksByUser
@@ -94,10 +94,10 @@ block content
     section
       if booksNotStarted.length > 0
         if booksNotStarted.length === 1
-          h2.body-font.text-center.mt-3 Blank book
+          h1.body-font.text-center.mt-3 Blank book
           hr.hr-gradient
         else
-          h2.body-font.text-center.mt-3 Blank books
+          h1.body-font.text-center.mt-3 Blank books
           hr.hr-gradient
         .row.justify-content-center
           each book in booksNotStarted
@@ -106,10 +106,10 @@ block content
     section
       if followedUserBooks.length > 0
         if followedUserBooks.length === 1
-          h2.body-font.text-center.mt-3 Book by people you are following
+          h1.body-font.text-center.mt-3 Book by people you are following
           hr.hr-gradient
         else
-          h2.body-font.text-center.mt-3 Books by people you are following
+          h1.body-font.text-center.mt-3 Books by people you are following
           hr.hr-gradient
         .row.justify-content-center
           each book in followedUserBooks
