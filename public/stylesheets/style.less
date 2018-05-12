@@ -4,7 +4,6 @@ html {
 
 body {
   font-family: 'Fauna One', serif;
-  padding-top: 5rem;
   padding-bottom: 3rem;
 }
 
@@ -15,6 +14,20 @@ body {
 
 .body-font {
   font-family: 'Fauna One', serif;
+}
+
+.blog-header {
+  line-height: 1;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.blog-header-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.25rem;
+}
+
+.blog-header-logo:hover {
+  text-decoration: none;
 }
 
 a {
@@ -38,6 +51,36 @@ a:hover {
 //-----------------------------------------------
 // Navbar
 //-----------------------------------------------
+
+#logout-navbar-link {
+  color: #a40005;
+  text-decoration: none;
+}
+
+#logout-navbar-link:hover {
+  color: #cb0005;
+  text-decoration: none;
+}
+
+.active-navbar-text {
+  color: #000000;
+  text-decoration: underline #ababab;
+}
+
+.active-navbar-text:hover {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.inactive-navbar-text {
+  color: #9e9e9e;
+  text-decoration: none;
+}
+
+.inactive-navbar-text:hover {
+  color: #4b4b4b;
+  text-decoration: none;
+}
 
 #navbar-brand-link {
   display: inline-block;
@@ -186,15 +229,6 @@ a:hover {
   border-top-right-radius: 0;
 }
 
-/*
- * Utilities
- */
-
-#nav-field {
-  padding-bottom: 1em;
-  margin-bottom: 1em;
-}
-
 #expandable-div {
   display: none;
   //Workaround for weird animation glitch (not needed?)
@@ -212,6 +246,11 @@ a:hover {
 
 #confirm-delete-slug {
   background: #fff9d1;
+  padding: 20px 6px 20px 6px;
+}
+
+#set-public-link {
+  background: #4fa945;
   padding: 20px 6px 20px 6px;
 }
 

@@ -34,6 +34,7 @@ exports.getBookPage = (req, res, next) => {
           Passage.findPassagesForPage(book.id, currentPage)
             .then((currentPassages) => {
               res.render('bookPage', {
+                fullUrl: req.protocol + '://' + req.get('host') + req.originalUrl,
                 totalNumOfPassages,
                 book,
                 totalBookPages: Number(totalBookPages),
@@ -68,6 +69,7 @@ exports.getIntroduction = (req, res, next) => {
           Passage.findPassagesForPage(book.id, currentPage)
             .then((currentPassages) => {
               res.render('bookPage', {
+                fullUrl: req.protocol + '://' + req.get('host') + req.originalUrl,
                 totalNumOfPassages,
                 book,
                 totalBookPages: Number(totalBookPages),

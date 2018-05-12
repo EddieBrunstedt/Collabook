@@ -15,7 +15,6 @@ const PassageSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  //Todo: Change name to bookId
   book: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Book'
@@ -87,15 +86,6 @@ module.exports.findPassageById = (id) => {
   return Passage
     .findById(id)
     .populate('author')
-    .exec();
-};
-
-// Get all passages for a specific book
-// Todo: Not used as of writing this. Find usage or remove
-module.exports.findAllPassagesInBook = (bookId) => {
-  return Passage
-    .find({'book': bookId})
-    .populate()
     .exec();
 };
 

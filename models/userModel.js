@@ -81,6 +81,7 @@ module.exports.fuzzySearchUserByName = (searchString, idToExclude) => {
     return User
       .find({'_id': searchString})
       .nor([{'_id': idToExclude}])
+      .limit(30)
   } else {
     return User
       .find({'name': regex})

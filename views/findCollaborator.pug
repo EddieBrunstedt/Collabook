@@ -4,7 +4,7 @@ block content
   .container
     .row
       .col-12.text-center
-        h1.head-font.mb-3 First, let's find a collaborator
+        h1.head-font.mb-3 Find a collaborator
         .row.justify-content-center
           .col-md-8.col-lg-6
             form(action='/create-book/find-collaborator', method='post')
@@ -21,19 +21,20 @@ block content
               hr
               h4 No users were found, please try again.
             if foundUsers && foundUsers.length > 0
-              table.table.table-hover.table-warning.table-sm
-                tbody
-                  each foundUser in foundUsers
-                    tr.mouse-pointer(onclick=`window.location="/create-book/${foundUser.id}";`)
-                      th(scope='row')= foundUser.name
-                      td
-                        if foundUser.requesterIsFollowingUser
-                          i.fas.fa-eye.text-success.card-text
-                          |
-                          |
-                          span.text-success Following
-                        else
-                          i.fas.fa-eye-slash.text-danger.card-text
-                          |
-                          |
-                          span.text-danger Not Following
+              .jumbotron.bg-light
+                table.table.table-hover.table-sm
+                  tbody
+                    each foundUser in foundUsers
+                      tr.mouse-pointer(onclick=`window.location="/create-book/${foundUser.id}";`)
+                        th(scope='row')= foundUser.name
+                        td
+                          if foundUser.requesterIsFollowingUser
+                            i.fas.fa-eye.text-success.card-text
+                            |
+                            |
+                            span.text-success Following
+                          else
+                            i.fas.fa-eye-slash.text-danger.card-text
+                            |
+                            |
+                            span.text-danger Not Following

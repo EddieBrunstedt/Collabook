@@ -53,9 +53,8 @@ passport.deserializeUser((id, done) => {
 // Get users own dashboard
 router.get('/', rootControllers.getDashboard);
 
-// Test Get - page for debugging
-// Todo: Remove before production
-router.get('/test', rootControllers.test);
+// Get welcome page
+router.get('/welcome', rootControllers.getWelcomePage);
 
 // Get register form
 router.get('/register', rootControllers.getRegisterForm);

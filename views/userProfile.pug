@@ -73,15 +73,16 @@ block content
                   .modal-footer
                     button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
                     button.btn.btn-success(type='submit') Submit
-    hr
     if booksByUser.length > 0
       if booksByUser.length === 1
+        hr
         h4.text-center Public book by #{viewedUser.name}
         .row.justify-content-center
           each book in booksByUser
             .col-7
               +bookCard(book)
       else
+        hr
         h4.text-center Public books by #{viewedUser.name}
         .row
           each book in booksByUser

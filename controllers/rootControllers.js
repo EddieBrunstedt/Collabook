@@ -7,13 +7,6 @@ const logger = require('../logger');
 
 const User = require('../models/userModel');
 const Book = require('../models/bookModel');
-const Passage = require('../models/passageModel');
-
-// Test controller
-// Todo: Remove before production
-exports.test = (req, res, next) => {
-  res.render('test', {slug: slug('this is a test of things...')})
-};
 
 // Get users own dashboard
 exports.getDashboard = (req, res, next) => {
@@ -51,8 +44,13 @@ exports.getDashboard = (req, res, next) => {
         next(err);
       });
   } else {
-    res.redirect('/login');
+    res.render('welcomePage');
   }
+};
+
+// Get Welcome Page
+exports.getWelcomePage = (req, res, next) => {
+  res.render('welcomePage');
 };
 
 //Get Followed users page
@@ -111,15 +109,12 @@ exports.postRegisterForm = (req, res) => {
     });
 };
 
-//TOdo: MAKE IT SO IT CANT FIND EVERYONE WHEN SEARCHING BLANK
 exports.postFindCollaborators = (req, res, next) => {
 
-  //Todo: uncomment before production
-  /*if (req.body.inputSearchString.length < 3) {
+  if (req.body.inputSearchString.length < 3) {
     req.flash('error_msg', 'The search criteria needs to be at least 3 characters long');
     return res.redirect('/create-book/find-collaborator');
-  }*/
-
+  }
 
   User.fuzzySearchUserByName(req.body.inputSearchString, req.user.id)
     .then((foundUsers) => {
@@ -149,7 +144,6 @@ exports.getFindCollaborators = (req, res) => {
 exports.getCreateBookForm = (req, res, next) => {
   User.getUserById(req.params.collaboratorId)
     .then((collaborator) => {
-      console.log(collaborator);
       res.render('createBook', {collaborator});
     })
     .catch((err) => next(err));
@@ -198,10 +192,9 @@ exports.createBook = (req, res, next) => {
 
 // Validator for user registration
 exports.registerValidation = [
-  //Todo: Work out proper rules before production
   check('inputEmail').exists().isEmail().trim().normalizeEmail({gmail_remove_dots: false}),
-  check('inputName').exists().isLength({min: 3}).withMessage('Name needs to be at least 3 characters long'),
-  check('inputPassword').exists().isLength({min: 3}).withMessage('Password needs to be at least 3 characters long'),
+  check('inputName').exists().isLength({min: 8}).withMessage('Name needs to be at least 8 characters long'),
+  check('inputPassword').exists().isLength({min: 4}).withMessage('Password needs to be at least 4 characters long'),
   check('inputPasswordConf', 'Your passwords don\'t match').exists()
     .custom((value, {req}) => value === req.body.inputPassword)
 ];

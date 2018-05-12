@@ -15,6 +15,7 @@ const mongoose = require('mongoose');
 const slug = require('slug');
 const helpers = require('./helpers');
 const errorHandlers = require('./handlers/errorHandlers');
+const winston = require('winston');
 
 const logger = require('./logger');
 
@@ -22,14 +23,15 @@ const index = require('./routes/rootRoute');
 const user = require('./routes/userRoute');
 const book = require('./routes/bookRoute');
 
+
 const app = express();
 
 // Get real remote IP's instead of NGINX proxy ip.
 app.set('trust proxy', true);
 
 // Stream all error > 400 to stderr
-// Todo: Change 'dev' to 'combine' before production
-app.use(morgan('dev', {
+// Change 'combine' to 'dev' if in development
+app.use(morgan('tiny', {
   skip: function (req, res) {
     return res.statusCode < 400
   },
@@ -37,8 +39,8 @@ app.use(morgan('dev', {
 }));
 
 // Stream all error < 400 to stdout
-// Todo: Change 'dev' to 'combine' before production
-app.use(morgan('dev', {
+// Change 'combine' to 'dev' if in development
+app.use(morgan('tiny', {
   skip: function (req, res) {
     return res.statusCode >= 400
   },
@@ -62,7 +64,6 @@ mongoose.connect(process.env.DB_HOST)
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
-// Todo: uncomment after placing your favicon.ico in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -94,12 +95,8 @@ app.use((req, res, next) => {
   res.locals.error_msg = req.flash('error_msg');
   res.locals.error = req.flash('error');
   res.locals.success = req.flash('success');
-  next();
-});
-
-// Testing middleware
-// Todo: Delete before production
-app.use((req, res, next) => {
+  // To help setting corresponding class on navbar links, we set a variable to hold current Url
+  res.locals.currentUrl = req.originalUrl;
   next();
 });
 

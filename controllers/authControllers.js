@@ -22,7 +22,7 @@ exports.passportAuthenticate = passport.authenticate('local', {
 exports.logOut = (req, res) => {
   req.logout();
   req.flash('success_msg', 'You have been successfully logged out');
-  res.redirect('/login');
+  res.redirect('/');
 };
 
 // Check if logged in user is owner or collaborator on book
