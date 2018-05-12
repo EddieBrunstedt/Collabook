@@ -17,7 +17,7 @@ const helpers = require('./helpers');
 const errorHandlers = require('./handlers/errorHandlers');
 const winston = require('winston');
 
-const logger = require('./logger');
+//const logger = require('./logger');
 
 const index = require('./routes/rootRoute');
 const user = require('./routes/userRoute');
