@@ -193,7 +193,7 @@ exports.createBook = (req, res, next) => {
 // Validator for user registration
 exports.registerValidation = [
   check('inputEmail').exists().isEmail().trim().normalizeEmail({gmail_remove_dots: false}),
-  check('inputName').exists().isLength({min: 8}).withMessage('Name needs to be at least 8 characters long'),
+  check('inputName').exists().isLength({min: 4}).withMessage('Name needs to be at least 4 characters long'),
   check('inputPassword').exists().isLength({min: 4}).withMessage('Password needs to be at least 4 characters long'),
   check('inputPasswordConf', 'Your passwords don\'t match').exists()
     .custom((value, {req}) => value === req.body.inputPassword)

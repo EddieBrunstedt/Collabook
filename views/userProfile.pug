@@ -1,7 +1,7 @@
 extends layout
 
 mixin bookCard(book)
-  .card.border-dark.text-center.mt-2.mb-3
+  .card.text-center.card-shadow.mt-2.mb-3
     .card-header.bg-light
       h3.head-font
         a#main-book-page-link(href='/book/' + book.id)= book.title
@@ -25,40 +25,38 @@ block content
     .row
       .col.text-center
         h1= viewedUser.name
-        p.text-muted Id:
+        small.text-muted Id:
           |
           |
           = viewedUser.id
-    hr.hr-gradient
+    hr.hr-gradient-center
     .row
       .col-lg-6.text-center
-        img.img-fluid.img-thumbnail.d-block.mx-auto.mb-3(src=viewedUser.gravatar, alt='User Avatar')
-        if user && user.id === viewedUser.id
-          p.text-muted Your profile picture is grabbed from
-            |
-            |
-            a(href='http://www.gravatar.com') Gravatar.com
-            | .
-        if user && user.id !== viewedUser.id
-          unless followsUser
-            a.btn.btn-success.mb-3(href='/user/' + viewedUser.id + '/follow-user') Follow #{viewedUser.name}
+        figure.figure
+          img.figure-img.img-fluid.rounded(src=viewedUser.gravatar, alt='User Avatar')
+          if user && user.id === viewedUser.id
+            figcaption.figure-caption.text-center Your profile picture is grabbed from
               |
               |
-              i.fas.fa-eye
-          else
-            a.btn.btn-danger.mb-3(href='/user/' + viewedUser.id + '/unfollow-user') Unfollow #{viewedUser.name}
-              |
-              |
-              i.fas.fa-eye-slash
+              a(href='http://www.gravatar.com') Gravatar.com
+              | .
+          if user && user.id !== viewedUser.id
+            unless followsUser
+              a.btn.btn-success.mb-3.d-block(href='/user/' + viewedUser.id + '/follow-user') Follow #{viewedUser.name}
+                |
+                |
+                i.fas.fa-eye
+            else
+              a.btn.btn-warning.mb-3.d-block(href='/user/' + viewedUser.id + '/unfollow-user') Unfollow #{viewedUser.name}
+                |
+                |
+                i.fas.fa-eye-slash
       .col-lg-6.text-center
         if viewedUser.bio
           h3 Biography
           p= viewedUser.bio
-        else
-          h3 Biography
-          p.text-muted #{viewedUser.name} hasn't written a biography.
         if user && viewedUser.id === user.id
-          a.btn.btn-success.btn-sm(href='/', data-toggle="modal", data-target="#update-bio-modal") Update biography
+          a.btn.btn-success.btn-sm.my-3(href='/', data-toggle="modal", data-target="#update-bio-modal") Update biography
             |
             |
             i.fas.fa-pencil-alt

@@ -2,9 +2,34 @@ extends layout
 
 block content
   .container
+    .row.mt-3.justify-content-center
+      .col-md-10
+        if foundUsers && foundUsers.length <= 0
+          hr
+          h4 No users were found, please try again.
+        if foundUsers && foundUsers.length > 0
+          .card
+            .card-body
+              h2 Found users
+              table.table.table-hover.table-sm
+                tbody
+                  each foundUser in foundUsers
+                    tr.mouse-pointer(onclick=`window.location="/create-book/${foundUser.id}";`)
+                      th(scope='row')= foundUser.name
+                      td
+                        if foundUser.requesterIsFollowingUser
+                          i.fas.fa-eye.text-success.card-text
+                          |
+                          |
+                          span.text-success Following
+                        else
+                          i.fas.fa-eye-slash.text-danger.card-text
+                          |
+                          |
+                          span.text-danger Not Following
     .row
       .col-12.text-center
-        h1.head-font.mb-3 Find a collaborator
+        h1.head-font.my-3 Find a collaborator
         .row.justify-content-center
           .col-md-8.col-lg-6
             form(action='/create-book/find-collaborator', method='post')
@@ -15,26 +40,3 @@ block content
                 button.btn.btn-warning.mb-3(type='submit') Search
                   | &nbsp;&nbsp;
                   i.fas.fa-search
-        .row.mt-3.justify-content-center
-          .col-md-10
-            if foundUsers && foundUsers.length <= 0
-              hr
-              h4 No users were found, please try again.
-            if foundUsers && foundUsers.length > 0
-              .jumbotron.bg-light
-                table.table.table-hover.table-sm
-                  tbody
-                    each foundUser in foundUsers
-                      tr.mouse-pointer(onclick=`window.location="/create-book/${foundUser.id}";`)
-                        th(scope='row')= foundUser.name
-                        td
-                          if foundUser.requesterIsFollowingUser
-                            i.fas.fa-eye.text-success.card-text
-                            |
-                            |
-                            span.text-success Following
-                          else
-                            i.fas.fa-eye-slash.text-danger.card-text
-                            |
-                            |
-                            span.text-danger Not Following

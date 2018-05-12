@@ -81,13 +81,24 @@ module.exports.findLastPassageInBook = (bookId) => {
     .exec();
 };
 
-// FInd Passage by Id
+// Find Passage by Id
 module.exports.findPassageById = (id) => {
   return Passage
     .findById(id)
     .populate('author')
     .exec();
 };
+
+// Create Passage
+module.exports.createPassage = (passageToCreate) => {
+  return passageToCreate.save();
+};
+
+// Create a book
+module.exports.createBook = (newBook) => {
+  return newBook.save();
+};
+
 
 // Remove all passages with specific passage.book.id
 // Only use when completely removing a book

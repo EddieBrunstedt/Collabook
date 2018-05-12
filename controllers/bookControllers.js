@@ -128,7 +128,7 @@ exports.createPassage = (req, res, next) => {
     book: req.params.bookId,
   });
 
-  return newPassage.save()
+  Passage.createPassage(newPassage)
     .then((newPassage) => {
       Book.findBookById(req.params.bookId)
         .then((book) => {

@@ -11,124 +11,121 @@ mixin introductionCard
 
 block content
   .container
-    h1#book-title.head-font.text-center= book.title
-    hr.hr-gradient
-    .card.bg-light
-      .card-body
-        .row
-          .col-md-6.text-center.text-md-left
-            p Authors:
+    .row
+      .col-md-6.text-center.text-md-left
+        h1#book-title.head-font= book.title
+        p Authors:
+          |
+          |
+          a(href='/user/' + book.owner.id)= book.owner.name
+          |
+          | &
+          |
+          a(href='/user/' + book.collaborator.id)= book.collaborator.name
+        if !book.public && (user.id === book.owner.id || user.id === book.collaborator.id)
+          .mb-3
+            i.fas.fa-lock.text-danger
+            |
+            |
+            span Private book
+        else
+          if book.public && user
+            .mb-3
+              i.fas.fa-unlock.text-success
               |
               |
-              a(href='/user/' + book.owner.id)= book.owner.name
-              |
-              | &
-              |
-              a(href='/user/' + book.collaborator.id)= book.collaborator.name
-            if !book.public && (user.id === book.owner.id || user.id === book.collaborator.id)
-              .mb-3
-                i.fas.fa-lock.text-danger
+              span Public book
+        if user && (user.id === book.collaborator.id || user.id === book.owner.id)
+          p Next writer: #{book.activeWriter.name}
+      .col-md-6.text-center.text-md-right
+        p.text-muted Created #{h.moment(book.createdDate).format('MMMM Do YYYY')}
+        if totalNumOfPassages === 1
+          p.text-muted #{totalNumOfPassages} passage has been written in this book.
+        if totalNumOfPassages === 0 || totalNumOfPassages > 1
+          p.text-muted #{totalNumOfPassages} passages has been written in this book.
+        if user && user.id === book.owner.id
+          .row.justify-content-md-end
+            .col.text-lg-right
+              a.btn.btn-outline-info.btn-sm(id='slideToggle' href='#', role='button')
+                i.fas.fa-cog
                 |
                 |
-                span Private book
-            else
-              if book.public && user
-                .mb-3
-                  i.fas.fa-unlock.text-success
-                  |
-                  |
-                  span Public book
-            if user && (user.id === book.collaborator.id || user.id === book.owner.id)
-              p Next writer: #{book.activeWriter.name}
-          .col-md-6.text-center.text-md-right
-            p.text-muted Created #{h.moment(book.createdDate).format('MMMM Do YYYY')}
-            if totalNumOfPassages === 1
-              p.text-muted #{totalNumOfPassages} passage has been written in this book.
-            if totalNumOfPassages === 0 || totalNumOfPassages > 1
-              p.text-muted #{totalNumOfPassages} passages has been written in this book.
-            if user && user.id === book.owner.id
-              .row.justify-content-md-end
-                .col.text-lg-right
-                  a.btn.btn-outline-info.btn-sm(id='slideToggle' href='#', role='button')
-                    i.fas.fa-cog
+                span Settings
+          .row.justify-content-sm-start.justify-content-md-end
+            .col-md-8.col-lg-6
+              #expandable-div.card.bg-light.text-right.mt-2
+                .card-body
+                  if book.public
+                    a.btn.btn-warning.btn-block(href='/', data-toggle="modal", data-target="#confirm-make-private") Make private
+                      |
+                      |
+                      i.fas.fa-lock
+                    hr
+                  if !book.public
+                    a.btn.btn-success.btn-block(href='/', data-toggle="modal", data-target="#confirm-make-public") Make Public
+                      |
+                      |
+                      i.fas.fa-unlock
+                    hr
+                  a.btn.btn-info.btn-block(href='/', data-toggle="modal", data-target="#confirm-switchwriter-modal") Switch writer
                     |
                     |
-                    span Settings
-              .row.justify-content-sm-start.justify-content-md-end
-                .col-md-8.col-lg-6
-                  #expandable-div.card.bg-light.text-right.mt-2
-                    .card-body
-                      if book.public
-                        a.btn.btn-warning.btn-block(href='/', data-toggle="modal", data-target="#confirm-make-private") Make private
-                          |
-                          |
-                          i.fas.fa-lock
-                        hr
-                      if !book.public
-                        a.btn.btn-success.btn-block(href='/', data-toggle="modal", data-target="#confirm-make-public") Make Public
-                          |
-                          |
-                          i.fas.fa-unlock
-                        hr
-                      a.btn.btn-info.btn-block(href='/', data-toggle="modal", data-target="#confirm-switchwriter-modal") Switch writer
-                        |
-                        |
-                        i.fas.fa-exchange-alt
-                      hr
-                      a.btn.btn-danger.btn-block(href='/', data-toggle="modal", data-target="#confirm-delete-modal") Delete book
-                        |
-                        |
-                        i.fas.fa-trash-alt
-                      #confirm-delete-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
-                        .modal-dialog.modal-dialog-centered(role='document')
-                          .modal-content
-                            form(action='/book/' + book.id + '/delete', method='post')
-                              .modal-body
-                                p.text-center Are you sure that you want to remove this book?
-                                p.text-center To permanently remove your book, please enter:
-                                h6#confirm-delete-slug.text-center
-                                  strong= h.slug(book.title, {lower: true})
-                                p.text-center in the box below and press confirm.
-                                .form-group
-                                  input#confirm-delete-input.form-control.text-center(type='text', name='inputConfirmation')
-                                  small#emailHelp.form-text.text-muted.text-center This action cannot be undone
-                              .modal-footer
-                                button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                                button.btn.btn-danger(type='submit') Confirm
-                      #confirm-switchwriter-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
-                        .modal-dialog.modal-dialog-centered(role='document')
-                          .modal-content
-                            .modal-body
-                              p.text-center You are about to switch who is the writer in this book.
-                              p.text-center Are you sure you want to do this?
-                            .modal-footer
-                              button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                              a.btn.btn-info(href='/book/' + book.id + '/switch-writer') Confirm
-                      if book.public
-                        #confirm-make-private.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
-                          .modal-dialog.modal-dialog-centered(role='document')
-                            .modal-content
-                              .modal-body
-                                p.text-center You are about to make this book private. Only you and the book collaborator will be able to see this book in the future.
-                                p.text-center Are you sure you want to do this?
-                              .modal-footer
-                                button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                                a.btn.btn-warning(href='/book/' + book.id + '/make-private', role='button') Confirm
-                      if !book.public
-                        #confirm-make-public.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
-                          .modal-dialog.modal-dialog-centered(role='document')
-                            .modal-content
-                              .modal-body
-                                p.text-center You are about to make this book Public. Anybody with the link below will be able to see this book.
-                                .alert.alert-success.text-center(role='alert')
-                                  = fullUrl
-                                p.text-center Are you sure you want to do this?
-                              .modal-footer
-                                button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
-                                a.btn.btn-success(href='/book/' + book.id + '/make-public', role='button') Confirm
+                    i.fas.fa-exchange-alt
+                  hr
+                  a.btn.btn-danger.btn-block(href='/', data-toggle="modal", data-target="#confirm-delete-modal") Delete book
+                    |
+                    |
+                    i.fas.fa-trash-alt
+                  #confirm-delete-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
+                    .modal-dialog.modal-dialog-centered(role='document')
+                      .modal-content
+                        form(action='/book/' + book.id + '/delete', method='post')
+                          .modal-body
+                            p.text-center Are you sure that you want to remove this book?
+                            p.text-center To permanently remove your book, please enter:
+                            h6#confirm-delete-slug.text-center
+                              strong= h.slug(book.title, {lower: true})
+                            p.text-center in the box below and press confirm.
+                            .form-group
+                              input#confirm-delete-input.form-control.text-center(type='text', name='inputConfirmation')
+                              small#emailHelp.form-text.text-muted.text-center This action cannot be undone
+                          .modal-footer
+                            button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                            button.btn.btn-danger(type='submit') Confirm
+                  #confirm-switchwriter-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
+                    .modal-dialog.modal-dialog-centered(role='document')
+                      .modal-content
+                        .modal-body
+                          p.text-center You are about to switch who is the writer in this book.
+                          p.text-center Are you sure you want to do this?
+                        .modal-footer
+                          button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                          a.btn.btn-info(href='/book/' + book.id + '/switch-writer') Confirm
+                  if book.public
+                    #confirm-make-private.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
+                      .modal-dialog.modal-dialog-centered(role='document')
+                        .modal-content
+                          .modal-body
+                            p.text-center You are about to make this book private. Only you and the book collaborator will be able to see this book in the future.
+                            p.text-center Are you sure you want to do this?
+                          .modal-footer
+                            button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                            a.btn.btn-warning(href='/book/' + book.id + '/make-private', role='button') Confirm
+                  if !book.public
+                    #confirm-make-public.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
+                      .modal-dialog.modal-dialog-centered(role='document')
+                        .modal-content
+                          .modal-body
+                            p.text-center You are about to make this book Public. Anybody with the link below will be able to see this book.
+                            .alert.alert-success.text-center(role='alert')
+                              = fullUrl
+                            p.text-center Are you sure you want to do this?
+                          .modal-footer
+                            button.btn.btn-secondary(type='button', data-dismiss='modal') Cancel
+                            a.btn.btn-success(href='/book/' + book.id + '/make-public', role='button') Confirm
     if user && user.id === book.activeWriter.id
       .text-center.mt-3.mt-md-0
-        hr.hr-gradient
+        hr.hr-gradient-center
         a.btn.btn-success(href='/book/' + book.id + '/addPassage', role='button')
           i.fas.fa-plus
           |

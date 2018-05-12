@@ -4,7 +4,7 @@ html {
 
 body {
   font-family: 'Fauna One', serif;
-  padding-bottom: 3rem;
+  margin-bottom: 3rem; /* Margin bottom by footer height */
 }
 
 .head-font {
@@ -273,6 +273,12 @@ a:hover {
 }
 
 .hr-gradient {
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
+}
+
+.hr-gradient-center {
   border: 0;
   height: 1px;
   background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
