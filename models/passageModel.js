@@ -23,19 +23,17 @@ const PassageSchema = new mongoose.Schema({
 
 PassageSchema.post('save', function (doc, next) {
   Book.findBookById(this.book)
-    .then((book) => {
+    .then(book => {
       book.lastPassageStamp = this.createdDate;
       book.save();
       next();
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(err => next(err));
 });
 
 PassageSchema.post('remove', function (doc, next) {
   Book.findBookById(this.book)
-    .then((book) => {
+    .then(book => {
       if (!book.passages[0]) {
         book.lastPassageStamp = book.createdDate;
         book.save();
@@ -45,13 +43,13 @@ PassageSchema.post('remove', function (doc, next) {
       book.save();
       next();
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(err => next(err));
 });
 
 const Passage = module.exports = mongoose.model('Passage', PassageSchema);
 
+// Create Passage
+module.exports.createPassage = (passageToCreate) => passageToCreate.save();
 
 // Count passages in a specific book
 module.exports.countPassagesInBook = (bookId) => {
@@ -87,16 +85,6 @@ module.exports.findPassageById = (id) => {
     .findById(id)
     .populate('author')
     .exec();
-};
-
-// Create Passage
-module.exports.createPassage = (passageToCreate) => {
-  return passageToCreate.save();
-};
-
-// Create a book
-module.exports.createBook = (newBook) => {
-  return newBook.save();
 };
 
 

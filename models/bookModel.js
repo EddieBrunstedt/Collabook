@@ -52,9 +52,7 @@ const BookSchema = new mongoose.Schema({
 const Book = module.exports = mongoose.model('Book', BookSchema);
 
 // Create a book
-module.exports.createBook = (newBook) => {
-  return newBook.save();
-};
+module.exports.createBook = (newBook) => newBook.save();
 
 // Find all public books by a specific user
 module.exports.findAllPublicBooksByUser = (userId, idToExclude) => {
