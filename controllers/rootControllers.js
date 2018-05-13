@@ -9,7 +9,43 @@ const User = require('../models/userModel');
 const Book = require('../models/bookModel');
 
 // Get users own dashboard
+exports.getDashboard = async (req, res, next) => {
+
+  if (!req.user) {
+    res.render('welcomePage');
+  }
+
+  try {
+
+    const booksByUser = await Book.findAllBooksWithUser(req.user._id);
+    const followedUserBooks = await Book.findFollowedUsersBooks(req.user.following, req.user.id);
+    
+    const booksNotStarted = booksByUser.filter(book => !book.passages[0]);
+    const booksByUserParsed = booksByUser
+    //Remove books without passages
+      .filter(book => book.passages[0])
+      // Sort array after lastPassageStamp in book
+      .sort((a, b) => {
+        if (a.lastPassageStamp < b.lastPassageStamp) {
+          return 1;
+        }
+        if (b.lastPassageStamp < a.lastPassageStamp) {
+          return -1;
+        }
+        return 0;
+      });
+    res.render('dashboard', {
+      booksByUser: booksByUserParsed,
+      booksNotStarted, followedUserBooks
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 exports.getDashboard = (req, res, next) => {
+  console.log(1);
   if (req.user) {
     Book.findAllBooksWithUser(req.user._id)
       .then((booksByUser) => {
@@ -46,7 +82,8 @@ exports.getDashboard = (req, res, next) => {
   } else {
     res.render('welcomePage');
   }
-};
+}
+
 
 // Get Welcome Page
 exports.getWelcomePage = (req, res, next) => {
