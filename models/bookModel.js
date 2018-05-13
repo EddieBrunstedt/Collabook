@@ -87,7 +87,7 @@ module.exports.findAllBooksWithUser = (userId) => {
 };
 
 // Find all public books from users that a user is following
-module.exports.findFollowedUsersBooks = (userIDArray, idToExclude) => {
+module.exports.findFollowedUsersBooks = async (userIDArray, idToExclude) => {
   return Book
   //.find({'_id': {$in: userIDArray}})
     .find({})
