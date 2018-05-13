@@ -201,35 +201,26 @@ exports.switchActiveWriter = (req, res, next) => {
 
 // Delete book and all its passages
 exports.deleteBookAndPassages = (req, res, next) => {
+  let book;
   Book.findBookById(req.params.bookId)
-    .then((book) => {
+    .then((response) => {
+      book = response;
       if (req.user.id !== book.owner.id) {
         req.flash('error_msg', 'You are not authorized to do that');
         return res.redirect('/');
       }
-      if (slug(book.title, {lower: true}) === req.body.inputConfirmation) {
-        Book.deleteBook(book.id)
-          .then(() => {
-            Passage.deletePassagesFromBook(book.id)
-              .then(() => {
-                req.flash('success_msg', 'Book successfully deleted.');
-                res.redirect('/');
-              })
-              .catch((err) => {
-                next(err);
-              });
-          })
-          .catch((err) => {
-            next(err);
-          });
-      } else {
+      if (slug(book.title, {lower: true}) !== req.body.inputConfirmation) {
         req.flash('error_msg', 'The text you entered didn\'t match.');
-        res.redirect('back');
+        return res.redirect('back');
       }
+      return Book.deleteBook(book.id);
     })
-    .catch((err) => {
-      next(err);
-    });
+    .then(() => Passage.deletePassagesFromBook(book.id))
+    .then(() => {
+      req.flash('success_msg', 'Book successfully deleted.');
+      return res.redirect('/');
+    })
+    .catch(err => next(err))
 };
 
 // Validator for book creation

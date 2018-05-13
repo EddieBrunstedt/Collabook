@@ -27,7 +27,7 @@ exports.getDashboard = (req, res, next) => {
 
       return Book.findFollowedUsersBooks(req.user.following, req.user.id)
     })
-    .then((followedUserBooks) => res.render('dashboard', {booksByUser, blankBooks, followedUserBooks}))
+    .then(followedUserBooks => res.render('dashboard', {booksByUser, blankBooks, followedUserBooks}))
     .catch(err => next(err))
 };
 
@@ -51,7 +51,7 @@ exports.postLoginForm = (req, res) => res.redirect('/');
 exports.getRegisterForm = (req, res) => res.render('register');
 
 // Post for registering user
-exports.postRegisterForm = (req, res) => {
+exports.postRegisterForm = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -76,9 +76,7 @@ exports.postRegisterForm = (req, res) => {
       req.flash('success_msg', 'You are registered and can now login');
       res.redirect('/login');
     })
-    .catch(err => {
-      throw err;
-    });
+    .catch(err => next(err));
 };
 
 exports.postFindCollaborators = (req, res, next) => {
@@ -102,9 +100,7 @@ exports.postFindCollaborators = (req, res, next) => {
       });
       return res.render('findCollaborator', {foundUsers: parsedFoundUsers});
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(err => next(err));
 };
 
 // Get find collaborator page in book creation
@@ -114,7 +110,7 @@ exports.getFindCollaborators = (req, res) => res.render('findCollaborator');
 exports.getCreateBookForm = (req, res, next) => {
   User.getUserById(req.params.collaboratorId)
     .then((collaborator) => res.render('createBook', {collaborator}))
-    .catch((err) => next(err));
+    .catch(err => next(err));
 };
 
 // Create book
@@ -129,12 +125,10 @@ exports.createBook = (req, res, next) => {
 
   User.getUserById(req.body.collaboratorId)
     .then((user) => {
-
       if (!user) {
         req.flash('error_msg', 'Please try again');
         return res.redirect('/create-book');
       }
-
       const newBook = new Book({
         title: req.body.inputTitle,
         introduction: req.body.inputIntroduction,
@@ -144,13 +138,12 @@ exports.createBook = (req, res, next) => {
       });
       return newBook.save()
     })
-
     .then((book) => {
       logger.info(`BOOK CREATED - book/owner/collaborator: ${book.id} / ${book.owner} / ${book.collaborator}`);
       req.flash('success_msg', 'Your book was created successfully');
       return res.redirect('/');
     })
-    .catch((err) => next(err));
+    .catch(err => next(err));
 };
 
 // Validator for user registration

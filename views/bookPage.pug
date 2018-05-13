@@ -14,14 +14,6 @@ block content
     .row
       .col-md-6.text-center.text-md-left
         h1#book-title.head-font= book.title
-        p Authors:
-          |
-          |
-          a(href='/user/' + book.owner.id)= book.owner.name
-          |
-          | &
-          |
-          a(href='/user/' + book.collaborator.id)= book.collaborator.name
         if !book.public && (user.id === book.owner.id || user.id === book.collaborator.id)
           .mb-3
             i.fas.fa-lock.text-danger
@@ -35,9 +27,17 @@ block content
               |
               |
               span Public book
+        p Authors:
+          |
+          |
+          a(href='/user/' + book.owner.id)= book.owner.name
+          |
+          | &
+          |
+          a(href='/user/' + book.collaborator.id)= book.collaborator.name
+      .col-md-6.text-center.text-md-right
         if user && (user.id === book.collaborator.id || user.id === book.owner.id)
           p.lead Next writer: #{book.activeWriter.name}
-      .col-md-6.text-center.text-md-right
         p.text-muted Created #{h.moment(book.createdDate).format('MMMM Do YYYY')}
         if totalNumOfPassages === 1
           p.text-muted #{totalNumOfPassages} passage has been written in this book.
