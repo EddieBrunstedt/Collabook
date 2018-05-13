@@ -1,8 +1,6 @@
 const {check, validationResult} = require('express-validator/check');
 const {matchedData, sanitize} = require('express-validator/filter');
 
-const slug = require('slug');
-
 const logger = require('../logger');
 
 const User = require('../models/userModel');
@@ -34,35 +32,23 @@ exports.getDashboard = (req, res, next) => {
 };
 
 // Get Welcome Page
-exports.getWelcomePage = (req, res, next) => {
-  res.render('welcomePage');
-};
+exports.getWelcomePage = (req, res) => res.render('welcomePage');
 
 //Get Followed users page
-exports.getFollowedUsers = (req, res) => {
+exports.getFollowedUsers = (req, res, next) => {
   User.getFollowedUsers(req.user.following)
-    .then((followedUsers) => {
-      res.render('followedUsers', {followedUsers});
-    })
-    .catch((err) => {
-      next(err);
-    });
+    .then(followedUsers => res.render('followedUsers', {followedUsers}))
+    .catch(err => next(err))
 };
 
 // Get login page
-exports.getLoginForm = (req, res) => {
-  res.render('login');
-};
+exports.getLoginForm = (req, res) => res.render('login');
 
 // Post for logging in
-exports.postLoginForm = (req, res) => {
-  res.redirect('/')
-};
+exports.postLoginForm = (req, res) => res.redirect('/');
 
 // Get register form
-exports.getRegisterForm = (req, res) => {
-  res.render('register');
-};
+exports.getRegisterForm = (req, res) => res.render('register');
 
 // Post for registering user
 exports.postRegisterForm = (req, res) => {
@@ -74,6 +60,7 @@ exports.postRegisterForm = (req, res) => {
     });
     return res.redirect('/register');
   }
+
   User.getUserByEmail(req.body.inputEmail)
     .then(user => {
       if (user) {
@@ -113,7 +100,7 @@ exports.postFindCollaborators = (req, res, next) => {
           return parsedFoundUsers.push({name: user.name, id: user.id})
         }
       });
-      res.render('findCollaborator', {foundUsers: parsedFoundUsers});
+      return res.render('findCollaborator', {foundUsers: parsedFoundUsers});
     })
     .catch((err) => {
       next(err);
@@ -121,16 +108,12 @@ exports.postFindCollaborators = (req, res, next) => {
 };
 
 // Get find collaborator page in book creation
-exports.getFindCollaborators = (req, res) => {
-  res.render('findCollaborator');
-};
+exports.getFindCollaborators = (req, res) => res.render('findCollaborator');
 
 // Get Book creation page
 exports.getCreateBookForm = (req, res, next) => {
   User.getUserById(req.params.collaboratorId)
-    .then((collaborator) => {
-      res.render('createBook', {collaborator});
-    })
+    .then((collaborator) => res.render('createBook', {collaborator}))
     .catch((err) => next(err));
 };
 
@@ -146,9 +129,10 @@ exports.createBook = (req, res, next) => {
 
   User.getUserById(req.body.collaboratorId)
     .then((user) => {
+
       if (!user) {
         req.flash('error_msg', 'Please try again');
-        res.redirect('/create-book');
+        return res.redirect('/create-book');
       }
 
       const newBook = new Book({
@@ -158,21 +142,15 @@ exports.createBook = (req, res, next) => {
         owner: req.user.id,
         activeWriter: req.user.id,
       });
-
-      newBook.save()
-        .then((book) => {
-          logger.info(`BOOK CREATED - book/owner/collaborator: ${book.id} / ${book.owner} / ${book.collaborator}`);
-          req.flash('success_msg', 'Your book was created successfully');
-          res.redirect('/');
-        })
-        .catch((err) => {
-          next(err);
-        })
+      return newBook.save()
     })
-    .catch((err) => {
-        next(err);
-      }
-    );
+
+    .then((book) => {
+      logger.info(`BOOK CREATED - book/owner/collaborator: ${book.id} / ${book.owner} / ${book.collaborator}`);
+      req.flash('success_msg', 'Your book was created successfully');
+      return res.redirect('/');
+    })
+    .catch((err) => next(err));
 };
 
 // Validator for user registration

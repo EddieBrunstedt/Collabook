@@ -6,11 +6,11 @@ block content
       .col-md-10
         if foundUsers && foundUsers.length <= 0
           hr
-          h4 No users were found, please try again.
+          h4.text-center No users were found, please try again.
         if foundUsers && foundUsers.length > 0
           .card
-            .card-body
-              h2 Found users
+            .card-body.text-center
+              h2.mb-4 Found users
               table.table.table-hover.table-sm
                 tbody
                   each foundUser in foundUsers

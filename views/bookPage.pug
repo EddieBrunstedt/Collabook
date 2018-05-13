@@ -36,7 +36,7 @@ block content
               |
               span Public book
         if user && (user.id === book.collaborator.id || user.id === book.owner.id)
-          p Next writer: #{book.activeWriter.name}
+          p.lead Next writer: #{book.activeWriter.name}
       .col-md-6.text-center.text-md-right
         p.text-muted Created #{h.moment(book.createdDate).format('MMMM Do YYYY')}
         if totalNumOfPassages === 1
