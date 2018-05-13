@@ -6,110 +6,107 @@ const Book = require('../models/bookModel');
 const Passage = require('../models/passageModel');
 
 // Get book page and handle possible specific page numbers
-exports.getBookPage = (req, res, next) => {
-  Book.findBookById(req.params.bookId)
-    .then((book) => {
 
+exports.getBookPage = (req, res, next) => {
+
+  let totalNumOfPassages;
+  let currentPassages;
+  let currentPage;
+  let totalBookPages;
+  let book;
+
+  Book.findBookById(req.params.bookId)
+
+    .then((response) => {
+      book = response;
       // Check if a user is logged in if book is private
       if (!book.public && !req.user) {
         req.flash('error_msg', 'That is a private book. You can see it only if it becomes public.');
         return res.redirect('/')
       }
-
       // Check if correct user is logged in if book is private
       if (!book.public && (req.user && req.user.id !== book.owner.id) && (req.user && req.user.id !== book.collaborator.id)) {
         req.flash('error_msg', 'That is a private book. You can see it only if it becomes public.');
         return res.redirect('/')
       }
-
-      Passage.countPassagesInBook(book.id)
-        .then((totalNumOfPassages) => {
-          if (totalNumOfPassages <= 0) {
-            return res.redirect('/book/' + book.id + '/introduction');
-          }
-
-          const totalBookPages = totalNumOfPassages < 1 ? 1 : Math.ceil(totalNumOfPassages / 2);
-          const currentPage = req.params.currentPage || totalBookPages;
-
-          Passage.findPassagesForPage(book.id, currentPage)
-            .then((currentPassages) => {
-              res.render('bookPage', {
-                fullUrl: req.protocol + '://' + req.get('host') + req.originalUrl,
-                totalNumOfPassages,
-                book,
-                totalBookPages: Number(totalBookPages),
-                currentPassages,
-                currentPage: Number(currentPage),
-                viewingIntroduction: false
-              });
-            })
-            .catch((err) => {
-              next(err)
-            });
-        })
-        .catch((err) => {
-          next(err);
-        });
+      return Passage.countPassagesInBook(book.id)
     })
-    .catch((err) => {
-      next(err)
-    });
+
+    .then((response) => {
+      totalNumOfPassages = response;
+      totalNumOfPassages <= 0 ? res.redirect('/book/' + book.id + '/introduction') : null;
+      totalBookPages = totalNumOfPassages < 1 ? 1 : Math.ceil(totalNumOfPassages / 2);
+      currentPage = req.params.currentPage || totalBookPages;
+      return Passage.findPassagesForPage(book.id, currentPage)
+    })
+
+    .then((response) => {
+      currentPassages = response;
+      res.render('bookPage', {
+        fullUrl: req.protocol + '://' + req.get('host') + req.originalUrl,
+        totalNumOfPassages,
+        book,
+        totalBookPages: Number(totalBookPages),
+        currentPassages,
+        currentPage: Number(currentPage),
+        viewingIntroduction: false
+      });
+    })
+
+    .catch((err) => next(err));
 };
 
 // Get book introduction page
 exports.getIntroduction = (req, res, next) => {
+
+  let book;
+  let totalNumOfPassages;
+  let currentPassages;
+  let totalBookPages;
+  let currentPage;
+
   Book.findBookById(req.params.bookId)
-    .then((book) => {
-      Passage.countPassagesInBook(book.id)
-        .then((totalNumOfPassages) => {
-
-          const totalBookPages = totalNumOfPassages < 1 ? 1 : Math.ceil(totalNumOfPassages / 2);
-          const currentPage = req.params.currentPage || totalBookPages;
-
-          Passage.findPassagesForPage(book.id, currentPage)
-            .then((currentPassages) => {
-              res.render('bookPage', {
-                fullUrl: req.protocol + '://' + req.get('host') + req.originalUrl,
-                totalNumOfPassages,
-                book,
-                totalBookPages: Number(totalBookPages),
-                currentPassages,
-                currentPage: Number(currentPage),
-                viewingIntroduction: true
-              });
-            })
-            .catch((err) => {
-              next(err)
-            });
-        })
-        .catch((err) => {
-          next(err);
-        });
+    .then((response) => {
+      book = response;
+      return Passage.countPassagesInBook(book.id)
     })
-    .catch((err) => {
-      next(err)
-    });
+    .then((response) => {
+      totalNumOfPassages = response;
+      totalBookPages = totalNumOfPassages < 1 ? 1 : Math.ceil(totalNumOfPassages / 2);
+      currentPage = req.params.currentPage || totalBookPages;
+      return Passage.findPassagesForPage(book.id, currentPage)
+    })
+    .then((response) => {
+      currentPassages = response;
+      res.render('bookPage', {
+        fullUrl: req.protocol + '://' + req.get('host') + req.originalUrl,
+        totalNumOfPassages,
+        book,
+        totalBookPages: Number(totalBookPages),
+        currentPassages,
+        currentPage: Number(currentPage),
+        viewingIntroduction: true
+      })
+    })
+    .catch((err) => next(err));
 };
 
 // Get form page for adding passage
 exports.getCreatePassageForm = (req, res, next) => {
+  let book;
   Book.findBookById(req.params.bookId)
-    .then((book) => {
+    .then((response) => {
+      book = response;
       if (req.user.id !== book.activeWriter.id) {
         req.flash('error_msg', 'You are not authorized to do that');
         return res.redirect('/');
       }
-      Passage.findLastPassageInBook(book.id)
-        .then((passage) => {
-          res.render('createPassageForm', {book, passage: passage[0]})
-        })
-        .catch((err) => {
-          next(err)
-        });
+      return Passage.findLastPassageInBook(book.id)
     })
-    .catch((err) => {
-      next(err);
-    });
+    .then((passage) => {
+      res.render('createPassageForm', {book, passage: passage[0]})
+    })
+    .catch((err) => next(err));
 };
 
 // Create passage
@@ -128,96 +125,78 @@ exports.createPassage = (req, res, next) => {
     book: req.params.bookId,
   });
 
+  let activeWriter;
+  let passage;
+  let book;
+
   Passage.createPassage(newPassage)
-    .then((newPassage) => {
-      Book.findBookById(req.params.bookId)
-        .then((book) => {
-
-          // Find who to set as activeWriter
-          const activeWriter = req.user.id === book.owner.id ? book.collaborator.id : book.owner.id;
-
-          Book.updateActiveWriter(book.id, activeWriter)
-            .then(() => {
-              book.passages.push(newPassage._id);
-              book.save();
-              req.flash('success_msg', 'Your passage was successfully saved');
-              res.redirect('/book/' + book.id);
-            })
-            .catch((err) => {
-              next(err);
-            });
-        })
-        .catch((err) => {
-          next(err);
-        });
+    .then((response) => {
+      passage = response;
+      return Book.findBookById(req.params.bookId)
     })
-    .catch((err) => {
-      next(err);
-    });
+    .then((response) => {
+      book = response;
+      // Find who to set as activeWriter
+      activeWriter = req.user.id === book.owner.id ? book.collaborator.id : book.owner.id;
+
+      return Book.updateActiveWriter(book.id, activeWriter)
+    })
+    .then(() => {
+      book.passages.push(passage._id);
+      book.save();
+      req.flash('success_msg', 'Your passage was successfully saved');
+      res.redirect('/book/' + book.id);
+    })
+    .catch((err) => next(err));
 };
 
 // Set a book private if it is public and vice versa
 exports.makeBookPrivate = (req, res, next) => {
+  let book;
   Book.findBookById(req.params.bookId)
-    .then((book) => {
+    .then((response) => {
+      book = response;
       if (!req.user || req.user.id !== book.owner.id) {
         req.flash('error_msg', 'You are not authorized to do that');
         return res.redirect('/');
       }
-      Book.setPrivate(req.params.bookId)
-        .then(() => {
-          res.redirect('back');
-        })
-        .catch((err) => {
-          next(err);
-        })
+      return Book.setPrivate(req.params.bookId)
     })
-    .catch((err) => {
-      next(err);
-    });
+    .then(() => res.redirect('back'))
+    .catch(err => next(err))
 };
 
 // Set a book private if it is public and vice versa
 exports.makeBookPublic = (req, res, next) => {
+  let book;
   Book.findBookById(req.params.bookId)
-    .then((book) => {
+    .then((response) => {
+      book = response;
       if (!req.user || req.user.id !== book.owner.id) {
         req.flash('error_msg', 'You are not authorized to do that');
         return res.redirect('/');
       }
-      Book.setPublic(req.params.bookId)
-        .then(() => {
-          res.redirect('back');
-        })
-        .catch((err) => {
-          next(err);
-        })
+      return Book.setPublic(req.params.bookId)
     })
-    .catch((err) => {
-      next(err);
-    });
+    .then(() => res.redirect('back'))
+    .catch(err => next(err))
 };
 
 exports.switchActiveWriter = (req, res, next) => {
+  let book;
+  let activeWriter;
   Book.findBookById(req.params.bookId)
-    .then((book) => {
+    .then((response) => {
+      book = response;
       if (req.user.id !== book.owner.id) {
         req.flash('error_msg', 'You are not authorized to do that');
         return res.redirect('/');
       }
-      let activeWriter;
       book.owner.id === book.activeWriter.id ? activeWriter = book.collaborator.id : activeWriter = book.owner.id;
-      Book.updateActiveWriter(book.id, activeWriter)
-        .then(() => {
-          res.redirect('back');
-        })
-        .catch((err) => {
-          next(err);
-        });
+      return Book.updateActiveWriter(book.id, activeWriter)
     })
-    .catch((err) => {
-      next(err)
-    });
+    .then(() => res.redirect('back'))
+    .catch(err => next(err))
 };
 
 // Delete book and all its passages

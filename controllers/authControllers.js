@@ -24,10 +24,3 @@ exports.logOut = (req, res) => {
   req.flash('success_msg', 'You have been successfully logged out');
   res.redirect('/');
 };
-
-// Check if logged in user is owner or collaborator on book
-exports.isUserPartOfBook = (req, res) => {
-  if (req.params.bookId) {
-    
-  }
-};
