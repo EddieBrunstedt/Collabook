@@ -2,14 +2,14 @@
   header.blog-header.py-3
     .row.justify-content-between.align-items-center
       .col-md-6.text-center.text-md-left
-        i#navbar-logo.fas.fa-book-open
-        a.blog-header-logo.text-dark(href='/')= h.title
+        i#navbar-logo.fas.fa-book-open.text-warning
+        a#brand.blog-header-logo(href='/')= h.title
       .col-md-6.text-center.d-flex.justify-content-center.align-items-center.justify-content-md-end.align-content-md-endspot.mt-3.mt-md-0
         if user
           if currentUrl === '/'
-            a.mr-2.active-navbar-text(href='/') Dasboard
+            a.mr-2.active-navbar-text(href='/') Dashboard
           else
-            a.mr-2.inactive-navbar-text(href='/') Dasboard
+            a.mr-2.inactive-navbar-text(href='/') Dashboard
           span.text-muted |
           if currentUrl === '/user/' + user.id
             a.mx-2.active-navbar-text(href='/user/' + user.id) Profile

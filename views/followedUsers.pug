@@ -3,17 +3,16 @@ extends layout
 block content
   .container
     .row.justify-content-center
-      .col-lg-8
-        h5 People you are following
+      .col-lg-8.pt-3
+        h3.mb-3 People you are following
         .table-responsive
-          table.table.table-sm
-            thead
+          table.table.table-sm.table-borderless.table-hover
+            thead.bg-dark.text-warning
               tr
                 th(scope='col') Name
                 th(scope='col') Followers
             tbody
               each user in followedUsers
-                tr
-                  th(scope='row')
-                    a(href='/user/' + user.id)= user.name
+                tr.mouse-pointer(onclick=`window.location="/user/${user.id}";`)
+                  th(scope='row')= user.name
                   td= user.followers.length

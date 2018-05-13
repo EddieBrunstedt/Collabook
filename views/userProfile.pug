@@ -2,9 +2,9 @@ extends layout
 
 mixin bookCard(book)
   .card.mb-3.text-center.card-shadow
-    .card-header.bg-light
-      h5.head-font
-        a#main-book-page-link(href='/book/' + book.id)= book.title
+    h4.card-header.head-font.bg-dark
+      a.text-warning(href='/book/' + book.id)= book.title
+    .card-body.bg-light
       span Authors:
         |
         |
@@ -15,10 +15,9 @@ mixin bookCard(book)
         |
         |
         a(href='/user/' + book.collaborator.id)= book.collaborator.name
-    ul.list-group.list-group-flush
-      li.list-group-item
-        p.card-text.text-muted Last updated: #{h.moment(book.lastPassageStamp).calendar()}
-        p.card-text.text-muted Pages written: #{book.passages.length}
+    .card-body
+      p.card-text.text-muted Last updated: #{h.moment(book.lastPassageStamp).calendar()}
+      p.card-text.text-muted Pages written: #{book.passages.length}
 
 block content
   .container
