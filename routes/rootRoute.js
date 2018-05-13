@@ -54,7 +54,8 @@ passport.deserializeUser((id, done) => {
 router.get('/', rootControllers.getDashboard);
 
 // Get welcome page
-router.get('/welcome', rootControllers.getWelcomePage);
+// Todo: Not needed?
+// router.get('/welcome', rootControllers.getWelcomePage);
 
 // Get register form
 router.get('/register', rootControllers.getRegisterForm);

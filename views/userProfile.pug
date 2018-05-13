@@ -1,9 +1,9 @@
 extends layout
 
 mixin bookCard(book)
-  .card.text-center.card-shadow.mt-2.mb-3
+  .card.mb-3.text-center.card-shadow
     .card-header.bg-light
-      h3.head-font
+      h5.head-font
         a#main-book-page-link(href='/book/' + book.id)= book.title
       span Authors:
         |
@@ -73,16 +73,16 @@ block content
                     button.btn.btn-success(type='submit') Submit
     if booksByUser.length > 0
       if booksByUser.length === 1
+        h4.body-font.mt-3.text-center.text-sm-left Public book by #{viewedUser.name}
         hr
-        h4.text-center Public book by #{viewedUser.name}
-        .row.justify-content-center
-          each book in booksByUser
-            .col-7
-              +bookCard(book)
-      else
-        hr
-        h4.text-center Public books by #{viewedUser.name}
         .row
           each book in booksByUser
-            .col-md-6
+            .col-xl-4.col-md-6
+              +bookCard(book)
+      else
+        h4.body-font.mt-3.text-center.text-sm-left Public books by #{viewedUser.name}
+        hr
+        .row
+          each book in booksByUser
+            .col-xl-4.col-md-6
               +bookCard(book)

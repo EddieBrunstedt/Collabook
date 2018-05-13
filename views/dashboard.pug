@@ -92,15 +92,15 @@ block content
             .col-xl-4.col-md-6
               +bookCard(book)
     section
-      if booksNotStarted.length > 0
-        if booksNotStarted.length === 1
+      if blankBooks.length > 0
+        if blankBooks.length === 1
           h3.body-font.mt-3.text-center.text-sm-left Blank book
           hr.hr-gradient
         else
           h3.body-font.mt-3.text-center.text-sm-left Blank books
           hr.hr-gradient
         .row
-          each book in booksNotStarted
+          each book in blankBooks
             .col-xl-4.col-md-6
               +blankBookCard(book)
     section

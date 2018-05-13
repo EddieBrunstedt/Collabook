@@ -8,82 +8,30 @@ const logger = require('../logger');
 const User = require('../models/userModel');
 const Book = require('../models/bookModel');
 
-// Get users own dashboard
-exports.getDashboard = async (req, res, next) => {
-
-  if (!req.user) {
-    res.render('welcomePage');
-  }
-
-  try {
-
-    const booksByUser = await Book.findAllBooksWithUser(req.user._id);
-    const followedUserBooks = await Book.findFollowedUsersBooks(req.user.following, req.user.id);
-    
-    const booksNotStarted = booksByUser.filter(book => !book.passages[0]);
-    const booksByUserParsed = booksByUser
-    //Remove books without passages
-      .filter(book => book.passages[0])
-      // Sort array after lastPassageStamp in book
-      .sort((a, b) => {
-        if (a.lastPassageStamp < b.lastPassageStamp) {
-          return 1;
-        }
-        if (b.lastPassageStamp < a.lastPassageStamp) {
-          return -1;
-        }
-        return 0;
-      });
-    res.render('dashboard', {
-      booksByUser: booksByUserParsed,
-      booksNotStarted, followedUserBooks
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-
+// Get Dashboard
 exports.getDashboard = (req, res, next) => {
-  console.log(1);
-  if (req.user) {
-    Book.findAllBooksWithUser(req.user._id)
-      .then((booksByUser) => {
-        let booksNotStarted = booksByUser
-          .filter(book => !book.passages[0]);
-        let booksByUserParsed = booksByUser
-        //Remove books without passages
-          .filter(book => book.passages[0])
-          //Sort array after lastPassageStamp in book
-          .sort((a, b) => {
-            if (a.lastPassageStamp < b.lastPassageStamp) {
-              return 1;
-            }
-            if (b.lastPassageStamp < a.lastPassageStamp) {
-              return -1;
-            }
-            return 0;
-          });
-        Book.findFollowedUsersBooks(req.user.following, req.user.id)
-          .then((followedUserBooks) => {
-            res.render('dashboard',
-              {
-                booksByUser: booksByUserParsed,
-                booksNotStarted, followedUserBooks
-              })
-          })
-          .catch((err) => {
-            next(err);
-          });
-      })
-      .catch((err) => {
-        next(err);
-      });
-  } else {
-    res.render('welcomePage');
+  // If user is not logged in, render welcome page
+  if (!req.user) {
+    return res.render('welcomePage');
   }
-}
 
+  let blankBooks;
+  let booksByUser;
+
+  Book.findAllBooksWithUser(req.user._id)
+    .then((booksByUserResponse) => {
+      // Filter out books that are not started yet
+      blankBooks = booksByUserResponse
+        .filter(book => book.passages.length <= 0);
+      //Remove books without passages
+      booksByUser = booksByUserResponse
+        .filter(book => book.passages.length > 0);
+
+      return Book.findFollowedUsersBooks(req.user.following, req.user.id)
+    })
+    .then((followedUserBooks) => res.render('dashboard', {booksByUser, blankBooks, followedUserBooks}))
+    .catch(err => next(err))
+};
 
 // Get Welcome Page
 exports.getWelcomePage = (req, res, next) => {

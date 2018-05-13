@@ -58,21 +58,23 @@ module.exports.createBook = (newBook) => {
 
 // Find all public books by a specific user
 module.exports.findAllPublicBooksByUser = (userId, idToExclude) => {
-  if (idToExclude) {
-    return Book
-      .find({$or: [{owner: userId}, {collaborator: userId}]})
-      .where({public: true})
-      .nor([{owner: idToExclude}, {collaborator: idToExclude}])
-      .populate('collaborator owner')
-      .sort({lastPassageStamp: -1})
-      .exec()
-  } else {
-    return Book
-      .find({$or: [{owner: userId}, {collaborator: userId}]})
-      .where({public: true})
-      .populate('collaborator owner')
-      .sort({lastPassageStamp: -1})
-      .exec()
+  switch (idToExclude) {
+    case true:
+      return Book
+        .find({$or: [{owner: userId}, {collaborator: userId}]})
+        .where({public: true})
+        //If idToExclude is available, remove books containing this Id
+        .nor([{owner: idToExclude}, {collaborator: idToExclude}])
+        .populate('collaborator owner')
+        .sort({lastPassageStamp: -1})
+        .exec();
+    default:
+      return Book
+        .find({$or: [{owner: userId}, {collaborator: userId}]})
+        .where({public: true})
+        .populate('collaborator owner')
+        .sort({lastPassageStamp: -1})
+        .exec()
   }
 };
 
@@ -87,7 +89,7 @@ module.exports.findAllBooksWithUser = (userId) => {
 };
 
 // Find all public books from users that a user is following
-module.exports.findFollowedUsersBooks = async (userIDArray, idToExclude) => {
+module.exports.findFollowedUsersBooks = (userIDArray, idToExclude) => {
   return Book
   //.find({'_id': {$in: userIDArray}})
     .find({})
