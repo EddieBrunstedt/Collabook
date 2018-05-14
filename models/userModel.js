@@ -28,6 +28,10 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+    publicEmail: {
+    type: Boolean,
+    default: false
+  },
   following: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'

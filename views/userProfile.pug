@@ -24,21 +24,22 @@ block content
     .row
       .col.text-center
         h1= viewedUser.name
-        small.text-muted Id:
+        small.text-muted.d-block Id:
           |
           |
           = viewedUser.id
+        if viewedUser.publicEmail
+          strong.d-block.mt-3 E-mail:
+            |
+            |
+            a(href='mailto:' + viewedUser.email)= viewedUser.email
     hr.hr-gradient-center
     .row
       .col-lg-6.text-center
         figure.figure
           img.figure-img.img-fluid.rounded(src=viewedUser.gravatar, alt='User Avatar')
           if user && user.id === viewedUser.id
-            figcaption.figure-caption.text-center Your profile picture is grabbed from
-              |
-              |
-              a(href='http://www.gravatar.com') Gravatar.com
-              | .
+            a.btn.btn-info.my-3.d-block(href='/', data-toggle="modal", data-target="#profile-settings-modal") Profile settings
           if user && user.id !== viewedUser.id
             unless followsUser
               a.btn.btn-success.mb-3.d-block(href='/user/' + viewedUser.id + '/follow-user') Follow #{viewedUser.name}
@@ -50,12 +51,37 @@ block content
                 |
                 |
                 i.fas.fa-eye-slash
+        if user && user.id === viewedUser.id
+          #profile-settings-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
+            .modal-dialog.modal-lg.modal-dialog-centered(role='document')
+              .modal-content
+                .modal-body.bg-dark
+                  h2.text-warning Profile settings
+                .modal-body.bg-light
+                  .row.border-between
+                    .col-md-6
+                      h3.mb-3 Profile picture
+                      p Your profile picture is connected to your email address and grabbed from
+                        |
+                        |
+                        a(href='http://www.gravatar.com', target="_blank") Gravatar.com
+                        | .
+                      p You can easily go there and change your profile picture.
+                    .col-md-6
+                      h3.mb-3 Privacy
+                      p Your email is currently hidden from other users.
+                      p If you want, you can make it visible to anyone on your profile page.
+                      a.btn.btn-sm.btn-outline-secondary(href='/user/' + viewedUser.id + '/switch-email-visibility') Make email visible
+                .modal-footer
+                  button.btn.btn-secondary(type='button', data-dismiss='modal') Close
       .col-lg-6.text-center
         if viewedUser.bio
           h3 Biography
           p= viewedUser.bio
+        if !viewedUser.bio && user.id === viewedUser.id
+          p.text-muted You have not written a biography
         if user && viewedUser.id === user.id
-          a.btn.btn-success.btn-sm.my-3(href='/', data-toggle="modal", data-target="#update-bio-modal") Update biography
+          a.text-info.my-3(href='/', data-toggle="modal", data-target="#update-bio-modal") Update biography
             |
             |
             i.fas.fa-pencil-alt
@@ -72,15 +98,15 @@ block content
                     button.btn.btn-success(type='submit') Submit
     if booksByUser.length > 0
       if booksByUser.length === 1
-        h4.body-font.mt-3.text-center.text-sm-left Public book by #{viewedUser.name}
         hr
+        h4.body-font.my-3.text-center.text-sm-left Public book by #{viewedUser.name}
         .row
           each book in booksByUser
             .col-xl-4.col-md-6
               +bookCard(book)
       else
-        h4.body-font.mt-3.text-center.text-sm-left Public books by #{viewedUser.name}
         hr
+        h4.body-font.my-3.text-center.text-sm-left Public books by #{viewedUser.name}
         .row
           each book in booksByUser
             .col-xl-4.col-md-6

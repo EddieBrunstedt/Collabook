@@ -1,8 +1,6 @@
 const {check, validationResult} = require('express-validator/check');
 const {matchedData, sanitize} = require('express-validator/filter');
 
-const logger = require('../logger');
-
 const User = require('../models/userModel');
 const Book = require('../models/bookModel');
 
@@ -139,7 +137,6 @@ exports.createBook = (req, res, next) => {
       return newBook.save()
     })
     .then((book) => {
-      logger.info(`BOOK CREATED - book/owner/collaborator: ${book.id} / ${book.owner} / ${book.collaborator}`);
       req.flash('success_msg', 'Your book was created successfully');
       return res.redirect('/');
     })

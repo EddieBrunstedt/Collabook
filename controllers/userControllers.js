@@ -101,3 +101,31 @@ exports.unfollowUser = (req, res, next) => {
     })
     .catch(err => next(err));
 };
+
+// User set email to public or private
+exports.switchEmailVisibility = (req, res, next) => {
+  console.log('whaat');
+  let userToUpdate;
+
+  User.getUserById(req.params.userId)
+    .then((response) => {
+      userToUpdate = response;
+      if (req.user.id !== userToUpdate.id) {
+        req.flash('error_msg', 'You are not authorized to do that');
+        return res.redirect('/user' + userToUpdate.id)
+      }
+
+      // Make the switch
+      userToUpdate.publicEmail ? userToUpdate.publicEmail = false : userToUpdate.publicEmail = true;
+
+      return userToUpdate.save();
+    })
+    .then((response) => {
+      console.log(response);
+    })
+    .then(() => {
+      req.flash('success_msg', 'DONE!');
+      return res.redirect('/user/' + userToUpdate.id);
+    })
+    .catch(err => next(err));
+};

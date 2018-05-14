@@ -7,17 +7,12 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const lessMiddleware = require('less-middleware');
-const expressValidator = require('express-validator');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
-const slug = require('slug');
 const helpers = require('./helpers');
 const errorHandlers = require('./handlers/errorHandlers');
-const winston = require('winston');
-
-//const logger = require('./logger');
 
 const index = require('./routes/rootRoute');
 const user = require('./routes/userRoute');
@@ -30,7 +25,6 @@ const app = express();
 app.set('trust proxy', true);
 
 // Stream all error > 400 to stderr
-// Change 'combine' to 'dev' if in development
 app.use(morgan('tiny', {
   skip: function (req, res) {
     return res.statusCode < 400
@@ -39,7 +33,6 @@ app.use(morgan('tiny', {
 }));
 
 // Stream all error < 400 to stdout
-// Change 'combine' to 'dev' if in development
 app.use(morgan('tiny', {
   skip: function (req, res) {
     return res.statusCode >= 400
@@ -53,13 +46,9 @@ mongoose.connect(process.env.DB_HOST)
   .then(() => {
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
-    //Todo: Fix logger
-    //logger.info('Succesfully connected to Mongo database');
   })
   .catch((err) => {
-    //Todo: Fix logger
-    //logger.error(err);
-    return err;
+    throw(err);
   });
 
 // View engine setup

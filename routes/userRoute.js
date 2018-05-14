@@ -17,5 +17,7 @@ router.get('/:userId/follow-user', userControllers.followUser);
 // User unfollow another User
 router.get('/:userId/unfollow-user', userControllers.unfollowUser);
 
+// User set email to public or private
+router.get('/:userId/switch-email-visibility', authControllers.isLoggedIn, userControllers.switchEmailVisibility);
 
 module.exports = router;
