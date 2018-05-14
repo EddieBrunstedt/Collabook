@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const lessMiddleware = require('less-middleware');
 const flash = require('connect-flash');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 const mongoose = require('mongoose');
 const helpers = require('./helpers');
@@ -25,7 +26,7 @@ const app = express();
 app.set('trust proxy', true);
 
 // Stream all error > 400 to stderr
-app.use(morgan('tiny', {
+app.use(morgan('short', {
   skip: function (req, res) {
     return res.statusCode < 400
   },
@@ -33,7 +34,7 @@ app.use(morgan('tiny', {
 }));
 
 // Stream all error < 400 to stdout
-app.use(morgan('tiny', {
+app.use(morgan('short', {
   skip: function (req, res) {
     return res.statusCode >= 400
   },
@@ -47,7 +48,7 @@ mongoose.connect(process.env.DB_HOST)
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
   })
-  .catch((err) => {
+  .catch(err => {
     throw(err);
   });
 
@@ -64,9 +65,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Initialize session configuration
 app.use(session({
-  secret: 'The Beaver and the Tiger sat on a roof.',
+  secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 
 // Initialize passport
