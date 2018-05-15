@@ -1,119 +1,102 @@
 const {check, validationResult} = require('express-validator/check');
-const {matchedData, sanitize} = require('express-validator/filter');
 
 const User = require('../models/userModel');
 const Book = require('../models/bookModel');
 
+const logger = require('../logger');
+
 // Get Dashboard
-exports.getDashboard = (req, res, next) => {
+exports.getDashboard = async (req, res) => {
   // If user is not logged in, render welcome page
   if (!req.user) {
     return res.render('welcomePage');
   }
-
-  let blankBooks;
-  let booksByUser;
-
-  Book.findAllBooksWithUser(req.user._id)
-    .then((booksByUserResponse) => {
-      // Filter out books that are not started yet
-      blankBooks = booksByUserResponse
-        .filter(book => book.passages.length <= 0);
-      //Remove books without passages
-      booksByUser = booksByUserResponse
-        .filter(book => book.passages.length > 0);
-
-      return Book.findFollowedUsersBooks(req.user.following, req.user.id)
-    })
-    .then(followedUserBooks => res.render('dashboard', {booksByUser, blankBooks, followedUserBooks}))
-    .catch(err => next(err))
+  const booksByUserResponse = await Book.findAllBooksWithUser(req.user._id);
+  // Filter out books that are not started yet
+  const blankBooks = booksByUserResponse
+    .filter(book => book.passages.length <= 0);
+  //Remove books without passages
+  const booksByUser = booksByUserResponse
+    .filter(book => book.passages.length > 0);
+  const followedUserBooks = await Book.findFollowedUsersBooks(req.user.following, req.user.id);
+  res.render('dashboard', {booksByUser, blankBooks, followedUserBooks});
 };
 
 // Get Welcome Page
 exports.getWelcomePage = (req, res) => res.render('welcomePage');
 
 //Get Followed users page
-exports.getFollowedUsers = (req, res, next) => {
-  User.getFollowedUsers(req.user.following)
-    .then(followedUsers => res.render('followedUsers', {followedUsers}))
-    .catch(err => next(err))
+exports.getFollowedUsers = async (req, res) => {
+  const followedUsers = await User.getFollowedUsers(req.user.following);
+  res.render('followedUsers', {followedUsers});
 };
 
 // Get login page
 exports.getLoginForm = (req, res) => res.render('login');
 
-// Post for logging in
-exports.postLoginForm = (req, res) => res.redirect('/');
-
 // Get register form
 exports.getRegisterForm = (req, res) => res.render('register');
 
 // Post for registering user
-exports.postRegisterForm = (req, res, next) => {
+exports.postRegisterForm = async (req, res) => {
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     errors.array().map(error => {
       req.flash('error_msg', error.msg);
     });
     return res.redirect('/register');
   }
-
-  User.getUserByEmail(req.body.inputEmail)
-    .then(user => {
-      if (user) {
-        req.flash('error_msg', 'There is already an account associated with this Email address');
-        return res.redirect('/register')
-      }
-      const newUser = new User({
-        email: req.body.inputEmail,
-        password: req.body.inputPassword,
-        name: req.body.inputName
-      });
-      User.createUser(newUser);
-      req.flash('success_msg', 'You are registered and can now login');
-      res.redirect('/login');
-    })
-    .catch(err => next(err));
+  const user = await User.getUserByEmail(req.body.inputEmail);
+  if (user) {
+    req.flash('error_msg', 'There is already an account associated with this Email address');
+    return res.redirect('/register')
+  }
+  const newUser = new User({
+    email: req.body.inputEmail,
+    password: req.body.inputPassword,
+    name: req.body.inputName
+  });
+  User.createUser(newUser);
+  req.flash('success_msg', 'You are registered and can now login');
+  res.redirect('/login');
 };
 
-exports.postFindCollaborators = (req, res, next) => {
+exports.postFindCollaborators = async (req, res) => {
 
   if (req.body.inputSearchString.length < 3) {
     req.flash('error_msg', 'The search criteria needs to be at least 3 characters long');
     return res.redirect('/create-book/find-collaborator');
   }
 
-  User.fuzzySearchUserByName(req.body.inputSearchString, req.user.id)
-    .then((foundUsers) => {
+  const foundUsers = await User.fuzzySearchUserByName(req.body.inputSearchString, req.user.id);
 
-      let parsedFoundUsers = [];
+  let parsedFoundUsers = [];
 
-      foundUsers.map((user) => {
-        if (req.user.following.indexOf(user._id) >= 0) {
-          return parsedFoundUsers.push({name: user.name, id: user.id, requesterIsFollowingUser: true})
-        } else {
-          return parsedFoundUsers.push({name: user.name, id: user.id})
-        }
-      });
-      return res.render('findCollaborator', {foundUsers: parsedFoundUsers});
-    })
-    .catch(err => next(err));
+  foundUsers.map((user) => {
+    if (req.user.following.indexOf(user._id) >= 0) {
+      return parsedFoundUsers.push({name: user.name, id: user.id, requesterIsFollowingUser: true})
+    } else {
+      return parsedFoundUsers.push({name: user.name, id: user.id})
+    }
+  });
+
+  res.render('findCollaborator', {foundUsers: parsedFoundUsers});
+
 };
 
 // Get find collaborator page in book creation
-exports.getFindCollaborators = (req, res) => res.render('findCollaborator');
+exports.getFindCollaboratorsPage = (req, res) => res.render('findCollaborator');
 
 // Get Book creation page
-exports.getCreateBookForm = (req, res, next) => {
-  User.getUserById(req.params.collaboratorId)
-    .then((collaborator) => res.render('createBook', {collaborator}))
-    .catch(err => next(err));
+exports.getCreateBookForm = async (req, res) => {
+  const collaborator = await User.getUserById(req.params.collaboratorId);
+  res.render('createBook', {collaborator});
 };
 
 // Create book
-exports.createBook = (req, res, next) => {
+exports.createBook = async (req, res) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     errors.array().map(error => {
       req.flash('error_msg', error.msg);
@@ -121,26 +104,32 @@ exports.createBook = (req, res, next) => {
     return res.redirect('/create-book');
   }
 
-  User.getUserById(req.body.collaboratorId)
-    .then((user) => {
-      if (!user) {
-        req.flash('error_msg', 'Please try again');
-        return res.redirect('/create-book');
-      }
-      const newBook = new Book({
-        title: req.body.inputTitle,
-        introduction: req.body.inputIntroduction,
-        collaborator: user.id,
-        owner: req.user.id,
-        activeWriter: req.user.id,
-      });
-      return newBook.save()
-    })
-    .then((book) => {
-      req.flash('success_msg', 'Your book was created successfully');
-      return res.redirect('/');
-    })
-    .catch(err => next(err));
+  const user = await User.getUserById(req.body.collaboratorId);
+
+  if (!user) {
+    req.flash('error_msg', 'Please try again');
+    return res.redirect('/create-book');
+  }
+
+  const newBook = new Book({
+    title: req.body.inputTitle,
+    introduction: req.body.inputIntroduction,
+    collaborator: user.id,
+    owner: req.user.id,
+    activeWriter: req.user.id,
+  });
+
+  await newBook.save();
+
+  logger.log({
+    level: 'info',
+    message: 'BOOK CREATED | ID: ' + newBook.id + ' / by ' + req.user.id
+  });
+
+
+  req.flash('success_msg', 'Your book was created successfully');
+  return res.redirect('/');
+
 };
 
 // Validator for user registration

@@ -2,11 +2,14 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 
+// I wrap all controller functions using promises in this function
+// to wrap promise rejections and remove the need for try/catch.
+const asyncMiddleware = require('../handlers/asyncMiddleware');
+
 //Import controllers
 const rootControllers = require('../controllers/rootControllers');
 const authControllers = require('../controllers/authControllers');
 const bookControllers = require('../controllers/bookControllers');
-const userControllers = require('../controllers/userControllers');
 
 const User = require('../models/userModel');
 
@@ -51,40 +54,63 @@ passport.deserializeUser((id, done) => {
 });
 
 // Get users own dashboard
-router.get('/', rootControllers.getDashboard);
-
-// Get welcome page
-// Todo: Not needed?
-// router.get('/welcome', rootControllers.getWelcomePage);
+router.get('/',
+  asyncMiddleware(rootControllers.getDashboard)
+);
 
 // Get register form
-router.get('/register', rootControllers.getRegisterForm);
+router.get('/register',
+  rootControllers.getRegisterForm
+);
 
 // Get followed users page
-router.get('/followed-users', authControllers.isLoggedIn, rootControllers.getFollowedUsers);
+router.get('/followed-users',
+  authControllers.isLoggedIn,
+  asyncMiddleware(rootControllers.getFollowedUsers)
+);
 
 // Post for registering user
-router.post('/register', rootControllers.registerValidation, rootControllers.postRegisterForm);
+router.post('/register',
+  rootControllers.registerValidation,
+  asyncMiddleware(rootControllers.postRegisterForm)
+);
 
 // Get login page
-router.get('/login', rootControllers.getLoginForm);
+router.get('/login',
+  rootControllers.getLoginForm
+);
 
 // Post for logging in
-router.post('/login', authControllers.passportAuthenticate);
+router.post('/login',
+  authControllers.passportAuthenticate
+);
 
 // Get for passport de-authentication
 router.get('/logout', authControllers.logOut);
 
-// Get Book creation page
-router.get('/create-book/find-collaborator', authControllers.isLoggedIn, rootControllers.getFindCollaborators);
+// Get Book find collaborators page
+router.get('/create-book/find-collaborator',
+  authControllers.isLoggedIn,
+  rootControllers.getFindCollaboratorsPage
+);
 
-router.post('/create-book/find-collaborator', authControllers.isLoggedIn, rootControllers.postFindCollaborators);
+router.post('/create-book/find-collaborator',
+  authControllers.isLoggedIn,
+  asyncMiddleware(rootControllers.postFindCollaborators)
+);
 
 // Get Book creation page
-router.get('/create-book/:collaboratorId', authControllers.isLoggedIn, rootControllers.getCreateBookForm);
+router.get('/create-book/:collaboratorId',
+  authControllers.isLoggedIn,
+  asyncMiddleware(rootControllers.getCreateBookForm)
+);
 
 // Post for creating books
-router.post('/create-book', authControllers.isLoggedIn, bookControllers.bookValidation, rootControllers.createBook);
+router.post('/create-book',
+  authControllers.isLoggedIn,
+  bookControllers.bookValidation,
+  asyncMiddleware(rootControllers.createBook)
+);
 
 
 module.exports = router;

@@ -1,5 +1,4 @@
 const {check, validationResult} = require('express-validator/check');
-const {matchedData, sanitize} = require('express-validator/filter');
 const slug = require('slug');
 
 const logger = require('../logger');
@@ -101,7 +100,7 @@ exports.createPassage = async (req, res) => {
   // Find who to set as activeWriter
   const activeWriter = req.user.id === book.owner.id ? book.collaborator.id : book.owner.id;
 
-  await Book.updateActiveWriter(book.id, activeWriter)
+  await Book.updateActiveWriter(book.id, activeWriter);
 
 
   book.passages.push(passage._id);
@@ -109,7 +108,7 @@ exports.createPassage = async (req, res) => {
 
   logger.log({
     level: 'info',
-    message: 'PASSAGE CREATED: ' + passage.id + ' / by ' + passage.author
+    message: 'PASSAGE CREATED | ID: ' + passage.id + ' / by ' + passage.author
   });
 
   req.flash('success_msg', 'Your passage was successfully saved');
@@ -118,7 +117,6 @@ exports.createPassage = async (req, res) => {
 };
 
 exports.switchBookVisibility = async (req, res) => {
-
   const book = await Book.findBookById(req.params.bookId);
   if (!req.user || req.user.id !== book.owner.id) {
     req.flash('error_msg', 'You are not authorized to do that');
@@ -157,6 +155,11 @@ exports.deleteBookAndPassages = async (req, res) => {
 
   await Book.deleteBook(book.id);
   await Passage.deletePassagesFromBook(book.id);
+
+  logger.log({
+    level: 'info',
+    message: 'BOOK DELETED | ID: ' + book.id + ' / by ' + req.user.id
+  });
 
   req.flash('success_msg', 'Book successfully deleted.');
   return res.redirect('/');

@@ -68,10 +68,16 @@ block content
                         | .
                       p You can easily go there and change your profile picture.
                     .col-md-6
-                      h3.mb-3 Privacy
-                      p Your email is currently hidden from other users.
-                      p If you want, you can make it visible to anyone on your profile page.
-                      a.btn.btn-sm.btn-outline-secondary(href='/user/' + viewedUser.id + '/switch-email-visibility') Make email visible
+                      if (viewedUser.publicEmail)
+                        h3.mb-3 Privacy
+                        p Your email is currently visible to all users.
+                        p If you want, you can hide your email from everyone visiting your profile page.
+                        a.btn.btn-sm.btn-outline-secondary(href='/user/' + viewedUser.id + '/switch-email-visibility') Hide my email
+                      else
+                        h3.mb-3 Privacy
+                        p Your email is currently hidden from other users.
+                        p If you want, you can make it visible to anyone on your profile page.
+                        a.btn.btn-sm.btn-outline-secondary(href='/user/' + viewedUser.id + '/switch-email-visibility') Make email visible
                 .modal-footer
                   button.btn.btn-secondary(type='button', data-dismiss='modal') Close
       .col-lg-6.text-center

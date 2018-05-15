@@ -43,21 +43,6 @@ app.use(morgan('short', {
   stream: process.stdout
 }));
 
-logger.log({
-  level: 'info',
-  message: 'Hello distributed log files!'
-});
-
-logger.log({
-  level: 'warn',
-  message: 'Hello distributed log files!'
-});
-
-logger.log({
-  level: 'error',
-  message: 'Hello distributed log files!'
-});
-
 // Connect to database
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DB_HOST)
