@@ -3,7 +3,6 @@ const {check, validationResult} = require('express-validator/check');
 const User = require('../models/userModel');
 const Book = require('../models/bookModel');
 
-const logger = require('../logger');
 
 // Get Dashboard
 exports.getDashboard = async (req, res) => {
@@ -57,6 +56,7 @@ exports.postRegisterForm = async (req, res) => {
     name: req.body.inputName
   });
   User.createUser(newUser);
+
   req.flash('success_msg', 'You are registered and can now login');
   res.redirect('/login');
 };

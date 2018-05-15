@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const md5 = require('md5');
 
+const logger = require('../logger');
+
 // Define user schema
 const UserSchema = new mongoose.Schema({
   email: {
@@ -59,6 +61,10 @@ module.exports.createUser = (newUser) => {
     .then((hash) => {
       newUser.password = hash;
       newUser.save();
+      logger.log({
+        level: 'info',
+        message: 'USER CREATED | ID: ' + newUser.id
+      });
     })
     .catch((err) => {
       throw err;
