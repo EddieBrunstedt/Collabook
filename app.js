@@ -19,6 +19,8 @@ const index = require('./routes/rootRoute');
 const user = require('./routes/userRoute');
 const book = require('./routes/bookRoute');
 
+const logger = require('./logger');
+
 
 const app = express();
 
@@ -40,6 +42,21 @@ app.use(morgan('short', {
   },
   stream: process.stdout
 }));
+
+logger.log({
+  level: 'info',
+  message: 'Hello distributed log files!'
+});
+
+logger.log({
+  level: 'warn',
+  message: 'Hello distributed log files!'
+});
+
+logger.log({
+  level: 'error',
+  message: 'Hello distributed log files!'
+});
 
 // Connect to database
 mongoose.Promise = global.Promise;
@@ -68,7 +85,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  store: new MongoStore({ mongooseConnection: mongoose.connection })
+  store: new MongoStore({mongooseConnection: mongoose.connection})
 }));
 
 // Initialize passport

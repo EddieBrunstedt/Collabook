@@ -65,7 +65,6 @@ module.exports.findPassagesForPage = (bookId, pageNumber) => {
     //for each page we need to skip: ([passages per page] * [current page]) - [passages per page]) passages
     .skip((2 * pageNumber) - 2)
     .limit(2)
-    .populate()
     .exec();
 };
 
