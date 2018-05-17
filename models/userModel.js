@@ -151,7 +151,6 @@ module.exports.addUserFromFollowing = (userIdToAdd, userIdToAddTo) => {
 
 // Add user.id from user.following
 module.exports.addUserToFollowers = (userIdToAdd, userIdToAddTo) => {
-  console.log('addUserToFollowers');
   return User.update(
     {_id: userIdToAddTo},
     {$push: {followers: userIdToAdd}}
