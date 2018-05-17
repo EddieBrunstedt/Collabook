@@ -1,4 +1,0 @@
-DB_HOST=[db Host goes here]
-DB_USER=[db User goes here]
-DB_PASS=[db Pass goes here]
-SESSION_SECRET=[session secret goes here]
