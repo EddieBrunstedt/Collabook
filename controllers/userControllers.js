@@ -6,7 +6,7 @@ exports.getProfilePage = async (req, res) => {
   const viewedUser = await User.getUserById(req.params.userId);
 
   const followsUser = viewedUser.followers.some((item) => {
-    return item.equals(req.user || req.user.id);
+    return item.equals(req.user.id);
   });
 
   const booksByUser = await Book.findAllPublicBooksByUser(viewedUser._id, req.user ? req.user.id : null);
