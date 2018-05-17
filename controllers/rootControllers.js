@@ -3,6 +3,7 @@ const {check, validationResult} = require('express-validator/check');
 const User = require('../models/userModel');
 const Book = require('../models/bookModel');
 
+const logger = require('../logger');
 
 // Get Dashboard
 exports.getDashboard = async (req, res) => {
