@@ -22,12 +22,14 @@ router.post('/:userId/update-bio',
 
 // User follow another User
 router.get('/:userId/follow-user',
-  asyncMiddleware(userControllers.followUser)
+  authControllers.isLoggedIn,
+  asyncMiddleware(userControllers.followOrUnfollow)
 );
 
 // User unfollow another User
 router.get('/:userId/unfollow-user',
-  asyncMiddleware(userControllers.unfollowUser)
+  authControllers.isLoggedIn,
+  asyncMiddleware(userControllers.followOrUnfollow)
 );
 
 // User set email to public or private

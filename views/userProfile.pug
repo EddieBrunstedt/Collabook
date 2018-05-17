@@ -41,16 +41,16 @@ block content
           if user && user.id === viewedUser.id
             a.btn.btn-info.my-3.d-block(href='/', data-toggle="modal", data-target="#profile-settings-modal") Profile settings
           if user && user.id !== viewedUser.id
-            unless followsUser
-              a.btn.btn-success.mb-3.d-block(href='/user/' + viewedUser.id + '/follow-user') Follow #{viewedUser.name}
-                |
-                |
-                i.fas.fa-eye
-            else
+            if followsUser
               a.btn.btn-warning.mb-3.d-block(href='/user/' + viewedUser.id + '/unfollow-user') Unfollow #{viewedUser.name}
                 |
                 |
                 i.fas.fa-eye-slash
+            else
+              a.btn.btn-success.mb-3.d-block(href='/user/' + viewedUser.id + '/follow-user') Follow #{viewedUser.name}
+                |
+                |
+                i.fas.fa-eye
         if user && user.id === viewedUser.id
           #profile-settings-modal.modal.fade(tabindex='-1', role='dialog', aria-hidden-'true')
             .modal-dialog.modal-lg.modal-dialog-centered(role='document')

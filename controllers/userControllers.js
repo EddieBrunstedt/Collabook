@@ -4,10 +4,13 @@ const Book = require('../models/bookModel');
 // Get profile page of a user
 exports.getProfilePage = async (req, res) => {
   const viewedUser = await User.getUserById(req.params.userId);
+
   const followsUser = viewedUser.followers.some((item) => {
     return item.equals(req.user || req.user.id);
   });
+
   const booksByUser = await Book.findAllPublicBooksByUser(viewedUser._id, req.user ? req.user.id : null);
+
   res.render('userProfile', {viewedUser, followsUser, booksByUser});
 };
 
@@ -23,52 +26,29 @@ exports.postUserPage = async (req, res) => {
   res.redirect('/user/' + req.params.userId);
 };
 
-// User follow another user
-exports.followUser = async (req, res) => {
-  if (req.user && req.user.id === req.params.userId) {
-    req.flash('success_msg', 'You can\'t follow yourself silly');
+//User follow another user
+exports.followOrUnfollow = async (req, res) => {
+  //Find target user
+  const targetUser = await User.getUserById(req.params.userId);
+  //Check if user is trying to follow/unfollow herself
+  if (req.user.id === targetUser.userId) {
+    req.flash('success_msg', 'This action is not possible on your own account, you silly.');
     return res.redirect('/');
   }
-
-  //Find user to follow
-  const userToFollow = await User.getUserById(req.params.userId);
-
-  const followsUser = userToFollow.followers.some((item) => {
+  //Check if user is alrady following target user
+  const userFollowsTargetUser = targetUser.followers.some((item) => {
     return item.equals(req.user.id);
   });
 
-  if (followsUser) {
-    req.flash('error_msg', 'You are already following this person.');
-    return res.redirect('/user/' + req.params.userId);
+  if (userFollowsTargetUser) {
+    await User.removeUserFromFollowers(req.user._id, targetUser._id);
+    await User.removeUserFromFollowing(targetUser._id, req.user._id);
+    return res.redirect('/user/' + targetUser.id);
+  } else {
+    await User.addUserToFollowers(req.user._id, targetUser._id);
+    await User.addUserFromFollowing(targetUser._id, req.user._id);
+    return res.redirect('/user/' + targetUser.id);
   }
-
-  userToFollow.followers.push(req.user._id);
-
-  await userToFollow.save();
-
-  //Next, find user currently logged in
-  const loggedInUser = await User.getUserById(req.user._id);
-
-  loggedInUser.following.push(userToFollow._id);
-
-  await loggedInUser.save();
-
-  res.redirect('/user/' + req.params.userId);
-};
-
-// User unfollow another user
-exports.unfollowUser = async (req, res) => {
-  const loggedInUser = await User.getUserById(req.params.userId);
-  const followsUser = loggedInUser.followers.some((item) => {
-    return item.equals(req.user.id);
-  });
-  if (!followsUser) {
-    req.flash('error_msg', 'You are not following this person');
-    return res.redirect('/user/' + req.params.userId);
-  }
-  await User.removeUserFromFollowers(req.user._id, req.params.userId);
-  await User.removeUserFromFollowing(req.params.userId, req.user._id);
-  res.redirect('/user/' + req.params.userId);
 };
 
 // User set email to public or private
