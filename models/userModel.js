@@ -127,7 +127,6 @@ module.exports.updateUser = (id, updates) => {
 
 // Remove user.id from user.following
 module.exports.removeUserFromFollowing = (userIdToRemove, userIdToRemoveFrom) => {
-  console.log('removeUserFromFollowing');
   return User.update(
     {_id: userIdToRemoveFrom},
     {$pull: {following: userIdToRemove}}
@@ -136,7 +135,6 @@ module.exports.removeUserFromFollowing = (userIdToRemove, userIdToRemoveFrom) =>
 
 // Remove user.id from user.following
 module.exports.removeUserFromFollowers = (userIdToRemove, userIdToRemoveFrom) => {
-  console.log('removeUserFromFollowers');
   return User.update(
     {_id: userIdToRemoveFrom},
     {$pull: {followers: userIdToRemove}}
@@ -145,7 +143,6 @@ module.exports.removeUserFromFollowers = (userIdToRemove, userIdToRemoveFrom) =>
 
 // Add user.id from user.following
 module.exports.addUserFromFollowing = (userIdToAdd, userIdToAddTo) => {
-  console.log('addUserFromFollowing');
   return User.update(
     {_id: userIdToAddTo},
     {$push: {following: userIdToAdd}}

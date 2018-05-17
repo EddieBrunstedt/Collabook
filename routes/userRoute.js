@@ -21,13 +21,13 @@ router.post('/:userId/update-bio',
 );
 
 // User follow another User
-router.get('/:userId/follow-user',
+router.post('/:userId/follow-user',
   authControllers.isLoggedIn,
   asyncMiddleware(userControllers.followOrUnfollow)
 );
 
 // User unfollow another User
-router.get('/:userId/unfollow-user',
+router.post('/:userId/unfollow-user',
   authControllers.isLoggedIn,
   asyncMiddleware(userControllers.followOrUnfollow)
 );

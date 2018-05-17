@@ -29,12 +29,14 @@ exports.postUserPage = async (req, res) => {
 //User follow another user
 exports.followOrUnfollow = async (req, res) => {
   //Find target user
-  const targetUser = await User.getUserById(req.params.userId);
+  const targetUser = await User.getUserById(req.body.targetUserId);
+
   //Check if user is trying to follow/unfollow herself
-  if (req.user.id === targetUser.userId) {
+  if (req.user.id === targetUser.id) {
     req.flash('success_msg', 'This action is not possible on your own account, you silly.');
     return res.redirect('/');
   }
+
   //Check if user is alrady following target user
   const userFollowsTargetUser = targetUser.followers.some((item) => {
     return item.equals(req.user.id);
@@ -44,7 +46,9 @@ exports.followOrUnfollow = async (req, res) => {
     await User.removeUserFromFollowers(req.user._id, targetUser._id);
     await User.removeUserFromFollowing(targetUser._id, req.user._id);
     return res.redirect('/user/' + targetUser.id);
+
   } else {
+
     await User.addUserToFollowers(req.user._id, targetUser._id);
     await User.addUserFromFollowing(targetUser._id, req.user._id);
     return res.redirect('/user/' + targetUser.id);
