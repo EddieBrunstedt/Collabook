@@ -26,9 +26,71 @@ exports.getDashboard = async (req, res) => {
 exports.getWelcomePage = (req, res) => res.render('welcomePage');
 
 //Get Followed users page
-exports.getFollowedUsers = async (req, res) => {
-  const followedUsers = await User.getFollowedUsers(req.user.following);
-  res.render('followedUsers', {followedUsers});
+exports.getPeoplePageCircle = async (req, res) => {
+  const userIsFollowing = await User.getFollowedUsers(req.user.following);
+  const userIsFollowedBy = await User.getFollowingUsers(req.user.followers);
+
+  const currentUrl = req.originalUrl;
+
+  res.render('people-circle', {userIsFollowing, userIsFollowedBy, currentUrl});
+};
+
+// Get Search users page
+exports.getPeoplePageSearch = async (req, res) => {
+  const currentUrl = req.originalUrl;
+  res.render('people-search', {currentUrl});
+};
+
+// Post to search users page
+exports.searchWriter = async (req, res) => {
+  const currentUrl = req.originalUrl;
+  if (req.body.inputSearchString.length < 3) {
+    req.flash('error_msg', 'The search criteria needs to be at least 3 characters long');
+    return res.redirect('/people/search');
+  }
+
+  const foundUsers = await User.fuzzySearchUserByName(req.body.inputSearchString, req.user.id);
+
+  let parsedFoundUsers = [];
+
+  foundUsers.map((user) => {
+    if (req.user.following.indexOf(user._id) >= 0) {
+      return parsedFoundUsers.push({
+        name: user.name,
+        id: user.id,
+        followers: user.followers,
+        requesterIsFollowingUser: true
+      })
+    } else {
+      return parsedFoundUsers.push({name: user.name, id: user.id, followers: user.followers})
+    }
+  });
+  res.render('people-search', {foundUsers: parsedFoundUsers, currentUrl});
+};
+
+// Get page with suggested users
+exports.getPeoplePageSuggested = async (req, res) => {
+
+  const suggestedUsers = await User.getSuggestedUsers(req.user.id);
+
+  let suggestedUsersParsed = [];
+
+  suggestedUsers.map(item => {
+    suggestedUsersParsed.push({name: item.name, followers: item.followers, id: item.id})
+  });
+
+  suggestedUsersParsed.sort((a, b) => {
+    if (a.followers.length > b.followers.length) {
+      return -1;
+    }
+    if (a.followers.length < b.followers.length) {
+      return 1;
+    }
+  });
+
+  const currentUrl = req.originalUrl;
+
+  res.render('people-suggested', {currentUrl, suggestedUsersParsed});
 };
 
 // Get login page

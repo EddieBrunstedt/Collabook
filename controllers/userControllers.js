@@ -14,14 +14,27 @@ exports.getProfilePage = async (req, res) => {
   res.render('userProfile', {viewedUser, followsUser, booksByUser});
 };
 
-// Make profile updates
-exports.postUserPage = async (req, res) => {
+// Make bio updates
+exports.postUserPageBio = async (req, res) => {
   const user = await User.getUserById(req.params.userId);
   if (user.id !== req.user.id) {
     req.flash('error_msg', 'You are not authorized to do that.');
     return res.redirect('/')
   }
   await User.updateUser(req.params.userId, {bio: req.body.bioInput});
+  req.flash('success_msg', 'You have successfully updated your profile');
+  res.redirect('/user/' + req.params.userId);
+};
+
+// Make suggestion flag updates
+exports.postUserPageSuggestion = async (req, res) => {
+  const user = await User.getUserById(req.params.userId);
+  if (user.id !== req.user.id) {
+    req.flash('error_msg', 'You are not authorized to do that.');
+    return res.redirect('/')
+  }
+
+  await User.updateUser(user.id, {openForSuggestion: !user.openForSuggestion});
   req.flash('success_msg', 'You have successfully updated your profile');
   res.redirect('/user/' + req.params.userId);
 };

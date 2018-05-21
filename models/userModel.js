@@ -30,6 +30,10 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  openForSuggestion: {
+    type: Boolean,
+    default: false
+  },
   publicEmail: {
     type: Boolean,
     default: false
@@ -78,25 +82,16 @@ module.exports.getUserById = (id) => {
 
 // Fuzzy search for user by name
 module.exports.fuzzySearchUserByName = (searchString, idToExclude) => {
-
-  function escapeRegex(searchString) {
-    return searchString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+  function escapeRegExp(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
   }
 
-  const isId = mongoose.Types.ObjectId.isValid(searchString);
+  const searchResult = new RegExp(escapeRegExp(searchString), 'gi');
 
-  const regex = new RegExp(escapeRegex(searchString), 'gi');
-
-  if (isId) {
-    return User
-      .find({'_id': searchString})
-      .nor([{'_id': idToExclude}])
-      .limit(30)
-  } else {
-    return User
-      .find({'name': regex})
-      .nor([{'_id': idToExclude}])
-  }
+  return User
+    .find({'name': searchResult})
+    .nor([{'_id': idToExclude}])
+    .limit(30)
 };
 
 // Get user by email
@@ -106,6 +101,18 @@ module.exports.getUserByEmail = (email) => {
 
 // Get all users from id in array
 module.exports.getFollowedUsers = (userIdArray) => {
+  return User
+    .where('_id')
+    .in(userIdArray)
+};
+
+module.exports.getSuggestedUsers = (idToExclude) => {
+  return User
+    .find({'openForSuggestion': true})
+    .nor([{'_id': idToExclude}])
+};
+
+module.exports.getFollowingUsers = (userIdArray) => {
   return User
     .where('_id')
     .in(userIdArray)

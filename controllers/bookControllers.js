@@ -116,6 +116,7 @@ exports.createPassage = async (req, res) => {
 
 };
 
+// Switch book visibility private/public
 exports.switchBookVisibility = async (req, res) => {
   const book = await Book.findBookById(req.params.bookId);
   if (!req.user || req.user.id !== book.owner.id) {
@@ -126,7 +127,7 @@ exports.switchBookVisibility = async (req, res) => {
   res.redirect('back')
 };
 
-
+// Switch active writer on book
 exports.switchActiveWriter = async (req, res) => {
   const book = await Book.findBookById(req.params.bookId);
   if (req.user.id !== book.owner.id) {

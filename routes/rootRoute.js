@@ -64,9 +64,32 @@ router.get('/register',
 );
 
 // Get followed users page
-router.get('/followed-users',
+router.get('/people',
+  authControllers.isLoggedIn, (req, res) => res.redirect('/people/search')
+);
+
+// Get page to see followed users/followers
+router.get('/people/circle',
   authControllers.isLoggedIn,
-  asyncMiddleware(rootControllers.getFollowedUsers)
+  asyncMiddleware(rootControllers.getPeoplePageCircle)
+);
+
+// Get search people page
+router.get('/people/search',
+  authControllers.isLoggedIn,
+  asyncMiddleware(rootControllers.getPeoplePageSearch)
+);
+
+// Post to search people page
+router.post('/people/search',
+  authControllers.isLoggedIn,
+  asyncMiddleware(rootControllers.searchWriter)
+);
+
+// Get suggested people page
+router.get('/people/suggested',
+  authControllers.isLoggedIn,
+  asyncMiddleware(rootControllers.getPeoplePageSuggested)
 );
 
 // Post for registering user
@@ -94,12 +117,13 @@ router.get('/create-book/find-collaborator',
   rootControllers.getFindCollaboratorsPage
 );
 
+// Get page to find collaborator in book creation process
 router.post('/create-book/find-collaborator',
   authControllers.isLoggedIn,
   asyncMiddleware(rootControllers.postFindCollaborators)
 );
 
-// Get Book creation page
+// Get Book creation page with selected user
 router.get('/create-book/:collaboratorId',
   authControllers.isLoggedIn,
   asyncMiddleware(rootControllers.getCreateBookForm)

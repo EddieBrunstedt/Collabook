@@ -1,0 +1,103 @@
+extends layout
+
+block content
+  .container
+    .row
+      .col-md-4.d-none.d-md-block
+        ul.fa-ul
+          li.lead
+            span.fa-li
+              i.fas.fa-search.text-warning
+            if currentUrl === '/people/search'
+              a.active-navbar-text(href='/people/search') Search
+            else
+              a.inactive-navbar-text(href='/people/search') Search
+          li.lead
+            span.fa-li
+              i.fas.fa-users.text-warning
+            if currentUrl === '/people/circle'
+              a.active-navbar-text(href='/people/circle') Circle
+            else
+              a.inactive-navbar-text(href='/people/circle') Circle
+          li.lead
+            span.fa-li
+              i.fas.fa-child.text-warning
+            if currentUrl === '/people/suggested'
+              a.active-navbar-text(href='/people/suggested') Suggested
+            else
+              a.inactive-navbar-text(href='/people/suggested') Suggested
+      .col-md-4.d-none.d-sm-block.d-md-none
+        ul.nav.nav-pills.nav-fill.justify-content-center.mb-3
+          li.nav-item
+            if currentUrl === '/people/search'
+              a.nav-link.active.bg-dark.lead(href='/people/search') Search
+                |
+                |
+                i.fas.fa-users.text-warning
+            else
+              a.nav-link.inactive-navbar-text.lead(href='/people/search') Search
+                |
+                |
+                i.fas.fa-search.text-warning
+          li.nav-item
+            if currentUrl === '/people/circle'
+              a.nav-link.active.bg-dark.lead(href='/people/circle') Circle
+                |
+                |
+                i.fas.fa-users.text-warning
+            else
+              a.nav-link.inactive-navbar-text.lead(href='/people/circle') Circle
+                |
+                |
+                i.fas.fa-users.text-warning
+          li.nav-item
+            if currentUrl === '/people/suggested'
+              a.nav-link.active.bg-dark.lead(href='/people/suggested') Suggested
+                |
+                |
+                i.fas.fa-child.text-warning
+            else
+              a.nav-link.inactive-navbar-text.lead(href='/people/suggested') Suggested
+                |
+                |
+                i.fas.fa-child.text-warning
+      .col-md-4.d-sm-none.mb-3
+        ul.nav.nav-pills.flex-column.text-center
+          if currentUrl === '/people/search'
+            li.nav-item
+              a.nav-link.active.bg-dark.text-warning.lead(href='/people/search') Search
+                |
+                |
+                i.fas.fa-search
+          else
+            li.nav-item
+              a.nav-link.lead.text-dark(href='/people/search') Search
+                |
+                |
+                i.fas.fas.fa-child.
+          if currentUrl === '/people/circle'
+            li.nav-item
+              a.nav-link.active.bg-dark.text-warning.lead(href='/people/circle') Circle
+                |
+                |
+                i.fas.fa-users
+          else
+            li.nav-item
+              a.nav-link.lead.text-dark(href='/people/circle') Circle
+                |
+                |
+                i.fas.fa-users
+          if currentUrl === '/people/suggested'
+            li.nav-item
+              a.nav-link.active.bg-dark.text-warning.lead(href='/people/search') Suggested
+                |
+                |
+                i.fas.fas.fa-child.
+          else
+            li.nav-item
+              a.nav-link.lead.text-dark(href='/people/suggested') Suggested
+                |
+                |
+                i.fas.fa-child.text-dark
+      .col-md-8
+        block people

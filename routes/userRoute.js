@@ -17,7 +17,13 @@ router.get('/:userId',
 // Post to profile for profile updates
 router.post('/:userId/update-bio',
   authControllers.isLoggedIn,
-  asyncMiddleware(userControllers.postUserPage)
+  asyncMiddleware(userControllers.postUserPageBio)
+);
+
+// Post to profile for profile updates
+router.post('/:userId/update-suggestion',
+  authControllers.isLoggedIn,
+  asyncMiddleware(userControllers.postUserPageSuggestion)
 );
 
 // User follow another User

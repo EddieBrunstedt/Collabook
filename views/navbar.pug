@@ -16,10 +16,10 @@
           else
             a.mx-2.inactive-navbar-text(href='/user/' + user.id) Profile
           span.text-muted |
-          if currentUrl === '/followed-users'
-            a.mx-2.active-navbar-text(href='/followed-users') People
+          if currentUrl === '/people'
+            a.mx-2.active-navbar-text(href='/people') People
           else
-            a.mx-2.inactive-navbar-text(href='/followed-users') People
+            a.mx-2.inactive-navbar-text(href='/people') People
           span.text-muted |
           a.ml-2#logout-navbar-link.mr-1(href='/logout') Log out
         else

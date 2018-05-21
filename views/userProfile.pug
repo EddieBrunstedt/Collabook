@@ -34,6 +34,10 @@ block content
             |
             a(href='mailto:' + viewedUser.email)= viewedUser.email
     hr.hr-gradient-center
+    if user && user.id !== viewedUser.id
+      .row
+        .col.text-center
+          a.btn.btn-success.btn-sm.my-1(href=`/create-book/${viewedUser.id}`) Create a book with this user
     .row
       .col-lg-6.text-center
         figure.figure
@@ -73,15 +77,37 @@ block content
                       p You can easily go there and change your profile picture.
                     .col-md-6
                       if (viewedUser.publicEmail)
+                        hr.d-md-none
                         h3.mb-3 Privacy
                         p Your email is currently visible to all users.
                         p If you want, you can hide your email from everyone visiting your profile page.
                         a.btn.btn-sm.btn-outline-secondary(href='/user/' + viewedUser.id + '/switch-email-visibility') Hide my email
                       else
+                        hr.d-md-none
                         h3.mb-3 Privacy
                         p Your email is currently hidden from other users.
                         p If you want, you can make it visible to anyone on your profile page.
                         a.btn.btn-sm.btn-outline-secondary(href='/user/' + viewedUser.id + '/switch-email-visibility') Make email visible
+                  hr
+                  .row
+                    .col
+                      if user && user.id === viewedUser.id
+                        if user.openForSuggestion
+                          h3.mb-3 Suggestions
+                          p.lead.text-success You are currently available
+                          p You are currently open for suggestions in collaborative writing.
+                          p Other writers will be able to find you through the suggestions page.
+                          form(action='/user/' + user.id + '/update-suggestion', method='post')
+                            input(name='openForSuggestion', type='hidden', value='true')
+                            button.btn.btn-danger.btn-sm(type='submit') Set incognito
+                        else
+                          h3.mb-3 Suggestions
+                          p.lead.text-danger You are currently not available
+                          p You are currently not available for suggestions in collaborative writing.
+                          p If you want other writers to be able to find you through the suggestions page, turn this on here.
+                          form(action='/user/' + user.id + '/update-suggestion', method='post')
+                            input(name='openForSuggestion', type='hidden', value='false')
+                            button.btn.btn-success.btn-sm(type='submit') Set available
                 .modal-footer
                   button.btn.btn-secondary(type='button', data-dismiss='modal') Close
       .col-lg-6.text-center

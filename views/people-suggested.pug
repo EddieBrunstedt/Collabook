@@ -1,0 +1,17 @@
+extends people
+
+block people
+  .card
+    .card-body.bg-light.card-shadow
+      h1.card-title Suggested
+      .table-responsive
+        table.table.table-sm.table-borderless.table-hover
+          thead.bg-dark.text-warning
+            tr
+              th(scope='col') Name
+              th(scope='col') Followers
+          tbody
+            each suggestedUser in suggestedUsersParsed
+              tr.mouse-pointer(onclick=`window.location="/user/${suggestedUser.id}";`)
+                th(scope='row')= suggestedUser.name
+                td= suggestedUser.followers.length

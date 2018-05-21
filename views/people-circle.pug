@@ -1,0 +1,31 @@
+extends people
+
+block people
+  .card.mb-3
+    .card-body.bg-light.card-shadow
+      h1.card-title.text-center.text-sm-left Following
+      .table-responsive
+        table.table.table-sm.table-borderless.table-hover
+          thead.bg-dark.text-warning
+            tr
+              th(scope='col') Name
+              th(scope='col') Followers
+          tbody
+            each item in userIsFollowing
+              tr.mouse-pointer(onclick=`window.location="/user/${item.id}";`)
+                th(scope='row')= item.name
+                td= item.followers.length
+  .card
+    .card-body.bg-light.card-shadow
+      h1.card-title.text-center.text-sm-left Followers
+      .table-responsive
+        table.table.table-sm.table-borderless.table-hover
+          thead.bg-dark.text-warning
+            tr
+              th(scope='col') Name
+              th(scope='col') Followers
+          tbody
+            each item in userIsFollowedBy
+              tr.mouse-pointer(onclick=`window.location="/user/${item.id}";`)
+                th(scope='row')= item.name
+                td= item.followers.length

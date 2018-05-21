@@ -1,0 +1,43 @@
+extends people
+
+block people
+  .row
+    .col
+      .card.mb-3
+        .card-body.bg-light.card-shadow
+          h1.card-title Search by name
+          form(action='/people/search', method='post')
+            input(name='searchingForId', type='hidden', value='false')
+            .form-group
+              input#inputTitle.form-control(type='text', name='inputSearchString' autofocus required)
+              small.form-text.text-muted Search collaborators by writing their name in the box above.
+            .text-right
+              button.btn.btn-warning.mb-3(type='submit') Search
+                | &nbsp;&nbsp;
+                i.fas.fa-search
+  if foundUsers && foundUsers.length <= 0
+    .card-body.bg-light.card-shadow
+      h4.text-center No users were found, please try again.
+  if foundUsers && foundUsers.length > 0
+    table.table.table-sm.table-borderless.table-hover.mt-3
+      thead.bg-dark.text-warning
+        tr
+          th(scope='col') Name
+          th(scope='col')
+          th(scope='col') Followers
+      tbody
+        each foundUser in foundUsers
+          tr.mouse-pointer(onclick=`window.location="/user/${foundUser.id}";`)
+            th(scope='row')= foundUser.name
+            td
+              if foundUser.requesterIsFollowingUser
+                i.fas.fa-eye.text-success.card-text
+                |
+                |
+                span.text-success Following
+              else
+                i.fas.fa-eye-slash.text-danger.card-text
+                |
+                |
+                span.text-danger Not Following
+            td= foundUser.followers.length
